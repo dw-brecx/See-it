@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>SeeIt — Welcome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app app--no-nav app--full">
+    <div class="splash">
+      <div class="splash__logo">
+        <!-- Logo mark: stylized "eye + plate" -->
+        <svg class="logo-mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="48" height="48" rx="12" fill="#E85D3A"/>
+          <path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="24" cy="24" r="4.5" fill="#fff"/>
+        </svg>
+        <span class="logo-text">See<em>It</em></span>
+      </div>
+
+      <!-- Slide 1 -->
+      <div class="onboard-slide" data-slide>
+        <div class="onboard-slide__visual">
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=720&q=80&auto=format&fit=crop" alt="Customer photo of a margherita pizza" />
+        </div>
+        <h1 class="onboard-slide__title">See real photos from real customers</h1>
+        <p class="onboard-slide__sub">No more menu mystery. Browse actual photos of every dish, taken by people who ate there last night.</p>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="onboard-slide" data-slide style="display:none">
+        <div class="onboard-slide__visual">
+          <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=720&q=80&auto=format&fit=crop" alt="Bowl of fresh pasta" />
+        </div>
+        <h1 class="onboard-slide__title">Find dishes, not just restaurants</h1>
+        <p class="onboard-slide__sub">Craving truffle pasta or birria tacos? Search the menu, not the marquee — and see exactly where to find it.</p>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="onboard-slide" data-slide style="display:none">
+        <div class="onboard-slide__visual">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=720&q=80&auto=format&fit=crop" alt="Restaurant table with menu" />
+        </div>
+        <h1 class="onboard-slide__title">Scan & explore any menu</h1>
+        <p class="onboard-slide__sub">Sitting down at a new spot? Snap the QR code and instantly see what's actually worth ordering.</p>
+      </div>
+
+      <div class="dots">
+        <span class="is-active" data-dot></span>
+        <span data-dot></span>
+        <span data-dot></span>
+      </div>
+
+      <div class="splash__footer">
+        <a href="location.html" class="btn btn--primary" data-onboard-next>Continue</a>
+        <a href="signin.html" class="splash__skip">I already have an account</a>
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

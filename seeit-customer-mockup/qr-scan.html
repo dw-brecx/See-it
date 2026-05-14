@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>SeeIt — Scan a Menu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app app--no-nav app--full">
+    <div class="scan-screen">
+      <header class="app-header">
+        <a href="home.html" class="app-header__btn" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </a>
+        <h1 class="app-header__title">Scan menu</h1>
+        <button class="app-header__btn" aria-label="Flash">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </button>
+      </header>
+
+      <!-- Viewfinder -->
+      <div class="scan-viewfinder">
+        <div class="scan-viewfinder__frame">
+          <!-- Faux QR code -->
+          <div style="position:absolute; inset:60px; display:grid; grid-template-columns:repeat(8, 1fr); grid-template-rows:repeat(8, 1fr); gap:3px; opacity:.18;">
+            <div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div>
+            <div></div><div style="background:#fff;"></div><div></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div>
+            <div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div>
+            <div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div>
+            <div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div>
+            <div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div>
+            <div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div>
+            <div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div><div style="background:#fff;"></div><div></div>
+          </div>
+        </div>
+        <div class="scan-viewfinder__corner scan-viewfinder__corner--tl"></div>
+        <div class="scan-viewfinder__corner scan-viewfinder__corner--tr"></div>
+        <div class="scan-viewfinder__corner scan-viewfinder__corner--bl"></div>
+        <div class="scan-viewfinder__corner scan-viewfinder__corner--br"></div>
+        <div class="scan-line"></div>
+      </div>
+
+      <div class="scan-instructions">
+        <h2>Point at the QR code</h2>
+        <p>Hold your phone steady — we'll pull up real photos and reviews of every dish on the menu.</p>
+      </div>
+
+      <div class="scan-actions">
+        <a href="restaurant-detail.html" class="scan-link">Enter a code manually</a>
+        <a href="search.html" class="scan-link" style="background:transparent; border-color:transparent;">Search instead</a>
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>
