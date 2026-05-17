@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Restaurant profile — Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a href="dashboard.html" class="sidebar__logo">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="12" fill="#E85D3A"/><path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="4.5" fill="#fff"/></svg>
+        <span class="sidebar__logo-text">See<em>It</em></span><span class="sidebar__logo-pill">BIZ</span>
+      </a>
+      <div class="sidebar__restaurant">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt="" />
+        <div class="sidebar__restaurant-body"><p class="sidebar__restaurant-name">Bella's Italian Kitchen</p><p class="sidebar__restaurant-sub">432 Valencia St · SF</p></div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>Menu<span class="sidebar__nav-item__badge">28</span></a>
+        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>Photos<span class="sidebar__nav-item__badge">412</span></a>
+        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Reviews<span class="sidebar__nav-item__badge">3</span></a>
+        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Insights</a>
+        <div class="sidebar__section">Account</div>
+        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
+        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Billing</a>
+      </nav>
+      <div class="sidebar__footer">
+        <div class="sidebar__user">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt="" />
+          <div style="flex:1; min-width:0;"><p class="sidebar__user-name">Bella Romano</p><p class="sidebar__user-sub">Owner</p></div>
+          <a href="signin.html" style="color: var(--color-text-tertiary);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar__crumb"><a href="dashboard.html">Dashboard</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg><a href="settings-profile.html">Settings</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg><strong>Restaurant profile</strong></div>
+        <div class="topbar__actions">
+          <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="icon-btn__dot"></span></button>
+          <img class="topbar__avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/>
+        </div>
+      </header>
+
+      <div class="page" style="max-width: 1000px;">
+        <div class="page__head">
+          <div>
+            <h1 class="page__title">Settings</h1>
+            <p class="page__sub">Manage your restaurant listing, team, and account.</p>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <a href="settings-profile.html" class="tabs__item tabs__item--active">Restaurant profile</a>
+          <a href="settings-account.html" class="tabs__item">Account</a>
+          <a href="settings-team.html" class="tabs__item">Team</a>
+          <a href="settings-notifications.html" class="tabs__item">Notifications</a>
+        </div>
+
+        <!-- Cover/Logo -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-16">Branding</h2>
+
+          <div class="field">
+            <label class="field__label">Cover photo</label>
+            <div style="position: relative; border-radius: var(--radius-md); overflow: hidden; aspect-ratio: 16/6; background: var(--color-surface-alt);">
+              <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80&auto=format&fit=crop" alt="" style="width:100%; height:100%; object-fit:cover;" />
+              <div style="position:absolute; bottom: 14px; right: 14px; display:flex; gap: 8px;">
+                <button class="btn btn--secondary btn--sm">Replace</button>
+              </div>
+            </div>
+            <p class="field__hint">Recommended: 1600 × 600 px. Shown at the top of your customer-facing listing.</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label">Logo</label>
+            <div style="display:flex; align-items:center; gap: 16px;">
+              <div style="width: 72px; height: 72px; border-radius: var(--radius-md); background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 800; letter-spacing: -0.04em;">B</div>
+              <button class="btn btn--secondary">Upload new logo</button>
+              <button class="btn btn--ghost btn--sm" style="color: var(--color-danger);">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Basics -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-16">Basics</h2>
+
+          <div class="field">
+            <label class="field__label">Restaurant name</label>
+            <input class="input" type="text" value="Bella's Italian Kitchen" />
+          </div>
+
+          <div class="field">
+            <label class="field__label">Tagline</label>
+            <input class="input" type="text" value="Nonna's recipes. Heart-of-the-Mission vibes." />
+            <p class="field__hint">Shown under your restaurant name in search results.</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label">Description</label>
+            <textarea class="textarea">Family-run trattoria in the Mission, slinging hand-rolled pasta and wood-fired pizzas since 2012. Nonna Romano still makes the gnocchi every Sunday. Outdoor seating, kid-friendly, walk-ins welcome until 9pm.</textarea>
+            <p class="field__hint"><strong style="color: var(--color-text);">248</strong> / 400 characters</p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field__label">Primary cuisine</label>
+              <select class="select"><option selected>Italian</option><option>Pizzeria</option><option>Mediterranean</option><option>Modern American</option></select>
+            </div>
+            <div class="field">
+              <label class="field__label">Price range</label>
+              <select class="select"><option>$ — Budget</option><option selected>$$ — Moderate</option><option>$$$ — Upscale</option><option>$$$$ — Fine dining</option></select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label">Dietary &amp; feature tags</label>
+            <p class="field__hint" style="margin: 0 0 10px;">Tag your restaurant so customers with dietary preferences can find you.</p>
+            <div style="display:flex; flex-wrap: wrap; gap: 8px;">
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span> Vegetarian options</label>
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span> Vegan options</label>
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span> Gluten-free options</label>
+              <label class="check"><input type="checkbox"/><span class="check__box"></span> Halal certified</label>
+              <label class="check"><input type="checkbox"/><span class="check__box"></span> Kosher certified</label>
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span> Outdoor seating</label>
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span> Family friendly</label>
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span> Reservations accepted</label>
+              <label class="check"><input type="checkbox"/><span class="check__box"></span> Late night (after 10pm)</label>
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span> Wine bar</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-16">Contact &amp; location</h2>
+
+          <div class="field">
+            <label class="field__label">Street address</label>
+            <input class="input" type="text" value="432 Valencia Street" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="field__label">City</label>
+              <input class="input" type="text" value="San Francisco" />
+            </div>
+            <div class="field">
+              <label class="field__label">State / ZIP</label>
+              <input class="input" type="text" value="CA · 94103" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="field__label">Phone</label>
+              <input class="input" type="tel" value="(415) 555-0142" />
+            </div>
+            <div class="field">
+              <label class="field__label">Website</label>
+              <input class="input" type="url" value="https://bellasitalian.com" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="field__label">Instagram</label>
+              <div class="input-prefix"><span>@</span><input class="input" type="text" value="bellasitalian_sf" /></div>
+            </div>
+            <div class="field">
+              <label class="field__label">Reservation link (OpenTable, Resy)</label>
+              <input class="input" type="url" placeholder="https://resy.com/cities/sf/..." />
+            </div>
+          </div>
+        </div>
+
+        <!-- Hours -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-8">Hours</h2>
+          <p class="muted mb-16">Closed days will show "Closed" on your listing. Customers can still browse, just not visit.</p>
+
+          <div>
+            <div class="hours-row">
+              <span class="hours-row__day">Monday</span>
+              <span class="hours-row__closed">Closed</span>
+              <span></span>
+              <label class="switch"><input type="checkbox"/><span class="switch__slider"></span></label>
+            </div>
+            <div class="hours-row">
+              <span class="hours-row__day">Tuesday</span>
+              <input class="input" type="time" value="17:00" />
+              <input class="input" type="time" value="22:00" />
+              <label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label>
+            </div>
+            <div class="hours-row">
+              <span class="hours-row__day">Wednesday</span>
+              <input class="input" type="time" value="17:00" />
+              <input class="input" type="time" value="22:00" />
+              <label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label>
+            </div>
+            <div class="hours-row">
+              <span class="hours-row__day">Thursday</span>
+              <input class="input" type="time" value="17:00" />
+              <input class="input" type="time" value="22:00" />
+              <label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label>
+            </div>
+            <div class="hours-row">
+              <span class="hours-row__day">Friday</span>
+              <input class="input" type="time" value="17:00" />
+              <input class="input" type="time" value="23:00" />
+              <label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label>
+            </div>
+            <div class="hours-row">
+              <span class="hours-row__day">Saturday</span>
+              <input class="input" type="time" value="11:30" />
+              <input class="input" type="time" value="23:00" />
+              <label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label>
+            </div>
+            <div class="hours-row">
+              <span class="hours-row__day">Sunday</span>
+              <input class="input" type="time" value="11:30" />
+              <input class="input" type="time" value="21:00" />
+              <label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label>
+            </div>
+          </div>
+
+          <button class="btn btn--ghost btn--sm mt-16">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add a holiday or special hours
+          </button>
+        </div>
+
+        <!-- Footer save -->
+        <div style="position: sticky; bottom: 0; background: var(--color-bg); padding: 16px 0; border-top: 1px solid var(--color-border); display: flex; justify-content: flex-end; gap: 10px;">
+          <button class="btn btn--ghost">Discard changes</button>
+          <button class="btn btn--primary">Save profile</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

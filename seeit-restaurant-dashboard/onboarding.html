@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Get started — SeeIt for Restaurants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Slim header -->
+  <header style="border-bottom: 1px solid var(--color-border); background: var(--color-surface);">
+    <div style="max-width: 1100px; margin: 0 auto; padding: 16px 32px; display:flex; align-items:center; gap: 10px;">
+      <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="12" fill="#E85D3A"/>
+        <path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="24" cy="24" r="4.5" fill="#fff"/>
+      </svg>
+      <span class="auth-card__logo-text">See<em>It</em></span>
+      <span class="auth-card__logo-pill">FOR RESTAURANTS</span>
+      <div style="margin-left:auto; font-size: 13px; color: var(--color-text-secondary);">
+        Signed in as <strong style="color:var(--color-text);">bella@bellasitalian.com</strong>
+      </div>
+    </div>
+  </header>
+
+  <div class="wizard">
+    <!-- Step indicator -->
+    <div class="wizard__steps">
+      <div class="wizard__step wizard__step--done">
+        <span class="wizard__step-num">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        Restaurant basics
+      </div>
+      <div class="wizard__connector wizard__connector--done"></div>
+      <div class="wizard__step wizard__step--active">
+        <span class="wizard__step-num">2</span>
+        Branding
+      </div>
+      <div class="wizard__connector"></div>
+      <div class="wizard__step">
+        <span class="wizard__step-num">3</span>
+        Menu items
+      </div>
+      <div class="wizard__connector"></div>
+      <div class="wizard__step">
+        <span class="wizard__step-num">4</span>
+        Done
+      </div>
+    </div>
+
+    <div class="card" style="padding: 32px;">
+      <h2 class="h1" style="margin: 0 0 6px;">Add your cover photo &amp; logo</h2>
+      <p class="muted mb-24">A great cover photo is the single biggest driver of profile views. Pick one that makes someone want to walk in.</p>
+
+      <div class="field">
+        <label class="field__label">Cover photo</label>
+        <div style="position: relative; border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 16/7; background: var(--color-surface-alt);">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80&auto=format&fit=crop" alt="" style="width:100%; height:100%; object-fit:cover;" />
+          <div style="position:absolute; bottom: 16px; right: 16px; display:flex; gap: 8px;">
+            <button class="btn btn--secondary btn--sm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Replace
+            </button>
+            <button class="btn btn--secondary btn--sm">Reposition</button>
+          </div>
+        </div>
+        <p class="field__hint">Recommended: 1600 × 700 px, JPEG or PNG. Shown at the top of your listing.</p>
+      </div>
+
+      <div class="field-row mt-24">
+        <div class="field">
+          <label class="field__label">Logo</label>
+          <div style="display:flex; align-items:center; gap: 16px;">
+            <div style="width: 72px; height: 72px; border-radius: var(--radius-md); background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 800; font-family: 'Inter', serif; letter-spacing: -0.04em; flex-shrink: 0;">B</div>
+            <div style="flex:1;">
+              <button class="btn btn--secondary">Upload logo</button>
+              <p class="field__hint">Square image, at least 200 × 200 px.</p>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label">Tagline (optional)</label>
+          <input class="input" type="text" placeholder="A short, memorable phrase" value="Nonna's recipes. Heart-of-the-Mission vibes." />
+          <p class="field__hint">Shown under your restaurant name.</p>
+        </div>
+      </div>
+
+      <div class="field mt-12">
+        <label class="field__label">Short description</label>
+        <textarea class="textarea" placeholder="A sentence or two about your place — what makes it special?">Family-run trattoria in the Mission, slinging hand-rolled pasta and wood-fired pizzas since 2012. Nonna Romano still makes the gnocchi every Sunday.</textarea>
+        <p class="field__hint"><strong style="color: var(--color-text);">187</strong> / 250 characters</p>
+      </div>
+
+      <div style="display:flex; justify-content: space-between; align-items:center; margin-top: 32px; gap: 12px;">
+        <a href="signup.html" class="btn btn--ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </a>
+        <div style="display:flex; gap: 10px;">
+          <a href="dashboard.html" class="btn btn--ghost">Skip for now</a>
+          <a href="dashboard.html" class="btn btn--primary">
+            Continue
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p class="tiny mt-16" style="text-align:center;">Step 2 of 4 · You can change everything later in Settings.</p>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

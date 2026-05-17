@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in — SeeIt for Restaurants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="auth-shell">
+    <div class="auth-shell__pane">
+      <div class="auth-card">
+        <div class="auth-card__logo">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="48" height="48" rx="12" fill="#E85D3A"/>
+            <path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="24" cy="24" r="4.5" fill="#fff"/>
+          </svg>
+          <span class="auth-card__logo-text">See<em>It</em></span>
+          <span class="auth-card__logo-pill">FOR RESTAURANTS</span>
+        </div>
+
+        <h1 class="auth-card__title">Welcome back</h1>
+        <p class="auth-card__sub">Sign in to manage your listing, menu, and reviews.</p>
+
+        <div class="field">
+          <label class="field__label" for="email">Work email</label>
+          <input class="input" id="email" type="email" placeholder="you@restaurant.com" autocomplete="email" />
+        </div>
+        <div class="field">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <label class="field__label" for="password" style="margin:0;">Password</label>
+            <a href="#" style="font-size:12.5px; font-weight:600; color: var(--color-primary);">Forgot password?</a>
+          </div>
+          <input class="input mt-8" id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+
+        <label class="check mb-24 mt-12">
+          <input type="checkbox" checked />
+          <span class="check__box"></span>
+          <span>Keep me signed in for 30 days</span>
+        </label>
+
+        <a href="dashboard.html" class="btn btn--primary btn--lg btn--block">Sign in</a>
+
+        <p style="text-align:center; margin: 22px 0 0; font-size: 13.5px; color: var(--color-text-secondary);">
+          New to SeeIt? <a href="signup.html" style="color: var(--color-primary); font-weight: 600;">Claim your restaurant</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="auth-shell__pane auth-shell__pane--brand">
+      <div class="auth-shell__brand-inner">
+        <blockquote>
+          "We were buried on every other discovery app. SeeIt's photo-first listings tripled our walk-ins in 3 months."
+        </blockquote>
+        <cite>
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80&auto=format&fit=crop" alt="" />
+          <div>
+            <div style="font-weight:600;">Bella Romano</div>
+            <div style="opacity:0.8;">Owner, Bella's Italian Kitchen · San Francisco</div>
+          </div>
+        </cite>
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

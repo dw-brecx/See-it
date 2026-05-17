@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create account — SeeIt for Restaurants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="auth-shell">
+    <div class="auth-shell__pane">
+      <div class="auth-card auth-card--wide">
+        <div class="auth-card__logo">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="48" height="48" rx="12" fill="#E85D3A"/>
+            <path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="24" cy="24" r="4.5" fill="#fff"/>
+          </svg>
+          <span class="auth-card__logo-text">See<em>It</em></span>
+          <span class="auth-card__logo-pill">FOR RESTAURANTS</span>
+        </div>
+
+        <h1 class="auth-card__title">Claim your restaurant</h1>
+        <p class="auth-card__sub">Free to set up — start receiving photo-rich reviews in minutes.</p>
+
+        <div class="eyebrow mt-16" style="margin-bottom: 10px;">Restaurant</div>
+        <div class="field">
+          <label class="field__label" for="rname">Restaurant name</label>
+          <input class="input" id="rname" type="text" placeholder="e.g. Bella's Italian Kitchen" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="raddr">Address</label>
+          <input class="input" id="raddr" type="text" placeholder="432 Valencia St, San Francisco, CA" />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field__label" for="rcuisine">Cuisine</label>
+            <select class="select" id="rcuisine">
+              <option>Italian</option>
+              <option>Japanese</option>
+              <option>Mexican</option>
+              <option>Korean</option>
+              <option>American</option>
+              <option>Thai</option>
+              <option>Indian</option>
+              <option>Mediterranean</option>
+              <option>Cafe / Brunch</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label" for="rphone">Phone</label>
+            <input class="input" id="rphone" type="tel" placeholder="(415) 555-0142" />
+          </div>
+        </div>
+
+        <div class="eyebrow mt-16" style="margin-bottom: 10px;">Owner</div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field__label" for="oname">Your full name</label>
+            <input class="input" id="oname" type="text" placeholder="Bella Romano" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="oemail">Work email</label>
+            <input class="input" id="oemail" type="email" placeholder="bella@bellasitalian.com" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label" for="opass">Password</label>
+          <input class="input" id="opass" type="password" placeholder="At least 8 characters" />
+          <p class="field__hint">Use 8+ characters with a mix of letters and numbers.</p>
+        </div>
+
+        <label class="check mt-12 mb-24">
+          <input type="checkbox" checked />
+          <span class="check__box"></span>
+          <span>I agree to SeeIt's <a href="#" style="color: var(--color-primary); font-weight: 600;">Terms</a> and <a href="#" style="color: var(--color-primary); font-weight: 600;">Privacy Policy</a></span>
+        </label>
+
+        <a href="onboarding.html" class="btn btn--primary btn--lg btn--block">Continue to plan selection</a>
+
+        <p style="text-align:center; margin: 22px 0 0; font-size: 13.5px; color: var(--color-text-secondary);">
+          Already on SeeIt? <a href="signin.html" style="color: var(--color-primary); font-weight: 600;">Sign in</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="auth-shell__pane auth-shell__pane--brand">
+      <div class="auth-shell__brand-inner">
+        <blockquote>
+          "Customers showed up already knowing what they wanted to order — and ordered the dishes I actually wanted to sell."
+        </blockquote>
+        <cite>
+          <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=200&q=80&auto=format&fit=crop" alt="" />
+          <div>
+            <div style="font-weight:600;">David Park</div>
+            <div style="opacity:0.8;">Chef-Owner, Seoul Hot Stone · San Francisco</div>
+          </div>
+        </cite>
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

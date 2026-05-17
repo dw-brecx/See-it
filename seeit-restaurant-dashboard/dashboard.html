@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — SeeIt for Restaurants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- ========== Sidebar ========== -->
+    <aside class="sidebar">
+      <a href="dashboard.html" class="sidebar__logo">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="#E85D3A"/>
+          <path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="24" cy="24" r="4.5" fill="#fff"/>
+        </svg>
+        <span class="sidebar__logo-text">See<em>It</em></span>
+        <span class="sidebar__logo-pill">BIZ</span>
+      </a>
+
+      <div class="sidebar__restaurant">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt="" />
+        <div class="sidebar__restaurant-body">
+          <p class="sidebar__restaurant-name">Bella's Italian Kitchen</p>
+          <p class="sidebar__restaurant-sub">432 Valencia St · SF</p>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          Dashboard
+        </a>
+        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+          Menu
+          <span class="sidebar__nav-item__badge">28</span>
+        </a>
+        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>
+          Photos
+          <span class="sidebar__nav-item__badge">412</span>
+        </a>
+        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>
+          Reviews
+          <span class="sidebar__nav-item__badge">3</span>
+        </a>
+        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Insights
+        </a>
+
+        <div class="sidebar__section">Account</div>
+
+        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+          Settings
+        </a>
+        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Billing
+        </a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <div class="sidebar__user">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt="" />
+          <div style="flex:1; min-width:0;">
+            <p class="sidebar__user-name">Bella Romano</p>
+            <p class="sidebar__user-sub">Owner</p>
+          </div>
+          <a href="signin.html" title="Sign out" style="color: var(--color-text-tertiary);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========== Main ========== -->
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar__crumb">
+          <strong>Dashboard</strong>
+        </div>
+        <div class="topbar__actions">
+          <div class="topbar__search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search dishes, reviews, photos…" />
+            <kbd>⌘K</kbd>
+          </div>
+          <button class="icon-btn" aria-label="Help">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+          </button>
+          <button class="icon-btn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span class="icon-btn__dot"></span>
+          </button>
+          <img class="topbar__avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt="Profile" />
+        </div>
+      </header>
+
+      <div class="page">
+        <div class="page__head">
+          <div>
+            <h1 class="page__title">Good afternoon, Bella 👋</h1>
+            <p class="page__sub">Here's how Bella's Italian Kitchen is doing this week.</p>
+          </div>
+          <div style="display:flex; gap: 10px;">
+            <button class="btn btn--secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Last 30 days
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <a href="menu-edit.html" class="btn btn--primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add menu item
+            </a>
+          </div>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="grid grid--stats">
+          <div class="stat-card">
+            <p class="stat-card__label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>
+              Total reviews
+            </p>
+            <p class="stat-card__num">1,247</p>
+            <div class="stat-card__row">
+              <span class="stat-card__delta stat-card__delta--up">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 14 12 8 18 14"/></svg>
+                +84
+              </span>
+              <span class="muted tiny" style="margin:0;">vs last month</span>
+            </div>
+            <div class="stat-card__spark">
+              <svg viewBox="0 0 200 32" preserveAspectRatio="none">
+                <path d="M0 22 L20 24 L40 18 L60 20 L80 14 L100 16 L120 10 L140 12 L160 8 L180 6 L200 4" fill="none" stroke="#E85D3A" stroke-width="2"/>
+                <path d="M0 22 L20 24 L40 18 L60 20 L80 14 L100 16 L120 10 L140 12 L160 8 L180 6 L200 4 L200 32 L0 32 Z" fill="rgba(232,93,58,0.12)"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <p class="stat-card__label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+              Avg rating
+            </p>
+            <p class="stat-card__num">4.7<span style="font-size:18px; color: var(--color-text-tertiary); font-weight:500;"> / 5</span></p>
+            <div class="stat-card__row">
+              <span class="stat-card__delta stat-card__delta--up">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 14 12 8 18 14"/></svg>
+                +0.2
+              </span>
+              <span class="muted tiny" style="margin:0;">vs last month</span>
+            </div>
+            <div class="stat-card__spark">
+              <svg viewBox="0 0 200 32" preserveAspectRatio="none">
+                <path d="M0 16 L20 14 L40 18 L60 12 L80 14 L100 10 L120 12 L140 8 L160 10 L180 6 L200 8" fill="none" stroke="#E85D3A" stroke-width="2"/>
+                <path d="M0 16 L20 14 L40 18 L60 12 L80 14 L100 10 L120 12 L140 8 L160 10 L180 6 L200 8 L200 32 L0 32 Z" fill="rgba(232,93,58,0.12)"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <p class="stat-card__label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>
+              Photos this week
+            </p>
+            <p class="stat-card__num">38</p>
+            <div class="stat-card__row">
+              <span class="stat-card__delta stat-card__delta--up">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 14 12 8 18 14"/></svg>
+                +12
+              </span>
+              <span class="muted tiny" style="margin:0;">vs last week</span>
+            </div>
+            <div class="stat-card__spark">
+              <svg viewBox="0 0 200 32" preserveAspectRatio="none">
+                <path d="M0 24 L28 22 L57 18 L86 22 L114 14 L143 18 L171 12 L200 6" fill="none" stroke="#E85D3A" stroke-width="2"/>
+                <path d="M0 24 L28 22 L57 18 L86 22 L114 14 L143 18 L171 12 L200 6 L200 32 L0 32 Z" fill="rgba(232,93,58,0.12)"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <p class="stat-card__label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+              Profile views (30d)
+            </p>
+            <p class="stat-card__num">12,408</p>
+            <div class="stat-card__row">
+              <span class="stat-card__delta stat-card__delta--up">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 14 12 8 18 14"/></svg>
+                +24%
+              </span>
+              <span class="muted tiny" style="margin:0;">vs last month</span>
+            </div>
+            <div class="stat-card__spark">
+              <svg viewBox="0 0 200 32" preserveAspectRatio="none">
+                <path d="M0 20 L20 22 L40 14 L60 16 L80 12 L100 10 L120 8 L140 12 L160 6 L180 4 L200 2" fill="none" stroke="#E85D3A" stroke-width="2"/>
+                <path d="M0 20 L20 22 L40 14 L60 16 L80 12 L100 10 L120 8 L140 12 L160 6 L180 4 L200 2 L200 32 L0 32 Z" fill="rgba(232,93,58,0.12)"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main + side -->
+        <div class="grid grid--main-aside mt-24">
+          <!-- Recent reviews -->
+          <div class="card card--flush">
+            <div class="card__head">
+              <h2 class="card__head-title">Recent reviews</h2>
+              <a href="reviews.html" class="btn btn--ghost btn--sm">View all →</a>
+            </div>
+
+            <div class="review-item">
+              <div class="review-item__head">
+                <img class="review-item__avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80&auto=format&fit=crop" alt="" />
+                <div style="flex:1;">
+                  <p class="review-item__user">Marcus T.</p>
+                  <p class="review-item__meta">Truffle Tagliatelle · 2 hours ago</p>
+                </div>
+                <div class="review-item__rating">
+                  <div class="stars">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                  </div>
+                </div>
+              </div>
+              <p class="review-item__text">"Genuinely the best plate of pasta I've had in SF. Generous truffle shavings, perfect al dente. The owner stopped by our table to check in — old-school hospitality."</p>
+              <div class="review-item__photos">
+                <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=200&q=80&auto=format&fit=crop" alt="" />
+                <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?w=200&q=80&auto=format&fit=crop" alt="" />
+              </div>
+              <div class="review-item__actions">
+                <a href="reviews.html" class="btn btn--primary btn--sm">Reply</a>
+                <span class="badge"><span class="muted">Awaiting reply</span></span>
+              </div>
+            </div>
+
+            <div class="review-item">
+              <div class="review-item__head">
+                <img class="review-item__avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&q=80&auto=format&fit=crop" alt="" />
+                <div style="flex:1;">
+                  <p class="review-item__user">Sarah M.</p>
+                  <p class="review-item__meta">Margherita Pizza · Yesterday</p>
+                </div>
+                <div class="review-item__rating">
+                  <div class="stars">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                  </div>
+                </div>
+              </div>
+              <p class="review-item__text">"The crust was visibly burned around half the pie. Service was friendly and they offered to remake it but I was on a quick lunch. Won't rush back."</p>
+              <div class="review-item__actions">
+                <a href="reviews.html" class="btn btn--primary btn--sm">Reply</a>
+                <span class="badge badge--danger badge--dot">Needs attention</span>
+              </div>
+            </div>
+
+            <div class="review-item">
+              <div class="review-item__head">
+                <img class="review-item__avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=80&auto=format&fit=crop" alt="" />
+                <div style="flex:1;">
+                  <p class="review-item__user">Priya K.</p>
+                  <p class="review-item__meta">Carbonara · 3 days ago</p>
+                </div>
+                <div class="review-item__rating">
+                  <div class="stars">
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+                  </div>
+                </div>
+              </div>
+              <p class="review-item__text">"Solid carbonara — eggy, peppery, just enough guanciale. Slightly oversalted for my taste but I'd come back. The bread basket was a highlight."</p>
+              <div class="review-item__reply">
+                <p class="review-item__reply-head">Bella's Italian Kitchen replied · 2 days ago</p>
+                <p class="review-item__reply-text">Thank you Priya! We'll pass your note on salt to the kitchen — pasta water is a tricky balance. See you next visit 🍝</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar column -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Quick actions -->
+            <div class="card card--flush">
+              <div class="card__head"><h2 class="card__head-title">Quick actions</h2></div>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+                <a href="menu-edit.html" class="qaction">
+                  <div class="qaction__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  </div>
+                  <div class="qaction__body">
+                    <p class="qaction__title">Add a menu item</p>
+                    <p class="qaction__sub">Boosts profile views by ~14% per dish.</p>
+                  </div>
+                  <span class="qaction__chev">›</span>
+                </a>
+                <a href="photos.html" class="qaction">
+                  <div class="qaction__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>
+                  </div>
+                  <div class="qaction__body">
+                    <p class="qaction__title">Upload photos</p>
+                    <p class="qaction__sub">3 dishes still missing a hero photo.</p>
+                  </div>
+                  <span class="qaction__chev">›</span>
+                </a>
+                <a href="reviews.html" class="qaction">
+                  <div class="qaction__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>
+                  </div>
+                  <div class="qaction__body">
+                    <p class="qaction__title">Reply to 3 new reviews</p>
+                    <p class="qaction__sub">Replies improve repeat-visit rates by 23%.</p>
+                  </div>
+                  <span class="qaction__chev">›</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Needs attention -->
+            <div class="card card--flush">
+              <div class="card__head">
+                <h2 class="card__head-title">Menu items needing attention</h2>
+              </div>
+              <div style="padding: 8px 0;">
+                <a href="menu-edit.html" class="qaction" style="border: none; border-radius: 0; border-bottom: 1px solid var(--color-border-soft);">
+                  <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=160&q=80&auto=format&fit=crop" alt="" style="width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0;" />
+                  <div class="qaction__body">
+                    <p class="qaction__title">Burrata Caprese</p>
+                    <p class="qaction__sub"><span class="badge badge--warning badge--dot">No photo</span></p>
+                  </div>
+                  <span class="qaction__chev">›</span>
+                </a>
+                <a href="menu-edit.html" class="qaction" style="border: none; border-radius: 0; border-bottom: 1px solid var(--color-border-soft);">
+                  <img src="https://images.unsplash.com/photo-1572441713132-51c75654db73?w=160&q=80&auto=format&fit=crop" alt="" style="width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0;" />
+                  <div class="qaction__body">
+                    <p class="qaction__title">Limoncello Spritz</p>
+                    <p class="qaction__sub"><span class="badge badge--warning badge--dot">Hidden</span> · Missing price</p>
+                  </div>
+                  <span class="qaction__chev">›</span>
+                </a>
+                <a href="menu-edit.html" class="qaction" style="border: none; border-radius: 0;">
+                  <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=160&q=80&auto=format&fit=crop" alt="" style="width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0;" />
+                  <div class="qaction__body">
+                    <p class="qaction__title">Tiramisu</p>
+                    <p class="qaction__sub"><span class="badge badge--danger badge--dot">3 low ratings</span></p>
+                  </div>
+                  <span class="qaction__chev">›</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Profile completion -->
+            <div class="card">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <h3 class="h3">Profile completion</h3>
+                <span style="font-size: 14px; font-weight: 700; color: var(--color-primary);">82%</span>
+              </div>
+              <div style="background: var(--color-surface-alt); border-radius: var(--radius-full); height: 8px; overflow: hidden; margin-bottom: 14px;">
+                <div style="background: var(--color-primary); height: 100%; width: 82%; border-radius: var(--radius-full);"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--color-success);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Cover photo &amp; logo
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--color-success);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Menu (28 items)
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--color-success);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Hours of operation
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--color-text-tertiary);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/></svg>
+                  Dietary tags on every dish
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--color-text-tertiary);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/></svg>
+                  Connect Instagram
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

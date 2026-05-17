@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Insights — SeeIt for Restaurants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a href="dashboard.html" class="sidebar__logo">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="12" fill="#E85D3A"/><path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="4.5" fill="#fff"/></svg>
+        <span class="sidebar__logo-text">See<em>It</em></span><span class="sidebar__logo-pill">BIZ</span>
+      </a>
+      <div class="sidebar__restaurant">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt="" />
+        <div class="sidebar__restaurant-body"><p class="sidebar__restaurant-name">Bella's Italian Kitchen</p><p class="sidebar__restaurant-sub">432 Valencia St · SF</p></div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>Menu<span class="sidebar__nav-item__badge">28</span></a>
+        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>Photos<span class="sidebar__nav-item__badge">412</span></a>
+        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Reviews<span class="sidebar__nav-item__badge">3</span></a>
+        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Insights</a>
+        <div class="sidebar__section">Account</div>
+        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
+        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Billing</a>
+      </nav>
+      <div class="sidebar__footer">
+        <div class="sidebar__user">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt="" />
+          <div style="flex:1; min-width:0;"><p class="sidebar__user-name">Bella Romano</p><p class="sidebar__user-sub">Owner</p></div>
+          <a href="signin.html" style="color: var(--color-text-tertiary);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar__crumb"><a href="dashboard.html">Dashboard</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg><strong>Insights</strong></div>
+        <div class="topbar__actions">
+          <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="icon-btn__dot"></span></button>
+          <img class="topbar__avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/>
+        </div>
+      </header>
+
+      <div class="page">
+        <div class="page__head">
+          <div>
+            <h1 class="page__title">Insights</h1>
+            <p class="page__sub">Understand how customers are discovering and engaging with your restaurant.</p>
+          </div>
+          <div style="display:flex; gap: 10px;">
+            <div class="toolbar__group">
+              <button>7d</button>
+              <button class="is-active">30d</button>
+              <button>90d</button>
+              <button>1y</button>
+            </div>
+            <button class="btn btn--secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/><path d="M21 16V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/></svg>
+              Export PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Top stats -->
+        <div class="grid grid--stats mb-24">
+          <div class="stat-card">
+            <p class="stat-card__label">Profile views</p>
+            <p class="stat-card__num">12,408</p>
+            <div class="stat-card__row">
+              <span class="stat-card__delta stat-card__delta--up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 14 12 8 18 14"/></svg>+24%</span>
+              <span class="tiny" style="margin:0;">vs previous 30d</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <p class="stat-card__label">Menu item taps</p>
+            <p class="stat-card__num">8,247</p>
+            <div class="stat-card__row">
+              <span class="stat-card__delta stat-card__delta--up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 14 12 8 18 14"/></svg>+18%</span>
+              <span class="tiny" style="margin:0;">vs previous 30d</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <p class="stat-card__label">Saves &amp; bookmarks</p>
+            <p class="stat-card__num">964</p>
+            <div class="stat-card__row">
+              <span class="stat-card__delta stat-card__delta--up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 14 12 8 18 14"/></svg>+31%</span>
+              <span class="tiny" style="margin:0;">vs previous 30d</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <p class="stat-card__label">Directions requested</p>
+            <p class="stat-card__num">427</p>
+            <div class="stat-card__row">
+              <span class="stat-card__delta stat-card__delta--down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 10 12 16 18 10"/></svg>-4%</span>
+              <span class="tiny" style="margin:0;">vs previous 30d</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile views over time -->
+        <div class="card mb-24">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px;">
+            <div>
+              <h2 class="h2">Profile views over time</h2>
+              <p class="tiny mt-4">Daily views, last 30 days</p>
+            </div>
+            <div class="legend">
+              <span class="legend__item"><span class="legend__swatch"></span>This period</span>
+              <span class="legend__item"><span class="legend__swatch" style="background: var(--color-border-strong);"></span>Previous period</span>
+            </div>
+          </div>
+          <div class="chart">
+            <svg class="chart-line" viewBox="0 0 800 220" preserveAspectRatio="none">
+              <!-- Grid lines -->
+              <line x1="0" y1="44" x2="800" y2="44" stroke="#EAEAE3" stroke-dasharray="3 4"/>
+              <line x1="0" y1="88" x2="800" y2="88" stroke="#EAEAE3" stroke-dasharray="3 4"/>
+              <line x1="0" y1="132" x2="800" y2="132" stroke="#EAEAE3" stroke-dasharray="3 4"/>
+              <line x1="0" y1="176" x2="800" y2="176" stroke="#EAEAE3" stroke-dasharray="3 4"/>
+              <line x1="0" y1="220" x2="800" y2="220" stroke="#EAEAE3"/>
+
+              <!-- Previous period (faded) -->
+              <path d="M0 150 C 40 145, 80 152, 120 148 S 200 140, 240 145 S 320 138, 360 142 S 440 130, 480 138 S 560 128, 600 132 S 680 120, 720 118 L 800 122"
+                fill="none" stroke="#D8D8D0" stroke-width="2"/>
+
+              <!-- Current period -->
+              <path d="M0 140 C 40 135, 80 138, 120 130 S 200 118, 240 122 S 320 105, 360 110 S 440 90, 480 96 S 560 78, 600 82 S 680 60, 720 54 L 800 42"
+                fill="none" stroke="#E85D3A" stroke-width="2.5"/>
+              <path d="M0 140 C 40 135, 80 138, 120 130 S 200 118, 240 122 S 320 105, 360 110 S 440 90, 480 96 S 560 78, 600 82 S 680 60, 720 54 L 800 42 L 800 220 L 0 220 Z"
+                fill="url(#fadeOrange)" />
+              <defs>
+                <linearGradient id="fadeOrange" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#E85D3A" stop-opacity="0.20"/>
+                  <stop offset="100%" stop-color="#E85D3A" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Hover marker -->
+              <line x1="600" y1="40" x2="600" y2="220" stroke="#1A1A1A" stroke-dasharray="3 3" stroke-width="1" opacity="0.4"/>
+              <circle cx="600" cy="82" r="5" fill="#E85D3A" stroke="#fff" stroke-width="2"/>
+            </svg>
+            <div style="display:flex; justify-content: space-between; padding: 8px 0 0; font-size: 11px; color: var(--color-text-tertiary);">
+              <span>Apr 17</span><span>Apr 24</span><span>May 1</span><span>May 8</span><span>May 15</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid: Top dishes + Rating trend -->
+        <div class="grid grid--2 mb-24">
+          <div class="card">
+            <h2 class="h2 mb-8">Top-viewed dishes</h2>
+            <p class="tiny mb-16">Last 30 days · profile taps per dish</p>
+            <div class="chart-bars">
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 92%;" data-val="2.8k"></div><div class="chart-bar__label">Truffle<br/>Tagliatelle</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 74%;" data-val="2.3k"></div><div class="chart-bar__label">Osso<br/>Buco</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 58%;" data-val="1.8k"></div><div class="chart-bar__label">Margherita</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 50%;" data-val="1.5k"></div><div class="chart-bar__label">Carbonara</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 38%;" data-val="1.2k"></div><div class="chart-bar__label">Lobster<br/>Ravioli</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 28%;" data-val="876"></div><div class="chart-bar__label">Tiramisu</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 22%;" data-val="687"></div><div class="chart-bar__label">Burrata</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="h2 mb-8">Rating trend</h2>
+            <p class="tiny mb-16">Weekly average · last 12 weeks</p>
+            <div class="chart">
+              <svg viewBox="0 0 600 200" preserveAspectRatio="none" style="width: 100%; height: 220px; display: block;">
+                <line x1="0" y1="50" x2="600" y2="50" stroke="#EAEAE3" stroke-dasharray="3 4"/>
+                <line x1="0" y1="100" x2="600" y2="100" stroke="#EAEAE3" stroke-dasharray="3 4"/>
+                <line x1="0" y1="150" x2="600" y2="150" stroke="#EAEAE3" stroke-dasharray="3 4"/>
+                <line x1="0" y1="200" x2="600" y2="200" stroke="#EAEAE3"/>
+                <text x="2" y="48" font-size="10" fill="#8B8B8B">5.0</text>
+                <text x="2" y="98" font-size="10" fill="#8B8B8B">4.5</text>
+                <text x="2" y="148" font-size="10" fill="#8B8B8B">4.0</text>
+                <text x="2" y="195" font-size="10" fill="#8B8B8B">3.5</text>
+
+                <path d="M30 110 L 80 95 L 130 100 L 180 90 L 230 85 L 280 78 L 330 80 L 380 72 L 430 70 L 480 65 L 530 60 L 580 56"
+                  fill="none" stroke="#E85D3A" stroke-width="2.5"/>
+                <circle cx="30" cy="110" r="3" fill="#E85D3A"/>
+                <circle cx="80" cy="95" r="3" fill="#E85D3A"/>
+                <circle cx="130" cy="100" r="3" fill="#E85D3A"/>
+                <circle cx="180" cy="90" r="3" fill="#E85D3A"/>
+                <circle cx="230" cy="85" r="3" fill="#E85D3A"/>
+                <circle cx="280" cy="78" r="3" fill="#E85D3A"/>
+                <circle cx="330" cy="80" r="3" fill="#E85D3A"/>
+                <circle cx="380" cy="72" r="3" fill="#E85D3A"/>
+                <circle cx="430" cy="70" r="3" fill="#E85D3A"/>
+                <circle cx="480" cy="65" r="3" fill="#E85D3A"/>
+                <circle cx="530" cy="60" r="3" fill="#E85D3A"/>
+                <circle cx="580" cy="56" r="4" fill="#E85D3A" stroke="#fff" stroke-width="2"/>
+              </svg>
+            </div>
+            <p class="tiny mt-12">Average rating up <strong style="color: var(--color-success);">+0.4 points</strong> over the last 12 weeks — driven by responses to customer feedback and the new pasta photos.</p>
+          </div>
+        </div>
+
+        <!-- Photo activity + Peak times -->
+        <div class="grid grid--2 mb-24">
+          <div class="card">
+            <h2 class="h2 mb-8">Photo upload activity</h2>
+            <p class="tiny mb-16">By source, last 30 days</p>
+            <div style="display:flex; align-items: center; gap: 32px;">
+              <!-- Donut -->
+              <div style="position: relative; width: 160px; height: 160px;">
+                <svg viewBox="0 0 100 100" style="transform: rotate(-90deg);">
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#F4F2EE" stroke-width="14"/>
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#E85D3A" stroke-width="14" stroke-dasharray="190 240" stroke-dashoffset="0"/>
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#F5A623" stroke-width="14" stroke-dasharray="50 240" stroke-dashoffset="-190"/>
+                </svg>
+                <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                  <span style="font-size: 22px; font-weight: 700;">156</span>
+                  <span class="tiny">photos</span>
+                </div>
+              </div>
+              <div style="flex:1;">
+                <div style="display:flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--color-border-soft);">
+                  <span style="width: 10px; height: 10px; border-radius: 3px; background: #E85D3A;"></span>
+                  <span style="flex:1; font-size: 13.5px;">Customer uploads</span>
+                  <strong>123</strong><span class="muted" style="font-size: 12px; margin-left:6px;">79%</span>
+                </div>
+                <div style="display:flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--color-border-soft);">
+                  <span style="width: 10px; height: 10px; border-radius: 3px; background: #F5A623;"></span>
+                  <span style="flex:1; font-size: 13.5px;">Restaurant uploads</span>
+                  <strong>33</strong><span class="muted" style="font-size: 12px; margin-left:6px;">21%</span>
+                </div>
+                <div style="display:flex; align-items: center; gap: 8px; padding: 8px 0;">
+                  <span style="width: 10px; height: 10px; border-radius: 3px; background: #F4F2EE; border: 1px solid var(--color-border-strong);"></span>
+                  <span style="flex:1; font-size: 13.5px;">Average per dish</span>
+                  <strong>5.6</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="h2 mb-8">Peak engagement times</h2>
+            <p class="tiny mb-16">Profile views by hour, last 30 days</p>
+            <div class="chart-bars" style="height: 160px; gap: 4px;">
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 10%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">8a</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 14%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">9</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 22%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">10</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 35%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">11</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 70%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">12p</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 62%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">1</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 30%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">2</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 26%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">3</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 38%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">4</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 58%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">5</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 86%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">6</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 95%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">7</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 80%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">8</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 48%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">9</div></div>
+              <div class="chart-bar"><div class="chart-bar__value" style="height: 22%;" data-val=""></div><div class="chart-bar__label" style="font-size: 10px;">10p</div></div>
+            </div>
+            <div class="note note--success mt-16">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <div><strong>Peak: 6-8pm.</strong> Consider posting fresh photos at 5pm to catch peak browsing.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demographics + Cohort -->
+        <div class="card">
+          <h2 class="h2 mb-8">Where your customers come from</h2>
+          <p class="tiny mb-16">Neighborhoods of users who viewed your profile in the last 30 days</p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+            <div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 100px; font-size: 13px; font-weight: 600;">Mission</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 86%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">38%</span></div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 100px; font-size: 13px; font-weight: 600;">SoMa</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 50%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">22%</span></div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 100px; font-size: 13px; font-weight: 600;">Noe Valley</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 30%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">13%</span></div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 100px; font-size: 13px; font-weight: 600;">Bernal Heights</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 22%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">10%</span></div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 100px; font-size: 13px; font-weight: 600;">Castro</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 16%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">7%</span></div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 100px; font-size: 13px; font-weight: 600;">Other</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 24%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">10%</span></div>
+            </div>
+
+            <div>
+              <h3 class="h3 mb-12">New vs. returning</h3>
+              <p class="tiny mb-16">Customers who viewed your profile</p>
+              <div style="display: flex; height: 38px; border-radius: var(--radius-md); overflow: hidden;">
+                <div style="width: 64%; background: var(--color-primary); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 600;">New · 64%</div>
+                <div style="width: 36%; background: #F5A623; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 600;">Returning · 36%</div>
+              </div>
+
+              <h3 class="h3 mb-12 mt-24">Discovery source</h3>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 110px; font-size: 13px; font-weight: 600;">Near You feed</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 64%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">42%</span></div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 110px; font-size: 13px; font-weight: 600;">Search</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 44%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">28%</span></div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 110px; font-size: 13px; font-weight: 600;">Top Rated</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 28%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">18%</span></div>
+              <div style="display:flex; align-items: center; gap: 10px; padding: 8px 0;"><span style="width: 110px; font-size: 13px; font-weight: 600;">QR scan</span><div style="flex:1; height: 8px; background: var(--color-surface-alt); border-radius: 4px;"><div style="width: 18%; height: 100%; background: var(--color-primary); border-radius: 4px;"></div></div><span class="muted" style="font-size: 12px; width: 48px; text-align: right;">12%</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>
