@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Bulk upload menu — SeeIt for Restaurants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="sidebar-backdrop" data-sidebar-backdrop></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <button class="sidebar__close" data-sidebar-close><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <a href="dashboard.html" class="sidebar__logo"><svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="#E85D3A"/><path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="4.5" fill="#fff"/></svg><span class="sidebar__logo-text">See<em>It</em></span><span class="sidebar__logo-pill">BIZ</span></a>
+      <div class="loc-switcher">
+        <button class="loc-switcher__btn" data-loc-toggle><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-switcher__body"><p class="loc-switcher__label">Current location</p><p class="loc-switcher__name">Bella's — Williamsburg</p></div><svg class="loc-switcher__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>
+        <div class="loc-dropdown" data-loc-dropdown>
+          <p class="loc-dropdown__head">Your 3 locations</p>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — Williamsburg</p><p class="loc-dropdown__item-sub">234 Bedford Ave</p></div><svg class="loc-dropdown__check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — West Village</p><p class="loc-dropdown__item-sub">87 Christopher St</p></div></button>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — Park Slope</p><p class="loc-dropdown__item-sub">412 5th Ave</p></div></button>
+          <div class="loc-dropdown__divider"></div>
+          <a href="locations.html" class="loc-dropdown__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Manage all locations</a>
+          <a href="location-edit.html" class="loc-dropdown__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add new location</a>
+        </div>
+      </div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a href="locations.html" class="sidebar__nav-item" data-nav="locations.html,location-edit.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>Locations<span class="sidebar__nav-item__badge">3</span></a>
+        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html,menu-bulk-upload.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/></svg>Menu<span class="sidebar__nav-item__badge">42</span></a>
+        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>Photos<span class="sidebar__nav-item__badge">847</span></a>
+        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Reviews<span class="sidebar__nav-item__badge">5</span></a>
+        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Insights</a>
+        <div class="sidebar__section">Account</div>
+        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
+        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Billing</a>
+      </nav>
+      <div class="sidebar__footer">
+        <div class="sidebar__user">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/>
+          <div style="flex:1; min-width:0;"><p class="sidebar__user-name">Bella Romano</p><p class="sidebar__user-sub">Owner · 3 locations</p></div>
+          <a href="signin.html" style="color: var(--color-text-tertiary);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__hamburger" data-sidebar-toggle><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div class="topbar__crumb"><a href="dashboard.html">Dashboard</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><a href="menu.html">Menu</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><strong>Bulk upload</strong></div>
+        <div class="topbar__actions">
+          <a href="menu.html" class="btn btn--ghost btn--sm">Cancel</a>
+        </div>
+      </header>
+
+      <div class="page" style="max-width: 1000px;">
+        <div class="page__head">
+          <div>
+            <h1 class="page__title">Bulk upload menu</h1>
+            <p class="page__sub">Import dozens of dishes from a CSV in one go.</p>
+          </div>
+        </div>
+
+        <!-- Wizard for bulk upload -->
+        <div class="wizard__steps mb-24" style="margin-bottom: 24px;">
+          <div class="wizard__step wizard__step--done"><span class="wizard__step-num"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Get template</div>
+          <div class="wizard__connector wizard__connector--done"></div>
+          <div class="wizard__step wizard__step--done"><span class="wizard__step-num"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Upload CSV</div>
+          <div class="wizard__connector wizard__connector--done"></div>
+          <div class="wizard__step wizard__step--active"><span class="wizard__step-num">3</span> Preview &amp; fix</div>
+          <div class="wizard__connector"></div>
+          <div class="wizard__step"><span class="wizard__step-num">4</span> Done</div>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-8">1. Download the template</h2>
+          <p class="muted mb-16">Use our CSV template so we know which column is which. Columns: <code class="mono" style="background:var(--color-surface-alt); padding:2px 6px; border-radius:4px;">Category, Item Name, Description, Price, Dietary Tags, Photo URL</code></p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <button class="btn btn--secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/><path d="M21 16V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/></svg>
+              Download CSV template
+            </button>
+            <button class="btn btn--ghost btn--sm">View example file</button>
+          </div>
+
+          <div class="note mt-16">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg>
+            <div>Dietary tags should be comma-separated inside the cell, like <code class="mono">Vegan, Gluten-Free</code>. Photo URLs are optional — you can add photos after import.</div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-8">2. Upload your filled CSV</h2>
+          <p class="muted mb-16">Max 500 items per upload, max 2 MB file.</p>
+          <div class="uploader uploader--lg">
+            <div class="uploader__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <p style="margin: 0 0 4px;"><strong>Drag your CSV here</strong> or click to browse</p>
+            <p class="tiny" style="margin: 0;">Accepts .csv, max 2 MB</p>
+          </div>
+
+          <div style="margin-top: 16px; padding: 14px; background: var(--color-success-soft); border: 1px solid #C8E6D2; border-radius: var(--radius-md); display: flex; align-items: center; gap: 12px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style="flex:1;">
+              <p style="font-weight: 600; margin: 0; color: var(--color-success);">bellas-menu-may-2026.csv</p>
+              <p class="tiny" style="margin: 2px 0 0;">28 rows · 12 KB · uploaded just now</p>
+            </div>
+            <button class="btn btn--ghost btn--sm">Replace file</button>
+          </div>
+
+          <div class="field mt-16">
+            <label class="field__label">Apply to which locations?</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span>Williamsburg</label>
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span>West Village</label>
+              <label class="check"><input type="checkbox" checked/><span class="check__box"></span>Park Slope</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="card mb-24">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h2 class="h2">3. Preview &amp; fix</h2>
+              <p class="muted" style="margin: 4px 0 0; font-size: 13.5px;">28 rows found · <strong style="color: var(--color-success);">25 valid</strong> · <strong style="color: var(--color-danger);">3 with errors</strong></p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn--secondary btn--sm">Re-upload file</button>
+            </div>
+          </div>
+
+          <div class="note note--warn mb-16">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div><strong>3 errors found.</strong> Fix them in your CSV and re-upload, or skip them and import only the valid rows.</div>
+          </div>
+
+          <div class="card card--flush" style="overflow: auto;">
+            <table class="csv-table">
+              <thead>
+                <tr>
+                  <th class="csv-row-num">#</th>
+                  <th>Category</th>
+                  <th>Item Name</th>
+                  <th>Description</th>
+                  <th>Price</th>
+                  <th>Dietary Tags</th>
+                  <th>Photo URL</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="csv-row-num">1</td><td>Antipasti</td><td>Burrata Caprese</td><td>Heirloom tomato, basil, sea salt</td><td>16</td><td>Vegetarian</td><td>images/burrata.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">2</td><td>Antipasti</td><td>Bruschetta Pomodoro</td><td>Toasted ciabatta, tomato, garlic</td><td>12</td><td>Vegan</td><td>images/brusch.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">3</td><td>Antipasti</td><td>Calamari Fritti</td><td>Lightly battered, lemon aioli</td><td>14</td><td></td><td>images/calamari.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">4</td><td>Pasta</td><td>Truffle Tagliatelle</td><td>House tagliatelle, black truffle, parm</td><td>26</td><td></td><td>images/truffle.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">5</td><td>Pasta</td><td>Carbonara</td><td>Guanciale, egg yolk, pecorino</td><td>22</td><td></td><td>images/carb.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">6</td><td>Pasta</td><td>Cacio e Pepe</td><td>Tonnarelli, pecorino, black pepper</td><td>20</td><td>Vegetarian</td><td>images/cacio.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">7</td><td>Pasta</td><td>Lobster Ravioli</td><td>House ravioli, lobster, saffron cream</td><td>32</td><td></td><td>images/lobster.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr class="has-error"><td class="csv-row-num">8</td><td>Pasta</td><td>Pappardelle al Cinghiale</td><td>Wild boar ragu, hand-cut ribbons</td><td></td><td></td><td>images/pap.jpg</td><td><span class="badge badge--danger badge--dot">Missing price</span></td></tr>
+                <tr><td class="csv-row-num">9</td><td>Pizza</td><td>Margherita</td><td>San Marzano, fior di latte, basil</td><td>18</td><td>Vegetarian</td><td>images/marg.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">10</td><td>Pizza</td><td>Diavola</td><td>Spicy salami, chili, mozzarella</td><td>21</td><td>Spicy</td><td>images/diavola.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">11</td><td>Pizza</td><td>Quattro Formaggi</td><td>4 cheeses, honey drizzle</td><td>22</td><td>Vegetarian</td><td>images/4f.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr class="has-error"><td class="csv-row-num">12</td><td>Pizza</td><td>Funghi Tartufo</td><td>Wild mushrooms, truffle oil, fontina</td><td>NaN</td><td>Vegetarian</td><td>images/funghi.jpg</td><td><span class="badge badge--danger badge--dot">Invalid price</span></td></tr>
+                <tr><td class="csv-row-num">13</td><td>Secondi</td><td>Osso Buco</td><td>Braised veal shank, saffron risotto</td><td>38</td><td></td><td>images/osso.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">14</td><td>Secondi</td><td>Branzino al Sale</td><td>Whole salt-baked branzino</td><td>34</td><td>Gluten-Free</td><td>images/branzino.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">15</td><td>Secondi</td><td>Pollo Marsala</td><td>Chicken breast, marsala mushroom sauce</td><td>28</td><td></td><td>images/marsala.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr class="has-error"><td class="csv-row-num">16</td><td>Beverages</td><td>Limoncello Spritz</td><td>Limoncello, prosecco, soda</td><td>13</td><td></td><td>images/spritz.jpg</td><td><span class="badge badge--danger badge--dot">Unknown category</span></td></tr>
+                <tr><td class="csv-row-num">17</td><td>Dolci</td><td>Tiramisu</td><td>Mascarpone, espresso, ladyfingers</td><td>10</td><td>Vegetarian</td><td>images/tiramisu.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">18</td><td>Dolci</td><td>Panna Cotta</td><td>Vanilla bean, berry compote</td><td>9</td><td>Gluten-Free</td><td>images/panna.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+                <tr><td class="csv-row-num">19</td><td>Dolci</td><td>Cannoli (2)</td><td>Ricotta cream, chocolate chips</td><td>8</td><td>Vegetarian</td><td>images/cannoli.jpg</td><td><span class="badge badge--success badge--dot">OK</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+            <button class="btn btn--secondary">Fix &amp; re-upload</button>
+            <a href="menu.html" class="btn btn--primary">Import 25 valid items, skip errors</a>
+          </div>
+        </div>
+
+        <!-- STEP 4 success preview (collapsed sample) -->
+        <details class="card" style="cursor: pointer;">
+          <summary class="h2" style="cursor: pointer; user-select: none;">Preview: success state (after import)</summary>
+          <div class="empty">
+            <div class="empty__icon" style="background: var(--color-success-soft); color: var(--color-success);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h2 class="empty__title">Imported 25 menu items 🎉</h2>
+            <p class="empty__desc">Items applied to all 3 locations. 3 rows were skipped due to errors — fix them and re-upload any time.</p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+              <a href="menu.html" class="btn btn--primary">View my menu</a>
+              <button class="btn btn--secondary">Upload another</button>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

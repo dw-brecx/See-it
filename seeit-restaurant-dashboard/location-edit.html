@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Edit location — SeeIt for Restaurants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="sidebar-backdrop" data-sidebar-backdrop></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <button class="sidebar__close" data-sidebar-close><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <a href="dashboard.html" class="sidebar__logo"><svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="#E85D3A"/><path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="4.5" fill="#fff"/></svg><span class="sidebar__logo-text">See<em>It</em></span><span class="sidebar__logo-pill">BIZ</span></a>
+      <div class="loc-switcher">
+        <button class="loc-switcher__btn" data-loc-toggle><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-switcher__body"><p class="loc-switcher__label">Editing</p><p class="loc-switcher__name">Bella's — Williamsburg</p></div><svg class="loc-switcher__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>
+        <div class="loc-dropdown" data-loc-dropdown>
+          <p class="loc-dropdown__head">Your 3 locations</p>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — Williamsburg</p><p class="loc-dropdown__item-sub">234 Bedford Ave · Brooklyn</p></div><svg class="loc-dropdown__check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — West Village</p><p class="loc-dropdown__item-sub">87 Christopher St</p></div></button>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — Park Slope</p><p class="loc-dropdown__item-sub">412 5th Ave</p></div></button>
+          <div class="loc-dropdown__divider"></div>
+          <a href="locations.html" class="loc-dropdown__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Manage all locations</a>
+          <a href="location-edit.html" class="loc-dropdown__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add new location</a>
+        </div>
+      </div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a href="locations.html" class="sidebar__nav-item" data-nav="locations.html,location-edit.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>Locations<span class="sidebar__nav-item__badge">3</span></a>
+        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html,menu-bulk-upload.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/></svg>Menu<span class="sidebar__nav-item__badge">42</span></a>
+        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>Photos<span class="sidebar__nav-item__badge">847</span></a>
+        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Reviews<span class="sidebar__nav-item__badge">5</span></a>
+        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Insights</a>
+        <div class="sidebar__section">Account</div>
+        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
+        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Billing</a>
+      </nav>
+      <div class="sidebar__footer">
+        <div class="sidebar__user">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/>
+          <div style="flex:1; min-width:0;"><p class="sidebar__user-name">Bella Romano</p><p class="sidebar__user-sub">Owner · 3 locations</p></div>
+          <a href="signin.html" style="color: var(--color-text-tertiary);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__hamburger" data-sidebar-toggle><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div class="topbar__crumb"><a href="dashboard.html">Dashboard</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><a href="locations.html">Locations</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><strong>Williamsburg</strong></div>
+        <div class="topbar__actions">
+          <a href="locations.html" class="btn btn--ghost btn--sm">Cancel</a>
+          <a href="locations.html" class="btn btn--primary btn--sm">Save</a>
+        </div>
+      </header>
+
+      <div class="page" style="max-width: 900px;">
+        <div class="page__head">
+          <div>
+            <h1 class="page__title">Bella's — Williamsburg</h1>
+            <p class="page__sub">Edit location-specific info. Brand info (logo, cuisine) lives in <a href="settings-profile.html" style="color: var(--color-primary); font-weight: 600;">Settings</a>.</p>
+          </div>
+          <span class="badge badge--success badge--dot">Active</span>
+        </div>
+
+        <!-- Basics -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-16">Location basics</h2>
+          <div class="field-row">
+            <div class="field">
+              <label class="field__label">Location label</label>
+              <input class="input" type="text" value="Williamsburg" />
+              <p class="field__hint">Displayed to customers as "Bella's Italian Kitchen — Williamsburg".</p>
+            </div>
+            <div class="field">
+              <label class="field__label">Phone (this location)</label>
+              <input class="input" type="tel" value="(718) 555-0182" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label">Street address</label>
+            <input class="input" type="text" value="234 Bedford Avenue" />
+          </div>
+          <div class="field-row--3" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px;">
+            <div class="field">
+              <label class="field__label">City</label>
+              <input class="input" type="text" value="Brooklyn" />
+            </div>
+            <div class="field">
+              <label class="field__label">State</label>
+              <input class="input" type="text" value="NY" />
+            </div>
+            <div class="field">
+              <label class="field__label">ZIP</label>
+              <input class="input" type="text" value="11211" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label">Location-specific description (optional)</label>
+            <textarea class="textarea" placeholder="Anything unique to this location? (e.g. outdoor garden, brunch only on weekends)">Bedford Ave flagship with our original wood-fired pizza oven and a backyard garden seating 30. Weekend brunch starts at 11am.</textarea>
+            <p class="field__hint">Falls back to the brand description if left blank.</p>
+          </div>
+        </div>
+
+        <!-- Cover photo -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-16">Cover photo</h2>
+          <div style="position: relative; border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 16/7; background: var(--color-surface-alt);">
+            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80&auto=format&fit=crop" alt="" style="width:100%; height:100%; object-fit:cover;"/>
+            <div style="position:absolute; bottom: 12px; right: 12px; display:flex; gap: 8px;"><button class="btn btn--secondary btn--sm">Replace</button></div>
+          </div>
+        </div>
+
+        <!-- Hours -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-8">Hours of operation</h2>
+          <p class="muted mb-16">Toggle off for closed days. Customers see "Closed today" when applicable.</p>
+          <div>
+            <div class="hours-row"><span class="hours-row__day">Monday</span><span class="hours-row__closed">Closed all day</span><span></span><label class="switch"><input type="checkbox"/><span class="switch__slider"></span></label></div>
+            <div class="hours-row"><span class="hours-row__day">Tuesday</span><input class="input" type="time" value="17:00"/><input class="input" type="time" value="22:00"/><label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label></div>
+            <div class="hours-row"><span class="hours-row__day">Wednesday</span><input class="input" type="time" value="17:00"/><input class="input" type="time" value="22:00"/><label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label></div>
+            <div class="hours-row"><span class="hours-row__day">Thursday</span><input class="input" type="time" value="17:00"/><input class="input" type="time" value="22:00"/><label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label></div>
+            <div class="hours-row"><span class="hours-row__day">Friday</span><input class="input" type="time" value="17:00"/><input class="input" type="time" value="23:00"/><label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label></div>
+            <div class="hours-row"><span class="hours-row__day">Saturday</span><input class="input" type="time" value="11:30"/><input class="input" type="time" value="23:00"/><label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label></div>
+            <div class="hours-row"><span class="hours-row__day">Sunday</span><input class="input" type="time" value="11:30"/><input class="input" type="time" value="21:00"/><label class="switch"><input type="checkbox" checked/><span class="switch__slider"></span></label></div>
+          </div>
+        </div>
+
+        <!-- Special hours -->
+        <div class="card mb-24">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div><h2 class="h2">Special hours</h2><p class="muted" style="margin: 4px 0 0; font-size: 13.5px;">Holidays, private events, special closures.</p></div>
+            <button class="btn btn--secondary btn--sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add date</button>
+          </div>
+
+          <div class="table-wrap mt-16">
+            <table class="table">
+              <thead><tr><th>Date</th><th>Description</th><th>Hours</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>May 26</strong> · Memorial Day</td>
+                  <td>Holiday — extended brunch</td>
+                  <td>10:00 AM – 4:00 PM</td>
+                  <td style="text-align: right;"><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg></button><button class="table__action table__action--danger"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><strong>Jul 4</strong> · Independence Day</td>
+                  <td>Closed for holiday</td>
+                  <td><span class="badge badge--warning badge--dot">Closed</span></td>
+                  <td style="text-align: right;"><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg></button><button class="table__action table__action--danger"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><strong>Jul 14–16</strong> · Private booking</td>
+                  <td>Closed for private event</td>
+                  <td><span class="badge badge--warning badge--dot">Closed</span></td>
+                  <td style="text-align: right;"><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg></button><button class="table__action table__action--danger"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg></button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Temporary closure -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-16">Temporary closure</h2>
+          <div style="display:flex; align-items: center; gap: 14px; padding: 14px; background: var(--color-surface-alt); border-radius: var(--radius-md);">
+            <label class="switch"><input type="checkbox"/><span class="switch__slider"></span></label>
+            <div style="flex:1;">
+              <p style="font-weight: 600; margin: 0;">Mark this location as temporarily closed</p>
+              <p class="tiny" style="margin: 2px 0 0;">Customers see a "Temporarily closed" banner. Menu, reviews, and history all preserved.</p>
+            </div>
+          </div>
+          <div class="field mt-16">
+            <label class="field__label">Expected reopening date (optional)</label>
+            <input class="input" type="date" style="max-width: 240px;" />
+            <p class="field__hint">Shown to customers as "Reopens Jul 8".</p>
+          </div>
+        </div>
+
+        <!-- Style/setting tags -->
+        <div class="card mb-24">
+          <h2 class="h2 mb-8">Style &amp; setting</h2>
+          <p class="muted mb-16">Helps customers know what to expect.</p>
+          <div class="tag-grid">
+            <button class="tag-chip is-active" data-tag-toggle>Sit-down</button>
+            <button class="tag-chip" data-tag-toggle>Counter service</button>
+            <button class="tag-chip is-active" data-tag-toggle>Takeout</button>
+            <button class="tag-chip is-active" data-tag-toggle>Delivery</button>
+            <button class="tag-chip" data-tag-toggle>Drive-thru</button>
+            <button class="tag-chip is-active" data-tag-toggle>Outdoor seating</button>
+            <button class="tag-chip is-active" data-tag-toggle>Bar seating</button>
+            <button class="tag-chip is-active" data-tag-toggle>Family-friendly</button>
+            <button class="tag-chip" data-tag-toggle>Romantic</button>
+            <button class="tag-chip is-active" data-tag-toggle>Casual</button>
+            <button class="tag-chip" data-tag-toggle>Upscale</button>
+            <button class="tag-chip" data-tag-toggle>Late night</button>
+          </div>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="card" style="border-color: #F0CFCA;">
+          <h2 class="h2 mb-8" style="color: var(--color-danger);">Remove location</h2>
+          <p class="muted mb-16">Removing a location stops billing for it. The listing is archived for 30 days then permanently deleted along with all its menu items, photos, and reviews.</p>
+          <button class="btn btn--danger">Remove this location</button>
+        </div>
+
+        <!-- Sticky save bar (desktop) -->
+        <div style="position: sticky; bottom: 0; background: var(--color-bg); padding: 16px 0 0; border-top: 1px solid var(--color-border); display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; flex-wrap: wrap;">
+          <a href="locations.html" class="btn btn--ghost">Cancel</a>
+          <a href="locations.html" class="btn btn--primary">Save location</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

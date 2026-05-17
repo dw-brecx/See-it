@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Billing — SeeIt for Restaurants</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,43 +10,48 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <div class="sidebar-backdrop" data-sidebar-backdrop></div>
   <div class="app-shell">
     <aside class="sidebar">
-      <a href="dashboard.html" class="sidebar__logo">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="12" fill="#E85D3A"/><path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="4.5" fill="#fff"/></svg>
-        <span class="sidebar__logo-text">See<em>It</em></span><span class="sidebar__logo-pill">BIZ</span>
-      </a>
-      <div class="sidebar__restaurant">
-        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt="" />
-        <div class="sidebar__restaurant-body"><p class="sidebar__restaurant-name">Bella's Italian Kitchen</p><p class="sidebar__restaurant-sub">432 Valencia St · SF</p></div>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <button class="sidebar__close" data-sidebar-close><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <a href="dashboard.html" class="sidebar__logo"><svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="#E85D3A"/><path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="4.5" fill="#fff"/></svg><span class="sidebar__logo-text">See<em>It</em></span><span class="sidebar__logo-pill">BIZ</span></a>
+      <div class="loc-switcher">
+        <button class="loc-switcher__btn" data-loc-toggle><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-switcher__body"><p class="loc-switcher__label">Current location</p><p class="loc-switcher__name">Bella's — Williamsburg</p></div><svg class="loc-switcher__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>
+        <div class="loc-dropdown" data-loc-dropdown>
+          <p class="loc-dropdown__head">Your 3 locations</p>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — Williamsburg</p><p class="loc-dropdown__item-sub">234 Bedford Ave</p></div><svg class="loc-dropdown__check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — West Village</p><p class="loc-dropdown__item-sub">87 Christopher St</p></div></button>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — Park Slope</p><p class="loc-dropdown__item-sub">412 5th Ave</p></div></button>
+          <div class="loc-dropdown__divider"></div>
+          <a href="locations.html" class="loc-dropdown__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Manage all locations</a>
+          <a href="location-edit.html" class="loc-dropdown__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add new location</a>
+        </div>
       </div>
       <nav class="sidebar__nav">
-        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
-        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>Menu<span class="sidebar__nav-item__badge">28</span></a>
-        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>Photos<span class="sidebar__nav-item__badge">412</span></a>
-        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Reviews<span class="sidebar__nav-item__badge">3</span></a>
-        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Insights</a>
+        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a href="locations.html" class="sidebar__nav-item" data-nav="locations.html,location-edit.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>Locations<span class="sidebar__nav-item__badge">3</span></a>
+        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html,menu-bulk-upload.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/></svg>Menu<span class="sidebar__nav-item__badge">42</span></a>
+        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>Photos<span class="sidebar__nav-item__badge">847</span></a>
+        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Reviews<span class="sidebar__nav-item__badge">5</span></a>
+        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Insights</a>
         <div class="sidebar__section">Account</div>
-        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
-        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Billing</a>
+        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
+        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Billing</a>
       </nav>
       <div class="sidebar__footer">
         <div class="sidebar__user">
-          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt="" />
-          <div style="flex:1; min-width:0;"><p class="sidebar__user-name">Bella Romano</p><p class="sidebar__user-sub">Owner</p></div>
-          <a href="signin.html" style="color: var(--color-text-tertiary);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/>
+          <div style="flex:1; min-width:0;"><p class="sidebar__user-name">Bella Romano</p><p class="sidebar__user-sub">Owner · 3 locations</p></div>
+          <a href="signin.html" style="color: var(--color-text-tertiary);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
         </div>
       </div>
     </aside>
 
     <div class="main">
       <header class="topbar">
-        <div class="topbar__crumb"><a href="dashboard.html">Dashboard</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg><strong>Billing</strong></div>
-        <div class="topbar__actions">
-          <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="icon-btn__dot"></span></button>
-          <img class="topbar__avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/>
-        </div>
+        <button class="topbar__hamburger" data-sidebar-toggle><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div class="topbar__crumb"><a href="dashboard.html">Dashboard</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><strong>Billing</strong></div>
+        <div class="topbar__actions"><img class="topbar__avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/></div>
       </header>
 
       <div class="page" style="max-width: 1100px;">
@@ -61,42 +66,81 @@
 
           <div>
             <!-- Current plan -->
-            <div class="card mb-24" style="border: 2px solid var(--color-primary); position: relative;">
-              <div style="display: flex; align-items: flex-start; gap: 24px;">
-                <div style="flex:1;">
+            <div class="card mb-24" style="border: 2px solid var(--color-primary);">
+              <div style="display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap;">
+                <div style="flex:1; min-width: 200px;">
                   <p class="eyebrow">Current plan</p>
                   <h2 class="h1" style="margin: 2px 0 4px;">SeeIt Pro</h2>
-                  <p class="muted">Everything growing restaurants need to win on SeeIt.</p>
-                  <div style="display: flex; gap: 24px; margin-top: 18px; padding: 14px 0 0; border-top: 1px solid var(--color-border-soft);">
+                  <p class="muted">Per-location billing. Cancel any time.</p>
+                  <div style="display: flex; gap: 24px; margin-top: 18px; padding: 14px 0 0; border-top: 1px solid var(--color-border-soft); flex-wrap: wrap;">
                     <div>
-                      <p class="tiny">Monthly cost</p>
-                      <p style="font-size: 22px; font-weight: 700; margin: 2px 0 0;">$50.00</p>
+                      <p class="tiny">Total monthly</p>
+                      <p style="font-size: 24px; font-weight: 700; margin: 2px 0 0;">$150.00</p>
+                      <p class="tiny" style="margin: 2px 0 0;">3 locations × $50</p>
                     </div>
                     <div>
                       <p class="tiny">Next billing date</p>
-                      <p style="font-size: 22px; font-weight: 700; margin: 2px 0 0;">Jun 17, 2026</p>
+                      <p style="font-size: 24px; font-weight: 700; margin: 2px 0 0;">Jun 17, 2026</p>
                     </div>
                     <div>
-                      <p class="tiny">Team seats</p>
-                      <p style="font-size: 22px; font-weight: 700; margin: 2px 0 0;">4 / 10</p>
+                      <p class="tiny">Team seats used</p>
+                      <p style="font-size: 24px; font-weight: 700; margin: 2px 0 0;">6 / 30</p>
+                      <p class="tiny" style="margin: 2px 0 0;">10 per location</p>
                     </div>
                   </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; align-items: stretch;">
-                  <a href="plans.html" class="btn btn--primary">Upgrade plan</a>
-                  <a href="plans.html" class="btn btn--ghost btn--sm">Compare plans</a>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <a href="plans.html" class="btn btn--primary">Change plan</a>
+                  <a href="plans.html" class="btn btn--ghost btn--sm">Compare</a>
                 </div>
+              </div>
+            </div>
+
+            <!-- Per-location breakdown -->
+            <div class="card card--flush mb-24">
+              <div class="card__head">
+                <h2 class="card__head-title">Per-location billing breakdown</h2>
+                <span class="muted" style="font-size: 13px;">Next bill: Jun 17, 2026</span>
+              </div>
+              <div class="table-wrap">
+                <table class="table" style="min-width: 600px;">
+                  <thead><tr><th>Location</th><th>Plan</th><th>Status</th><th style="text-align: right;">Monthly</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td><div class="table__media"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div><p class="table__media-title">Bella's — Williamsburg</p><p class="table__media-sub">234 Bedford Ave · since Mar 2023</p></div></div></td>
+                      <td><span class="badge badge--accent">Pro</span></td>
+                      <td><span class="badge badge--success badge--dot">Active</span></td>
+                      <td style="text-align: right;"><strong>$50.00</strong></td>
+                    </tr>
+                    <tr>
+                      <td><div class="table__media"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=160&q=80&auto=format&fit=crop" alt=""/><div><p class="table__media-title">Bella's — West Village</p><p class="table__media-sub">87 Christopher St · since Sep 2024</p></div></div></td>
+                      <td><span class="badge badge--accent">Pro</span></td>
+                      <td><span class="badge badge--success badge--dot">Active</span></td>
+                      <td style="text-align: right;"><strong>$50.00</strong></td>
+                    </tr>
+                    <tr>
+                      <td><div class="table__media"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=160&q=80&auto=format&fit=crop" alt=""/><div><p class="table__media-title">Bella's — Park Slope</p><p class="table__media-sub">412 5th Ave · since Jan 2026</p></div></div></td>
+                      <td><span class="badge badge--accent">Pro</span></td>
+                      <td><span class="badge badge--success badge--dot">Active</span></td>
+                      <td style="text-align: right;"><strong>$50.00</strong></td>
+                    </tr>
+                    <tr style="background: var(--color-surface-alt);">
+                      <td colspan="3" style="text-align: right; font-weight: 600;">Total monthly</td>
+                      <td style="text-align: right;"><strong style="font-size: 16px;">$150.00</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
             <!-- Payment method -->
             <div class="card mb-24">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                 <h2 class="h2">Payment method</h2>
                 <button class="btn btn--secondary btn--sm">Update</button>
               </div>
               <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--color-surface-alt); border-radius: var(--radius-md);">
-                <div style="width: 56px; height: 38px; background: linear-gradient(135deg, #1a1f71, #4754a1); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 0.04em; font-style: italic;">VISA</div>
+                <div style="width: 56px; height: 38px; background: linear-gradient(135deg, #1a1f71, #4754a1); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 0.04em; font-style: italic; flex-shrink: 0;">VISA</div>
                 <div style="flex:1;">
                   <p style="font-weight: 600; margin: 0;">Visa ending in 4242</p>
                   <p class="tiny" style="margin: 2px 0 0;">Expires 08/2027 · Bella Romano</p>
@@ -110,74 +154,29 @@
             <div class="card card--flush mb-24">
               <div class="card__head">
                 <h2 class="card__head-title">Billing history</h2>
-                <button class="btn btn--ghost btn--sm">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/><path d="M21 16V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/></svg>
-                  Download all (CSV)
-                </button>
+                <button class="btn btn--ghost btn--sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/><path d="M21 16V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/></svg>Download all (CSV)</button>
               </div>
-              <table class="table">
-                <thead>
-                  <tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th style="width:1%;"></th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="mono" style="font-size: 13px;">May 17, 2026</span></td>
-                    <td><strong>SeeIt Pro</strong> · Monthly</td>
-                    <td><strong>$50.00</strong></td>
-                    <td><span class="badge badge--success badge--dot">Paid</span></td>
-                    <td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td>
-                  </tr>
-                  <tr>
-                    <td><span class="mono" style="font-size: 13px;">Apr 17, 2026</span></td>
-                    <td><strong>SeeIt Pro</strong> · Monthly</td>
-                    <td><strong>$50.00</strong></td>
-                    <td><span class="badge badge--success badge--dot">Paid</span></td>
-                    <td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td>
-                  </tr>
-                  <tr>
-                    <td><span class="mono" style="font-size: 13px;">Mar 17, 2026</span></td>
-                    <td><strong>SeeIt Pro</strong> · Monthly</td>
-                    <td><strong>$50.00</strong></td>
-                    <td><span class="badge badge--success badge--dot">Paid</span></td>
-                    <td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td>
-                  </tr>
-                  <tr>
-                    <td><span class="mono" style="font-size: 13px;">Feb 17, 2026</span></td>
-                    <td><strong>SeeIt Pro</strong> · Monthly</td>
-                    <td><strong>$50.00</strong></td>
-                    <td><span class="badge badge--success badge--dot">Paid</span></td>
-                    <td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td>
-                  </tr>
-                  <tr>
-                    <td><span class="mono" style="font-size: 13px;">Jan 17, 2026</span></td>
-                    <td><strong>SeeIt Pro</strong> · Monthly</td>
-                    <td><strong>$50.00</strong></td>
-                    <td><span class="badge badge--success badge--dot">Paid</span></td>
-                    <td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td>
-                  </tr>
-                  <tr>
-                    <td><span class="mono" style="font-size: 13px;">Dec 17, 2025</span></td>
-                    <td><strong>SeeIt Pro</strong> · Monthly</td>
-                    <td><strong>$50.00</strong></td>
-                    <td><span class="badge badge--success badge--dot">Paid</span></td>
-                    <td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td>
-                  </tr>
-                  <tr>
-                    <td><span class="mono" style="font-size: 13px;">Nov 17, 2025</span></td>
-                    <td><strong>SeeIt Starter → Pro</strong> · Upgrade</td>
-                    <td><strong>$32.50</strong></td>
-                    <td><span class="badge badge--success badge--dot">Paid</span></td>
-                    <td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-wrap">
+                <table class="table" style="min-width: 700px;">
+                  <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+                  <tbody>
+                    <tr><td><span class="mono" style="font-size: 13px;">May 17, 2026</span></td><td><strong>SeeIt Pro</strong> · 3 locations</td><td><strong>$150.00</strong></td><td><span class="badge badge--success badge--dot">Paid</span></td><td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td></tr>
+                    <tr><td><span class="mono" style="font-size: 13px;">Apr 17, 2026</span></td><td><strong>SeeIt Pro</strong> · 3 locations</td><td><strong>$150.00</strong></td><td><span class="badge badge--success badge--dot">Paid</span></td><td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td></tr>
+                    <tr><td><span class="mono" style="font-size: 13px;">Mar 17, 2026</span></td><td><strong>SeeIt Pro</strong> · 3 locations</td><td><strong>$150.00</strong></td><td><span class="badge badge--success badge--dot">Paid</span></td><td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td></tr>
+                    <tr><td><span class="mono" style="font-size: 13px;">Feb 17, 2026</span></td><td><strong>SeeIt Pro</strong> · 2 locations</td><td><strong>$100.00</strong></td><td><span class="badge badge--success badge--dot">Paid</span></td><td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td></tr>
+                    <tr><td><span class="mono" style="font-size: 13px;">Jan 22, 2026</span></td><td><strong>Park Slope</strong> · new location prorated</td><td><strong>$32.50</strong></td><td><span class="badge badge--success badge--dot">Paid</span></td><td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td></tr>
+                    <tr><td><span class="mono" style="font-size: 13px;">Jan 17, 2026</span></td><td><strong>SeeIt Pro</strong> · 2 locations</td><td><strong>$100.00</strong></td><td><span class="badge badge--success badge--dot">Paid</span></td><td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td></tr>
+                    <tr><td><span class="mono" style="font-size: 13px;">Dec 17, 2025</span></td><td><strong>SeeIt Pro</strong> · 2 locations</td><td><strong>$100.00</strong></td><td><span class="badge badge--success badge--dot">Paid</span></td><td><a href="#" class="btn btn--ghost btn--sm">Invoice</a></td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <!-- Cancel -->
             <div class="card" style="border-color: #F0CFCA;">
               <h2 class="h2 mb-8" style="color: var(--color-danger);">Cancel subscription</h2>
-              <p class="muted mb-16">You'll keep Pro features until <strong style="color: var(--color-text);">Jun 17, 2026</strong>, then drop to the free Starter plan. Your menu, reviews, and history all stay.</p>
-              <button class="btn btn--danger">Cancel subscription</button>
+              <p class="muted mb-16">You'll keep Pro features until <strong style="color: var(--color-text);">Jun 17, 2026</strong>, then drop to free Starter. Menu, reviews, and history all stay. To cancel just one location, go to <a href="locations.html" style="color: var(--color-primary); font-weight: 600;">Locations</a>.</p>
+              <button class="btn btn--danger">Cancel all subscriptions</button>
             </div>
           </div>
 
@@ -198,24 +197,21 @@
               <p class="tiny mb-16">May 17 – Jun 17, 2026</p>
               <div style="display: flex; flex-direction: column; gap: 14px;">
                 <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span class="muted">Profile views</span><strong>12,408 / Unlimited</strong></div>
-                  <div style="height: 6px; background: var(--color-surface-alt); border-radius: 3px;"><div style="width: 100%; height: 100%; background: var(--color-success); border-radius: 3px; width: 32%;"></div></div>
+                  <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span class="muted">Profile views</span><strong>38,124 / Unlimited</strong></div>
+                  <div style="height: 6px; background: var(--color-surface-alt); border-radius: 3px;"><div style="height: 100%; background: var(--color-success); border-radius: 3px; width: 32%;"></div></div>
                 </div>
                 <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span class="muted">Team seats</span><strong>4 / 10</strong></div>
-                  <div style="height: 6px; background: var(--color-surface-alt); border-radius: 3px;"><div style="height: 100%; background: var(--color-primary); border-radius: 3px; width: 40%;"></div></div>
+                  <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span class="muted">Team seats</span><strong>6 / 30</strong></div>
+                  <div style="height: 6px; background: var(--color-surface-alt); border-radius: 3px;"><div style="height: 100%; background: var(--color-primary); border-radius: 3px; width: 20%;"></div></div>
                 </div>
                 <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span class="muted">Featured dishes</span><strong>3 / 10</strong></div>
-                  <div style="height: 6px; background: var(--color-surface-alt); border-radius: 3px;"><div style="height: 100%; background: var(--color-primary); border-radius: 3px; width: 30%;"></div></div>
+                  <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span class="muted">Featured dishes</span><strong>8 / 30</strong></div>
+                  <div style="height: 6px; background: var(--color-surface-alt); border-radius: 3px;"><div style="height: 100%; background: var(--color-primary); border-radius: 3px; width: 27%;"></div></div>
                 </div>
               </div>
             </div>
 
-            <div class="note">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg>
-              <div>Need help with billing? <a href="#" style="font-weight: 600; text-decoration: underline;">Email our team</a> — we typically reply within 4 hours.</div>
-            </div>
+            <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg><div>Need help with billing? <a href="#" style="font-weight: 600; text-decoration: underline;">Email our team</a> — we typically reply within 4 hours.</div></div>
           </div>
 
         </div>

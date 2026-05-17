@@ -2,106 +2,180 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Create account — SeeIt for Restaurants</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
-  <div class="auth-shell">
-    <div class="auth-shell__pane">
-      <div class="auth-card auth-card--wide">
-        <div class="auth-card__logo">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="48" height="48" rx="12" fill="#E85D3A"/>
-            <path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
-            <circle cx="24" cy="24" r="4.5" fill="#fff"/>
-          </svg>
-          <span class="auth-card__logo-text">See<em>It</em></span>
-          <span class="auth-card__logo-pill">FOR RESTAURANTS</span>
-        </div>
+<body style="background: var(--color-bg);">
+  <header style="border-bottom: 1px solid var(--color-border); background: var(--color-surface);">
+    <div style="max-width: 1100px; margin: 0 auto; padding: 16px 24px; display:flex; align-items:center; gap: 10px; flex-wrap: wrap;">
+      <a href="signin.html" style="display:flex; align-items:center; gap: 10px;">
+        <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="#E85D3A"/>
+          <path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="24" cy="24" r="4.5" fill="#fff"/>
+        </svg>
+        <span class="auth-card__logo-text">See<em>It</em></span>
+        <span class="auth-card__logo-pill">FOR RESTAURANTS</span>
+      </a>
+      <div style="margin-left:auto; font-size: 13px; color: var(--color-text-secondary);">
+        Already on SeeIt? <a href="signin.html" style="color: var(--color-primary); font-weight: 600;">Sign in</a>
+      </div>
+    </div>
+  </header>
 
-        <h1 class="auth-card__title">Claim your restaurant</h1>
-        <p class="auth-card__sub">Free to set up — start receiving photo-rich reviews in minutes.</p>
+  <div class="wizard">
+    <div class="wizard__steps">
+      <div class="wizard__step wizard__step--active" data-pane="1"><span class="wizard__step-num">1</span> Your account</div>
+      <div class="wizard__connector"></div>
+      <div class="wizard__step" data-pane="2"><span class="wizard__step-num">2</span> First restaurant</div>
+      <div class="wizard__connector"></div>
+      <div class="wizard__step" data-pane="3"><span class="wizard__step-num">3</span> Pick a plan</div>
+    </div>
 
-        <div class="eyebrow mt-16" style="margin-bottom: 10px;">Restaurant</div>
+    <!-- STEP 1 -->
+    <div class="card" data-step="1" style="padding: 32px;">
+      <h2 class="h1" style="margin: 0 0 6px;">Create your account</h2>
+      <p class="muted mb-24">Free to set up — start receiving photo-rich reviews in minutes.</p>
+
+      <div class="field-row">
         <div class="field">
-          <label class="field__label" for="rname">Restaurant name</label>
-          <input class="input" id="rname" type="text" placeholder="e.g. Bella's Italian Kitchen" />
-        </div>
-        <div class="field">
-          <label class="field__label" for="raddr">Address</label>
-          <input class="input" id="raddr" type="text" placeholder="432 Valencia St, San Francisco, CA" />
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field__label" for="rcuisine">Cuisine</label>
-            <select class="select" id="rcuisine">
-              <option>Italian</option>
-              <option>Japanese</option>
-              <option>Mexican</option>
-              <option>Korean</option>
-              <option>American</option>
-              <option>Thai</option>
-              <option>Indian</option>
-              <option>Mediterranean</option>
-              <option>Cafe / Brunch</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="field__label" for="rphone">Phone</label>
-            <input class="input" id="rphone" type="tel" placeholder="(415) 555-0142" />
-          </div>
-        </div>
-
-        <div class="eyebrow mt-16" style="margin-bottom: 10px;">Owner</div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field__label" for="oname">Your full name</label>
-            <input class="input" id="oname" type="text" placeholder="Bella Romano" />
-          </div>
-          <div class="field">
-            <label class="field__label" for="oemail">Work email</label>
-            <input class="input" id="oemail" type="email" placeholder="bella@bellasitalian.com" />
-          </div>
+          <label class="field__label" for="fname">First name</label>
+          <input class="input" id="fname" type="text" placeholder="Bella" />
         </div>
         <div class="field">
-          <label class="field__label" for="opass">Password</label>
-          <input class="input" id="opass" type="password" placeholder="At least 8 characters" />
-          <p class="field__hint">Use 8+ characters with a mix of letters and numbers.</p>
+          <label class="field__label" for="lname">Last name</label>
+          <input class="input" id="lname" type="text" placeholder="Romano" />
         </div>
+      </div>
 
-        <label class="check mt-12 mb-24">
-          <input type="checkbox" checked />
-          <span class="check__box"></span>
-          <span>I agree to SeeIt's <a href="#" style="color: var(--color-primary); font-weight: 600;">Terms</a> and <a href="#" style="color: var(--color-primary); font-weight: 600;">Privacy Policy</a></span>
-        </label>
+      <div class="field">
+        <label class="field__label" for="email">Work email</label>
+        <input class="input" id="email" type="email" placeholder="bella@bellasitalian.com" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field__label" for="phone">Mobile phone</label>
+          <input class="input" id="phone" type="tel" placeholder="(212) 555-0142" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="pw">Password</label>
+          <input class="input" id="pw" type="password" placeholder="At least 8 characters" />
+        </div>
+      </div>
 
-        <a href="onboarding.html" class="btn btn--primary btn--lg btn--block">Continue to plan selection</a>
+      <label class="check mt-12 mb-24">
+        <input type="checkbox" checked />
+        <span class="check__box"></span>
+        <span>I agree to SeeIt's <a href="#" style="color: var(--color-primary); font-weight: 600;">Terms</a> and <a href="#" style="color: var(--color-primary); font-weight: 600;">Privacy Policy</a></span>
+      </label>
 
-        <p style="text-align:center; margin: 22px 0 0; font-size: 13.5px; color: var(--color-text-secondary);">
-          Already on SeeIt? <a href="signin.html" style="color: var(--color-primary); font-weight: 600;">Sign in</a>
-        </p>
+      <div style="display:flex; justify-content: flex-end;">
+        <button class="btn btn--primary btn--lg" data-step-next="1:2">
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
     </div>
 
-    <div class="auth-shell__pane auth-shell__pane--brand">
-      <div class="auth-shell__brand-inner">
-        <blockquote>
-          "Customers showed up already knowing what they wanted to order — and ordered the dishes I actually wanted to sell."
-        </blockquote>
-        <cite>
-          <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=200&q=80&auto=format&fit=crop" alt="" />
-          <div>
-            <div style="font-weight:600;">David Park</div>
-            <div style="opacity:0.8;">Chef-Owner, Seoul Hot Stone · San Francisco</div>
-          </div>
-        </cite>
+    <!-- STEP 2 -->
+    <div class="card" data-step="2" style="padding: 32px; display:none;">
+      <h2 class="h1" style="margin: 0 0 6px;">Add your first restaurant</h2>
+      <p class="muted mb-24">You can add more locations later — billing is per location.</p>
+
+      <div class="field">
+        <label class="field__label" for="rname">Restaurant name</label>
+        <input class="input" id="rname" type="text" placeholder="Bella's Italian Kitchen" />
+        <p class="field__hint">This is your brand name. Each location can have its own neighborhood label (e.g. "Brooklyn").</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="locname">Location label</label>
+        <input class="input" id="locname" type="text" placeholder="Williamsburg" />
+        <p class="field__hint">Customers will see this as "Bella's Italian Kitchen — Williamsburg".</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="raddr">Street address</label>
+        <input class="input" id="raddr" type="text" placeholder="234 Bedford Avenue, Brooklyn, NY 11211" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field__label">Primary cuisine</label>
+          <select class="select"><option>Italian</option><option>Pizza</option><option>Mediterranean</option><option>American</option><option>Japanese</option><option>Mexican</option><option>Korean</option><option>Indian</option><option>Thai</option><option>Vietnamese</option><option>Chinese</option><option>French</option></select>
+        </div>
+        <div class="field">
+          <label class="field__label" for="rphone">Location phone</label>
+          <input class="input" id="rphone" type="tel" placeholder="(718) 555-0182" />
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content: space-between; margin-top: 16px; gap: 10px;">
+        <button class="btn btn--ghost" onclick="document.querySelector('[data-step=\'2\']').style.display='none'; document.querySelector('[data-step=\'1\']').style.display='block'; window.scrollTo({top:0});">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <button class="btn btn--primary btn--lg" data-step-next="2:3">
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3 — Plans -->
+    <div class="card" data-step="3" style="padding: 32px; display:none;">
+      <h2 class="h1" style="margin: 0 0 6px;">Choose a plan</h2>
+      <p class="muted mb-24">Start free, upgrade any time. Billing is per location. <strong>14-day free trial of Pro included.</strong></p>
+
+      <div class="plan-grid" style="margin-bottom: 16px;">
+        <div class="plan-card">
+          <h3 class="plan-card__name">Starter</h3>
+          <p class="plan-card__sub">Claim your listing.</p>
+          <p class="plan-card__price">$0<small> / location / mo</small></p>
+          <ul class="plan-card__features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Up to 15 menu items</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Reply to reviews</li>
+            <li class="is-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Insights &amp; analytics</li>
+          </ul>
+        </div>
+        <div class="plan-card plan-card--featured">
+          <span class="plan-card__ribbon">RECOMMENDED · 14 DAYS FREE</span>
+          <h3 class="plan-card__name">Pro</h3>
+          <p class="plan-card__sub">For growing restaurants.</p>
+          <p class="plan-card__price">$50<small> / location / mo</small></p>
+          <ul class="plan-card__features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <strong>Everything in Starter</strong></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Unlimited menu items</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Insights, photos, featured dishes</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 10 team seats</li>
+          </ul>
+        </div>
+        <div class="plan-card">
+          <h3 class="plan-card__name">Premium</h3>
+          <p class="plan-card__sub">For multi-location operators.</p>
+          <p class="plan-card__price">$120<small> / location / mo</small></p>
+          <ul class="plan-card__features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <strong>Everything in Pro</strong></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Unlimited team seats</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> API access &amp; CSV exports</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Dedicated success manager</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="tiny text-center mb-16">No credit card required for the trial. We'll ask before charging anything.</p>
+
+      <div style="display:flex; justify-content: space-between; gap: 10px;">
+        <button class="btn btn--ghost" onclick="document.querySelector('[data-step=\'3\']').style.display='none'; document.querySelector('[data-step=\'2\']').style.display='block'; window.scrollTo({top:0});">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <a href="onboarding.html" class="btn btn--primary btn--lg">Start free trial of Pro</a>
       </div>
     </div>
   </div>
+
   <script src="js/nav.js"></script>
 </body>
 </html>

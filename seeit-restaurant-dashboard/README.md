@@ -1,14 +1,17 @@
-# SeeIt for Restaurants — Dashboard Mockup
+# SeeIt for Restaurants — Dashboard Mockup (v2)
 
 A click-through, static HTML/CSS/JS mockup of the **SeeIt for Restaurants**
-dashboard — the web app restaurant owners and managers use to manage their
-SeeIt listing, menu, photos, reviews, team, and billing.
+web dashboard. Built for **multi-location restaurant chains** — owners can
+manage several locations from one account, with per-location billing,
+team permissions, menus, photos, and reviews.
 
 This is the companion to the customer mobile-app mockup in
 `../seeit-customer-mockup`. Same brand, different audience.
 
-> Designed for desktops and iPads (≥ 1280px, responsive down to 768px).
-> Not a phone interface — owners use this at the host stand or in the office.
+> **Desktop-first** (1280 px+) with **full responsive support** down to
+> phone (≤ 600 px). On mobile, the sidebar collapses into a hamburger
+> menu that slides in from the left, tables scroll horizontally, and
+> modals dock to the bottom of the screen as sheets.
 
 ---
 
@@ -16,22 +19,26 @@ This is the companion to the customer mobile-app mockup in
 
 These are static files — no backend, no build step.
 
-### Option 1 — Open directly
+### Quickest: open directly
 Double-click `index.html` (it redirects to the sign-in screen) or open
 `signin.html` in your browser.
 
-### Option 2 — Local server (recommended)
+### Recommended: local server
 
 ```bash
 # from inside seeit-restaurant-dashboard/
 python3 -m http.server 5174
-# then open http://localhost:5174 in your browser
+# open http://localhost:5174 in any browser
 ```
 
-### Best viewed at
-A normal desktop browser window (1280–1440 px wide). It also works on an
-iPad in landscape (1180 px). Below 900 px the brand pane on auth pages
-collapses; below 768 px the layout reflows to a single column.
+### Try the responsive breakpoints
+1. Open Chrome DevTools (Cmd+Opt+I / Ctrl+Shift+I)
+2. Toggle device toolbar (Cmd+Shift+M / Ctrl+Shift+M)
+3. Try these widths:
+   - **1440 px** — full desktop layout
+   - **1024 px** — tablet (sidebar still visible, narrower)
+   - **768 px** — sidebar collapses, hamburger appears
+   - **390 px** — phone (single-column, scrollable tables)
 
 ---
 
@@ -39,136 +46,214 @@ collapses; below 768 px the layout reflows to a single column.
 
 ```
 seeit-restaurant-dashboard/
-├── index.html                    # Redirects to signin.html
-├── signin.html                   # Centered sign-in card + testimonial pane
-├── signup.html                   # Restaurant + owner info form
-├── onboarding.html               # 4-step wizard (basics → branding → menu → done)
+├── index.html                       # → redirects to signin.html
+├── signin.html                      # 1. Centered card + brand pane
+├── signup.html                      # 2. 3-step: owner → restaurant → plan
+├── onboarding.html                  # 3. 4-step wizard (currently on Step 2)
 │
-├── dashboard.html                # Home: stat cards, recent reviews, quick actions
-├── menu.html                     # Menu manager: categorized table of dishes
-├── menu-edit.html                # Add/edit menu item — full-page form + live preview
-├── photos.html                   # Photo gallery (restaurant & customer-uploaded)
-├── reviews.html                  # Reviews list + reply modal + rating breakdown
-├── insights.html                 # Charts: views, top dishes, ratings, peak times
+├── dashboard.html                   # 4. Stats, per-location performance, reviews
+├── locations.html                   # 5. Location cards grid + "Add new"
+├── location-edit.html               # 6. Hours, special hours, temp closed, tags
+├── menu.html                        # 7. Categorized table · master vs location toggle
+├── menu-edit.html                   # 8. Item form + apply-to-locations toggle
+├── menu-bulk-upload.html            # 9. CSV upload wizard with error preview
+├── photos.html                      # 10. Gallery + customer/restaurant filter
+├── reviews.html                     # 11. List + reply modal + ratings breakdown
+├── insights.html                    # 12. Charts + location comparison
 │
-├── settings-profile.html         # Restaurant details, branding, hours, contact
-├── settings-account.html         # Owner profile, password, 2FA, sessions
-├── settings-team.html            # Team members, roles & permissions, invites
-├── settings-notifications.html   # Email / SMS / push toggles per notification type
+├── settings-profile.html            # 13. Brand info + KOSHER CERTIFICATION detail
+├── settings-account.html            # 14. Owner profile, password, 2FA
+├── settings-team.html               # 15. Team table + per-location permissions
+├── settings-notifications.html      # 16. Per-channel × per-location toggles
 │
-├── billing.html                  # Current plan, payment, invoices, cancel
-├── plans.html                    # Pricing tiers, feature comparison, FAQ
+├── billing.html                     # 17. Per-location billing breakdown, invoices
+├── plans.html                       # 18. Tiered pricing (per location)
 │
-├── css/styles.css                # One shared stylesheet
-├── js/nav.js                     # Sidebar active state, tabs, modal toggles
-└── README.md                     # This file
+├── css/styles.css                   # One shared stylesheet (~1,200 lines)
+├── js/nav.js                        # Sidebar toggle, dropdowns, modals, tabs
+└── README.md
 ```
 
-**Total: 16 screens** sharing one stylesheet and one tiny JS file.
+**Total: 19 screens.** All share one stylesheet and one minimal JS file.
 
 ---
 
-## Navigation map
+## Multi-location architecture
 
-```
-signin  →  dashboard
-signup  →  onboarding  →  dashboard
+This mockup is built around **Bella's Italian Kitchen**, a fictional
+3-location chain in NYC:
 
-dashboard  (persistent sidebar from here on)
-   ├─→ menu  →  menu-edit
-   ├─→ photos
-   ├─→ reviews  (with reply modal)
-   ├─→ insights
-   ├─→ settings-profile
-   │     ├─→ settings-account
-   │     ├─→ settings-team  (with invite modal)
-   │     └─→ settings-notifications
-   └─→ billing  →  plans
-```
+| Location | Address | Cover photo |
+|----------|---------|-------------|
+| **Bella's — Williamsburg** (current) | 234 Bedford Ave, Brooklyn | Trattoria interior |
+| **Bella's — West Village** | 87 Christopher St, Manhattan | Wine-bar dining |
+| **Bella's — Park Slope** | 412 5th Ave, Brooklyn | Counter / kitchen |
 
-The left sidebar is identical on every post-login page. It contains:
-- SeeIt logo + "BIZ" pill
-- Restaurant chip (logo, name, address)
-- Main nav: Dashboard, Menu, Photos, Reviews, Insights
-- Account section: Settings, Billing
-- User footer with sign-out icon
+Multi-location flow appears throughout:
+
+- **Sidebar location switcher** — prominent dropdown with location photos,
+  always available. Includes "Manage Locations" and "Add New Location".
+- **Locations page** — grid of location cards with status, rating,
+  photos, plan/billing info per location.
+- **Location editor** — hours per day, holiday/special hours table,
+  temporarily-closed toggle with reopening date, style/setting tags.
+- **Menu master vs location** — toggle between the brand template and
+  this location's menu. Menu items have an "Apply to all locations"
+  checkbox so the same dish can be cloned across all three.
+- **Per-location billing** — billing page shows a breakdown line per
+  location with status and monthly cost. Total: $150/mo (3 × $50).
+- **Team permissions** — each member can be scoped to specific
+  locations (Manager X gets Williamsburg + Park Slope, Manager Y gets
+  West Village only).
+- **Notifications** — toggle which locations to notify about, then
+  Email × SMS × Push for each notification type.
+- **Insights** — location filter on the page header, plus a "Compare
+  locations" section to see performance side-by-side.
+
+---
+
+## Kosher certification (deep detail)
+
+On **Settings → Restaurant Profile**, tap the **Kosher** chip in the
+dietary tags section. A full Kosher Certification card expands with:
+
+- **Certifying agency dropdown** — OU, OK, Star-K, Kof-K, CRC, Chicago
+  Rabbinical Council, Vaad HaRabbonim, Local Vaad, Other.
+- **Kosher type checkboxes** — Meat (Fleishig) / Dairy (Milchig) / Pareve.
+- **Sub-certifications** — Glatt, Cholov Yisroel, Pas Yisroel,
+  Bishul Yisroel, Yoshon (real designations observant customers
+  care about).
+- **Certificate image upload** — JPEG/PNG/PDF.
+- **Certificate expiration date**.
+- **"Kosher for Passover" toggle** with separate Passover cert upload.
+
+Designed so the customer app can display the certifying agency name +
+cert image when a user taps the Kosher badge on a restaurant.
+
+---
+
+## Expanded tag taxonomy
+
+### Cuisine types (35)
+Primary cuisine is single-select; secondary cuisines are multi-select up
+to 3. Full list on `settings-profile.html`:
+
+American · Italian · Mexican · Chinese · Japanese · Sushi · Thai ·
+Vietnamese · Korean · Indian · Mediterranean · Middle Eastern · Greek ·
+French · Spanish · Latin American · Caribbean · African · Ethiopian ·
+BBQ · Steakhouse · Seafood · Pizza · Burgers · Sandwiches/Deli ·
+Bakery · Cafe/Coffee · Breakfast/Brunch · Dessert/Ice Cream · Bar/Pub ·
+Fast Food · Fine Dining · Food Truck · Buffet · Fusion
+
+### Style & setting (12)
+Multi-select on each location. Set defaults at brand level:
+
+Sit-down · Counter service · Takeout · Delivery · Drive-thru ·
+Outdoor seating · Bar seating · Family-friendly · Romantic · Casual ·
+Upscale · Late night
+
+### Dietary tags (10)
+Multi-select on restaurants and individual menu items:
+
+Kosher · Halal · Vegan · Vegetarian · Gluten-Free options ·
+Dairy-Free options · Nut-Free options · Organic · Farm-to-Table ·
+Locally Sourced
+
+---
+
+## Responsive design
+
+The layout responds at four breakpoints:
+
+| Width | What changes |
+|-------|--------------|
+| **1280 px+** | Full desktop: 4-column stat grid, 2-col main/aside |
+| **1024 px** | 2-column stat grid, plan cards stack |
+| **860 px** | **Sidebar collapses** into off-canvas slide-in. Hamburger button appears in topbar. All 2-col grids stack. Field rows stack. |
+| **600 px** | Single-column everything. Stat cards stack. **Modals dock to bottom as sheets.** Tables retain horizontal scroll. Hours rows reflow vertically. Form inputs use 15 px font to prevent iOS zoom. |
+| **420 px** | Photo grid drops to 1 column, auth cards tighten further |
+
+Special mobile touches:
+- Sidebar slide-in has a backdrop overlay; tap to close
+- Tables wrap in `.table-wrap` with horizontal scroll so columns don't squish
+- Modals become bottom sheets with rounded top corners
+- Touch targets are min 36–38 px (icon buttons, switches)
+- `viewport-fit=cover` for notch-safe layouts
+- Inputs use 15 px+ to suppress iOS zoom-on-focus
 
 ---
 
 ## Design system
 
-### Colors (shared with the customer app for brand consistency)
-
-| Token                   | Value     | Use                                 |
-|-------------------------|-----------|-------------------------------------|
-| `--color-primary`       | `#E85D3A` | Brand coral · primary CTAs          |
-| `--color-primary-dark`  | `#C94924` | Hover / pressed                     |
-| `--color-primary-soft`  | `#FCE9E2` | Active nav item, tinted badges      |
-| `--color-bg`            | `#FAFAF7` | Page background                     |
-| `--color-surface`       | `#FFFFFF` | Cards, sidebar, tables              |
-| `--color-text`          | `#1A1A1A` | Primary text                        |
-| `--color-text-secondary`| `#5C5C5C` | Secondary text                      |
-| `--color-success`       | `#2F8F5C` | "Visible", "Paid", check icons      |
-| `--color-warning`       | `#B97E0E` | "Pending", "Hidden" badges          |
-| `--color-danger`        | `#C73E2B` | Destructive actions, "Failed"       |
-| `--color-star`          | `#F5A623` | Star ratings                        |
+### Colors (shared with customer app)
+| Token | Value | Use |
+|-------|-------|-----|
+| `--color-primary` | `#E85D3A` | Brand coral · primary CTAs |
+| `--color-primary-dark` | `#C94924` | Hover / pressed |
+| `--color-primary-soft` | `#FCE9E2` | Active nav, tinted badges |
+| `--color-bg` | `#FAFAF7` | Page background |
+| `--color-surface` | `#FFFFFF` | Cards, sidebar, tables |
+| `--color-text` | `#1A1A1A` | Primary text |
+| `--color-success` | `#2F8F5C` | "Active", "Paid", checks |
+| `--color-warning` | `#B97E0E` | "Pending", "Hidden" |
+| `--color-danger` | `#C73E2B` | Destructive, "Failed" |
+| `--color-star` | `#F5A623` | Star ratings |
 
 ### Typography
-- **Inter** (400 / 500 / 600 / 700 / 800), loaded from Google Fonts.
-- Tight letter-spacing on headings, ~1.5 line-height on body.
+- **Inter** (400 / 500 / 600 / 700 / 800) from Google Fonts.
+- Headings use `clamp()` for fluid sizing across viewports.
 
-### Shape
-- 6px (small) → 12px (cards) → 18px (auth cards) corner radii.
-- Borders, not shadows, are the default card outline — soft shadows are
-  reserved for floating elements (modals, sticky footers, dropdowns).
-
-### Components (all in `css/styles.css`)
-- Sidebar with logo, restaurant chip, nav items (active + badge), user footer
-- Topbar with breadcrumb, search, notification bell, avatar
-- Stat cards with sparklines (inline SVG)
-- Tables with media cells (photo + title + sub), badges, hover state, action icons
-- Buttons: `--primary`, `--secondary`, `--ghost`, `--dark`, `--danger` + sizes
-- Form fields, switches, checkboxes, radio buttons, input prefixes
-- Badges with status variants (success / warning / danger / info / accent)
-- Underline tabs with optional count chips
-- Toolbar segmented groups (filter pills)
-- Photo gallery tiles with chip overlays (customer vs restaurant)
-- Review items with avatars, ratings, threaded replies, photo strips
-- Charts: SVG line charts, CSS bar charts, donut chart, horizontal bar lists
-- Empty states with iconed circles
-- Plan cards (featured variant with ribbon)
-- Modals (overlay + card with head/body/foot)
-- Wizard step indicator with done/active/pending states
-- Notes / inline tooltips (info / warning / success)
-
----
-
-## Realism notes
-
-The mockup uses one fictional restaurant throughout — **Bella's Italian
-Kitchen**, run by Bella Romano at 432 Valencia St, San Francisco. The menu,
-reviews, photos, numbers, team members, and billing history are all
-illustrative.
-
-- All food and people imagery is loaded from Unsplash via
-  `https://images.unsplash.com/photo-…` URLs.
-- All names, addresses, phone numbers, and emails are fictional.
-- Numbers (review counts, ratings, revenue) are tuned to feel plausible
-  for an established mid-size SF restaurant.
+### Components in `css/styles.css`
+- App shell, sidebar, topbar (with mobile hamburger)
+- Location switcher dropdown (with location photos)
+- Location card grid + "Add new" empty card
+- Stat cards with inline SVG sparklines
+- Tables with media cells, badges, hover, mobile horizontal scroll
+- Buttons: primary, secondary, ghost, dark, danger + sizes
+- Form fields, switches, checkboxes, radios, input prefixes
+- Tag chip toggles (selectable pill buttons)
+- Kosher certification card (specialty component)
+- Status badges (success/warning/danger/info/accent)
+- Underline tabs (scroll-overflow on mobile)
+- Segmented controls / toolbar groups
+- Photo gallery tiles
+- Charts: SVG line, CSS bar, donut
+- Notes/info boxes (info, warning, success, danger variants)
+- Modals (overlay + card · become bottom sheets ≤ 600 px)
+- Wizard step indicator
+- Plan cards with ribbon variant
+- CSV preview table with error-row highlighting
+- Hours table (reflows on mobile)
+- Uploaders (drag-drop visual)
+- Empty states
 
 ---
 
-## What's intentionally not included
+## Notable demo flows
 
-- No real backend, auth, or data fetching — every form just navigates.
-- No accessibility audit (basic semantic HTML, `aria-label`s on icon
-  buttons, but no full keyboard-trap or focus management).
-- No real charting library — all charts are hand-built SVG/CSS that look
-  realistic but aren't data-driven.
-- No drag-and-drop reordering (handles are visual only).
-- No real file uploads (drop zones are decorative).
-- Mobile breakpoint below 768px is partially supported but not the
-  primary target — this is a desktop product.
+| Click this | Then this |
+|------------|-----------|
+| `signin.html` → Sign in | Lands on dashboard |
+| Sidebar location chip | Dropdown shows all 3 locations + "Manage" / "Add new" |
+| Dashboard → "Bulk upload menu" | Walk the 4-step CSV import flow with error preview |
+| Menu → "Add menu item" | Edit form with "Apply to all locations" toggle |
+| Locations → "Add new location" | Full editor with hours, special hours, style tags |
+| Reviews → any "Reply" button | Reply modal with original review + guidelines |
+| Settings → Profile → tap "Kosher" chip | Kosher cert card expands inline |
+| Settings → Team → "Invite member" | Modal with per-location access checkboxes |
+| Billing → see line item per location | $50 × 3 = $150/mo |
 
-When we're ready to build this for real, the components and design
-tokens in `styles.css` translate cleanly to React/Vue/whatever-framework.
+---
+
+## What's intentionally not built
+
+- No real backend, auth, or data fetching
+- No real CSV parsing (the upload preview is mocked)
+- No real chart library (SVG/CSS hand-drawn)
+- No drag-and-drop reordering (handles are visual)
+- No real file uploads (drop zones are decorative)
+- No accessibility audit beyond basic semantic HTML + aria-labels
+
+When this gets built for real, the design tokens and components in
+`styles.css` should translate cleanly to React, Vue, or whatever
+framework wins the architecture decision.

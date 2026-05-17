@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Team — Settings</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,67 +10,64 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <div class="sidebar-backdrop" data-sidebar-backdrop></div>
   <div class="app-shell">
     <aside class="sidebar">
-      <a href="dashboard.html" class="sidebar__logo">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="12" fill="#E85D3A"/><path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="4.5" fill="#fff"/></svg>
-        <span class="sidebar__logo-text">See<em>It</em></span><span class="sidebar__logo-pill">BIZ</span>
-      </a>
-      <div class="sidebar__restaurant">
-        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt="" />
-        <div class="sidebar__restaurant-body"><p class="sidebar__restaurant-name">Bella's Italian Kitchen</p><p class="sidebar__restaurant-sub">432 Valencia St · SF</p></div>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <button class="sidebar__close" data-sidebar-close><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <a href="dashboard.html" class="sidebar__logo"><svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="#E85D3A"/><path d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="4.5" fill="#fff"/></svg><span class="sidebar__logo-text">See<em>It</em></span><span class="sidebar__logo-pill">BIZ</span></a>
+      <div class="loc-switcher">
+        <button class="loc-switcher__btn" data-loc-toggle><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-switcher__body"><p class="loc-switcher__label">Current location</p><p class="loc-switcher__name">Bella's — Williamsburg</p></div><svg class="loc-switcher__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>
+        <div class="loc-dropdown" data-loc-dropdown>
+          <p class="loc-dropdown__head">Your 3 locations</p>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — Williamsburg</p><p class="loc-dropdown__item-sub">234 Bedford Ave</p></div><svg class="loc-dropdown__check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — West Village</p><p class="loc-dropdown__item-sub">87 Christopher St</p></div></button>
+          <button class="loc-dropdown__item"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=160&q=80&auto=format&fit=crop" alt=""/><div class="loc-dropdown__item-body"><p class="loc-dropdown__item-name">Bella's — Park Slope</p><p class="loc-dropdown__item-sub">412 5th Ave</p></div></button>
+          <div class="loc-dropdown__divider"></div>
+          <a href="locations.html" class="loc-dropdown__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Manage all locations</a>
+          <a href="location-edit.html" class="loc-dropdown__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add new location</a>
+        </div>
       </div>
       <nav class="sidebar__nav">
-        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
-        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>Menu<span class="sidebar__nav-item__badge">28</span></a>
-        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>Photos<span class="sidebar__nav-item__badge">412</span></a>
-        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Reviews<span class="sidebar__nav-item__badge">3</span></a>
-        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Insights</a>
+        <a href="dashboard.html" class="sidebar__nav-item" data-nav="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a href="locations.html" class="sidebar__nav-item" data-nav="locations.html,location-edit.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>Locations<span class="sidebar__nav-item__badge">3</span></a>
+        <a href="menu.html" class="sidebar__nav-item" data-nav="menu.html,menu-edit.html,menu-bulk-upload.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14a1 1 0 0 1 1 1v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/></svg>Menu<span class="sidebar__nav-item__badge">42</span></a>
+        <a href="photos.html" class="sidebar__nav-item" data-nav="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><polyline points="21 16 16 11 5 20"/></svg>Photos<span class="sidebar__nav-item__badge">847</span></a>
+        <a href="reviews.html" class="sidebar__nav-item" data-nav="reviews.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Reviews<span class="sidebar__nav-item__badge">5</span></a>
+        <a href="insights.html" class="sidebar__nav-item" data-nav="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Insights</a>
         <div class="sidebar__section">Account</div>
-        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
-        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Billing</a>
+        <a href="settings-profile.html" class="sidebar__nav-item" data-nav="settings-profile.html,settings-account.html,settings-team.html,settings-notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
+        <a href="billing.html" class="sidebar__nav-item" data-nav="billing.html,plans.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Billing</a>
       </nav>
       <div class="sidebar__footer">
         <div class="sidebar__user">
-          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt="" />
-          <div style="flex:1; min-width:0;"><p class="sidebar__user-name">Bella Romano</p><p class="sidebar__user-sub">Owner</p></div>
-          <a href="signin.html" style="color: var(--color-text-tertiary);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/>
+          <div style="flex:1; min-width:0;"><p class="sidebar__user-name">Bella Romano</p><p class="sidebar__user-sub">Owner · 3 locations</p></div>
+          <a href="signin.html" style="color: var(--color-text-tertiary);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
         </div>
       </div>
     </aside>
 
     <div class="main">
       <header class="topbar">
-        <div class="topbar__crumb"><a href="dashboard.html">Dashboard</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg><a href="settings-profile.html">Settings</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg><strong>Team</strong></div>
-        <div class="topbar__actions">
-          <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="icon-btn__dot"></span></button>
-          <img class="topbar__avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/>
-        </div>
+        <button class="topbar__hamburger" data-sidebar-toggle><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div class="topbar__crumb"><a href="dashboard.html">Dashboard</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><a href="settings-profile.html">Settings</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><strong>Team</strong></div>
+        <div class="topbar__actions"><img class="topbar__avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&auto=format&fit=crop" alt=""/></div>
       </header>
 
       <div class="page" style="max-width: 1100px;">
-        <div class="page__head">
-          <div>
-            <h1 class="page__title">Settings</h1>
-            <p class="page__sub">Manage your restaurant listing, team, and account.</p>
+        <div class="page__head"><div><h1 class="page__title">Settings</h1></div></div>
+        <div class="tabs-wrap">
+          <div class="tabs">
+            <a href="settings-profile.html" class="tabs__item">Restaurant profile</a>
+            <a href="settings-account.html" class="tabs__item">Account</a>
+            <a href="settings-team.html" class="tabs__item tabs__item--active">Team</a>
+            <a href="settings-notifications.html" class="tabs__item">Notifications</a>
           </div>
         </div>
 
-        <div class="tabs">
-          <a href="settings-profile.html" class="tabs__item">Restaurant profile</a>
-          <a href="settings-account.html" class="tabs__item">Account</a>
-          <a href="settings-team.html" class="tabs__item tabs__item--active">Team</a>
-          <a href="settings-notifications.html" class="tabs__item">Notifications</a>
-        </div>
-
-        <!-- Invite -->
         <div class="card mb-24">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-            <div>
-              <h2 class="h2">Team members</h2>
-              <p class="muted" style="margin: 4px 0 0; font-size: 13.5px;">4 of 10 seats used on your Pro plan</p>
-            </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div><h2 class="h2">Team members</h2><p class="muted" style="margin: 4px 0 0; font-size: 13.5px;">6 of 30 seats used (10 per location on Pro plan)</p></div>
             <button class="btn btn--primary" data-modal-open="#invite-modal">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Invite member
@@ -78,116 +75,94 @@
           </div>
         </div>
 
-        <!-- Members table -->
         <div class="card card--flush mb-24">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Member</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Last active</th>
-                <th style="width: 1%;"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="table__media">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/>
-                    <div>
-                      <p class="table__media-title">Bella Romano <span class="badge" style="margin-left:6px;">You</span></p>
-                      <p class="table__media-sub">bella@bellasitalian.com</p>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="badge badge--accent">Owner</span></td>
-                <td><span class="badge badge--success badge--dot">Active</span></td>
-                <td><span class="muted" style="font-size: 13px;">Now</span></td>
-                <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="table__media">
-                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/>
-                    <div>
-                      <p class="table__media-title">Marco Russo</p>
-                      <p class="table__media-sub">marco@bellasitalian.com</p>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="badge badge--info">Manager</span></td>
-                <td><span class="badge badge--success badge--dot">Active</span></td>
-                <td><span class="muted" style="font-size: 13px;">2 hours ago</span></td>
-                <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="table__media">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/>
-                    <div>
-                      <p class="table__media-title">Sofia Conti</p>
-                      <p class="table__media-sub">sofia@bellasitalian.com</p>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="badge badge--info">Manager</span></td>
-                <td><span class="badge badge--success badge--dot">Active</span></td>
-                <td><span class="muted" style="font-size: 13px;">Yesterday</span></td>
-                <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="table__media">
-                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/>
-                    <div>
-                      <p class="table__media-title">Luca Bianchi</p>
-                      <p class="table__media-sub">luca.b@gmail.com</p>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="badge">Staff</span></td>
-                <td><span class="badge badge--warning badge--dot">Invite pending</span></td>
-                <td><span class="muted" style="font-size: 13px;">Invited 2 days ago</span></td>
-                <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-wrap">
+            <table class="table" style="min-width: 720px;">
+              <thead><tr><th>Member</th><th>Role</th><th>Locations</th><th>Status</th><th>Last active</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="table__media"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/><div><p class="table__media-title">Bella Romano <span class="badge" style="margin-left:6px;">You</span></p><p class="table__media-sub">bella@bellasitalian.com</p></div></div></td>
+                  <td><span class="badge badge--accent">Owner</span></td>
+                  <td><span style="font-size: 12.5px;">All 3 locations</span></td>
+                  <td><span class="badge badge--success badge--dot">Active</span></td>
+                  <td><span class="muted" style="font-size: 13px;">Now</span></td>
+                  <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><div class="table__media"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/><div><p class="table__media-title">Marco Russo</p><p class="table__media-sub">marco@bellasitalian.com</p></div></div></td>
+                  <td><span class="badge badge--info">Manager</span></td>
+                  <td><span style="font-size: 12.5px;">Williamsburg, Park Slope</span></td>
+                  <td><span class="badge badge--success badge--dot">Active</span></td>
+                  <td><span class="muted" style="font-size: 13px;">2h ago</span></td>
+                  <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><div class="table__media"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/><div><p class="table__media-title">Sofia Conti</p><p class="table__media-sub">sofia@bellasitalian.com</p></div></div></td>
+                  <td><span class="badge badge--info">Manager</span></td>
+                  <td><span style="font-size: 12.5px;">West Village only</span></td>
+                  <td><span class="badge badge--success badge--dot">Active</span></td>
+                  <td><span class="muted" style="font-size: 13px;">Yesterday</span></td>
+                  <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><div class="table__media"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/><div><p class="table__media-title">Luca Bianchi</p><p class="table__media-sub">luca.b@gmail.com</p></div></div></td>
+                  <td><span class="badge">Staff</span></td>
+                  <td><span style="font-size: 12.5px;">Williamsburg</span></td>
+                  <td><span class="badge badge--warning badge--dot">Invite pending</span></td>
+                  <td><span class="muted" style="font-size: 13px;">Invited 2d ago</span></td>
+                  <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><div class="table__media"><img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/><div><p class="table__media-title">Tony Esposito</p><p class="table__media-sub">tony.e@bellasitalian.com</p></div></div></td>
+                  <td><span class="badge">Staff</span></td>
+                  <td><span style="font-size: 12.5px;">Park Slope</span></td>
+                  <td><span class="badge badge--success badge--dot">Active</span></td>
+                  <td><span class="muted" style="font-size: 13px;">4d ago</span></td>
+                  <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><div class="table__media"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&q=80&auto=format&fit=crop" alt="" style="border-radius: 50%;"/><div><p class="table__media-title">Elena Marino</p><p class="table__media-sub">elena.m@bellasitalian.com</p></div></div></td>
+                  <td><span class="badge">Staff</span></td>
+                  <td><span style="font-size: 12.5px;">West Village</span></td>
+                  <td><span class="badge badge--success badge--dot">Active</span></td>
+                  <td><span class="muted" style="font-size: 13px;">1w ago</span></td>
+                  <td><button class="table__action"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <!-- Roles & permissions -->
+        <!-- Roles -->
         <div class="card">
           <h2 class="h2 mb-8">Roles &amp; permissions</h2>
-          <p class="muted mb-16">What each role can do on this restaurant. Owners can change role permissions.</p>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+          <p class="muted mb-16">What each role can do. Owners can change role permissions.</p>
+          <div class="grid grid--3">
             <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 18px;">
-              <p style="margin: 0; display:flex; align-items: center; gap: 8px;"><span class="badge badge--accent">Owner</span></p>
+              <p><span class="badge badge--accent">Owner</span></p>
               <p class="tiny mt-8">Full access. Cannot be removed.</p>
               <ul style="font-size: 13px; padding-left: 0; list-style: none; margin: 14px 0 0; display:flex; flex-direction: column; gap: 6px;">
-                <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Everything (Manager)</li>
+                <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> All locations</li>
+                <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Add/remove locations</li>
                 <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Manage team &amp; roles</li>
                 <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Billing &amp; plan changes</li>
-                <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Delete restaurant</li>
               </ul>
             </div>
-
             <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 18px;">
-              <p style="margin: 0;"><span class="badge badge--info">Manager</span></p>
-              <p class="tiny mt-8">Run the day-to-day. No billing access.</p>
+              <p><span class="badge badge--info">Manager</span></p>
+              <p class="tiny mt-8">Per-location admin. No billing.</p>
               <ul style="font-size: 13px; padding-left: 0; list-style: none; margin: 14px 0 0; display:flex; flex-direction: column; gap: 6px;">
                 <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Edit menu &amp; photos</li>
                 <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Reply to reviews</li>
-                <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Invite staff</li>
+                <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Edit location hours</li>
                 <li style="display: flex; gap: 6px; color: var(--color-text-tertiary);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Billing</li>
               </ul>
             </div>
-
             <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 18px;">
-              <p style="margin: 0;"><span class="badge">Staff</span></p>
-              <p class="tiny mt-8">View-only with limited write access.</p>
+              <p><span class="badge">Staff</span></p>
+              <p class="tiny mt-8">Limited write access.</p>
               <ul style="font-size: 13px; padding-left: 0; list-style: none; margin: 14px 0 0; display:flex; flex-direction: column; gap: 6px;">
-                <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> View dashboard &amp; insights</li>
+                <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> View dashboard</li>
                 <li style="display: flex; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Upload photos</li>
                 <li style="display: flex; gap: 6px; color: var(--color-text-tertiary);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Edit menu</li>
                 <li style="display: flex; gap: 6px; color: var(--color-text-tertiary);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Reply to reviews</li>
@@ -195,40 +170,29 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 
-  <!-- Invite modal -->
   <div class="modal-overlay" id="invite-modal" style="display:none;">
     <div class="modal modal--narrow">
-      <div class="modal__head">
-        <h2 class="modal__title">Invite team member</h2>
-        <button class="modal__close" data-modal-close><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-      </div>
+      <div class="modal__head"><h2 class="modal__title">Invite team member</h2><button class="modal__close" data-modal-close><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
       <div class="modal__body">
+        <div class="field"><label class="field__label">Email</label><input class="input" type="email" placeholder="colleague@restaurant.com"/><p class="field__hint">Invite link valid for 7 days.</p></div>
+        <div class="field"><label class="field__label">Role</label><select class="select"><option>Manager</option><option selected>Staff</option></select></div>
         <div class="field">
-          <label class="field__label">Email</label>
-          <input class="input" type="email" placeholder="colleague@restaurant.com" />
-          <p class="field__hint">They'll get an invite link valid for 7 days.</p>
+          <label class="field__label">Which locations can they access?</label>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label class="check"><input type="checkbox" checked/><span class="check__box"></span>Bella's — Williamsburg</label>
+            <label class="check"><input type="checkbox"/><span class="check__box"></span>Bella's — West Village</label>
+            <label class="check"><input type="checkbox"/><span class="check__box"></span>Bella's — Park Slope</label>
+          </div>
         </div>
-        <div class="field">
-          <label class="field__label">Role</label>
-          <select class="select"><option>Manager</option><option selected>Staff</option></select>
-        </div>
-        <div class="field">
-          <label class="field__label">Personal note (optional)</label>
-          <textarea class="textarea" placeholder="Hey! Adding you to SeeIt so you can help with photos…"></textarea>
-        </div>
+        <div class="field"><label class="field__label">Personal note (optional)</label><textarea class="textarea" placeholder="Hey! Adding you to SeeIt..."></textarea></div>
       </div>
-      <div class="modal__foot">
-        <button class="btn btn--ghost" data-modal-close>Cancel</button>
-        <button class="btn btn--primary" data-modal-close>Send invite</button>
-      </div>
+      <div class="modal__foot"><button class="btn btn--ghost" data-modal-close>Cancel</button><button class="btn btn--primary" data-modal-close>Send invite</button></div>
     </div>
   </div>
-
   <script src="js/nav.js"></script>
 </body>
 </html>
