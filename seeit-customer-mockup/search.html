@@ -11,42 +11,33 @@
 </head>
 <body>
   <div class="app">
-    <!-- Top bar with search -->
     <header class="app-header">
       <div class="search-bar" style="flex:1;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9A9A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input type="text" placeholder="Search dishes, restaurants…" />
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9A9A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search dishes, restaurants…" autofocus />
       </div>
       <a href="home.html" style="font-size:14px; font-weight:600; color:var(--color-primary);">Cancel</a>
     </header>
 
-    <!-- Segmented toggle -->
     <div class="segmented" data-segment>
       <button class="segmented__btn segmented__btn--active" data-href="search-results-dishes.html">Dishes</button>
       <button class="segmented__btn" data-href="search-results-restaurants.html">Restaurants</button>
     </div>
 
-    <!-- Filter chips -->
     <div class="section" style="padding-bottom:0;">
       <h3 class="h4" style="margin:6px 0 10px;">Filters</h3>
     </div>
     <div class="chips chips--scroll" style="padding-top: 0;">
-      <button class="chip chip--accent" data-chip-toggle>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 8 9 4"/></svg>
-        Open now
-      </button>
+      <button class="chip chip--accent" data-chip-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 8 9 4"/></svg>Open now</button>
       <button class="chip" data-chip-toggle>$ — $$</button>
-      <button class="chip" data-chip-toggle>4.5+ stars</button>
+      <button class="chip" data-chip-toggle>4.5+ ★</button>
       <button class="chip" data-chip-toggle>&lt; 1 mi</button>
+      <button class="chip" data-chip-toggle>Kosher</button>
       <button class="chip" data-chip-toggle>Halal</button>
       <button class="chip" data-chip-toggle>Vegan</button>
       <button class="chip" data-chip-toggle>Gluten-free</button>
-      <button class="chip" data-chip-toggle>Kosher</button>
     </div>
 
-    <!-- Cuisine grid -->
     <div class="section">
       <h3 class="h4" style="margin: 0 0 10px;">Cuisine</h3>
       <div class="chips">
@@ -63,7 +54,6 @@
       </div>
     </div>
 
-    <!-- Recent searches -->
     <div class="section">
       <div class="section__head">
         <h3 class="section__title" style="font-size:17px;">Recent searches</h3>
@@ -72,114 +62,46 @@
     </div>
     <div class="search-list">
       <div class="search-row">
-        <div class="search-row__icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
-        </div>
-        <div class="search-row__text">
-          <p class="search-row__title">birria tacos</p>
-          <p class="search-row__sub">12 dishes near you</p>
-        </div>
-        <button class="search-row__action">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 7 7 17M7 7l10 10"/></svg>
-        </button>
+        <div class="search-row__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
+        <div class="search-row__text"><p class="search-row__title">birria tacos</p><p class="search-row__sub">12 dishes near you</p></div>
+        <button class="search-row__action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 7 7 17M7 7l10 10"/></svg></button>
       </div>
       <div class="search-row">
-        <div class="search-row__icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
-        </div>
-        <div class="search-row__text">
-          <p class="search-row__title">vegan brunch</p>
-          <p class="search-row__sub">8 restaurants near you</p>
-        </div>
-        <button class="search-row__action">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 7 7 17M7 7l10 10"/></svg>
-        </button>
+        <div class="search-row__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
+        <div class="search-row__text"><p class="search-row__title">kosher meat</p><p class="search-row__sub">4 restaurants near you</p></div>
+        <button class="search-row__action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 7 7 17M7 7l10 10"/></svg></button>
       </div>
       <div class="search-row">
-        <div class="search-row__icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
-        </div>
-        <div class="search-row__text">
-          <p class="search-row__title">spicy ramen</p>
-          <p class="search-row__sub">6 dishes near you</p>
-        </div>
-        <button class="search-row__action">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 7 7 17M7 7l10 10"/></svg>
-        </button>
+        <div class="search-row__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
+        <div class="search-row__text"><p class="search-row__title">vegan brunch</p><p class="search-row__sub">8 restaurants near you</p></div>
+        <button class="search-row__action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 7 7 17M7 7l10 10"/></svg></button>
+      </div>
+      <div class="search-row">
+        <div class="search-row__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
+        <div class="search-row__text"><p class="search-row__title">spicy ramen</p><p class="search-row__sub">6 dishes near you</p></div>
+        <button class="search-row__action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 7 7 17M7 7l10 10"/></svg></button>
       </div>
     </div>
 
-    <!-- Trending searches -->
     <div class="section">
-      <div class="section__head">
-        <h3 class="section__title" style="font-size:17px;">🔥 Trending in SF</h3>
-      </div>
+      <div class="section__head"><h3 class="section__title" style="font-size:17px;">🔥 Trending in SF</h3></div>
     </div>
     <div class="search-list">
-      <div class="search-row">
-        <div class="search-row__rank">1</div>
-        <div class="search-row__text">
-          <p class="search-row__title">cacio e pepe</p>
-          <p class="search-row__sub">↑ 38% this week</p>
-        </div>
-      </div>
-      <div class="search-row">
-        <div class="search-row__rank">2</div>
-        <div class="search-row__text">
-          <p class="search-row__title">korean corn dogs</p>
-          <p class="search-row__sub">↑ 24% this week</p>
-        </div>
-      </div>
-      <div class="search-row">
-        <div class="search-row__rank">3</div>
-        <div class="search-row__text">
-          <p class="search-row__title">khao soi</p>
-          <p class="search-row__sub">↑ 19% this week</p>
-        </div>
-      </div>
-      <div class="search-row">
-        <div class="search-row__rank">4</div>
-        <div class="search-row__text">
-          <p class="search-row__title">soft serve matcha</p>
-          <p class="search-row__sub">↑ 12% this week</p>
-        </div>
-      </div>
-      <div class="search-row">
-        <div class="search-row__rank">5</div>
-        <div class="search-row__text">
-          <p class="search-row__title">smashburger</p>
-          <p class="search-row__sub">↑ 8% this week</p>
-        </div>
-      </div>
+      <div class="search-row"><div class="search-row__rank">1</div><div class="search-row__text"><p class="search-row__title">cacio e pepe</p><p class="search-row__sub">↑ 38% this week</p></div></div>
+      <div class="search-row"><div class="search-row__rank">2</div><div class="search-row__text"><p class="search-row__title">korean corn dogs</p><p class="search-row__sub">↑ 24% this week</p></div></div>
+      <div class="search-row"><div class="search-row__rank">3</div><div class="search-row__text"><p class="search-row__title">khao soi</p><p class="search-row__sub">↑ 19% this week</p></div></div>
+      <div class="search-row"><div class="search-row__rank">4</div><div class="search-row__text"><p class="search-row__title">matcha soft serve</p><p class="search-row__sub">↑ 12% this week</p></div></div>
+      <div class="search-row"><div class="search-row__rank">5</div><div class="search-row__text"><p class="search-row__title">smashburger</p><p class="search-row__sub">↑ 8% this week</p></div></div>
     </div>
 
-    <div class="spacer"></div>
-    <div class="spacer"></div>
+    <div class="spacer"></div><div class="spacer"></div>
 
-    <!-- Bottom navigation -->
     <nav class="bottom-nav">
-      <a href="home.html" class="bottom-nav__item" data-nav-target="home.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>
-        Home
-      </a>
-      <a href="search.html" class="bottom-nav__item bottom-nav__item--active" data-nav-target="search.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Search
-      </a>
-      <div class="bottom-nav__scan">
-        <a href="qr-scan.html" class="bottom-nav__scan-btn" aria-label="Scan menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>
-        </a>
-        <span class="bottom-nav__scan-label">Scan</span>
-      </div>
-      <a href="saved.html" class="bottom-nav__item" data-nav-target="saved.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-        Saved
-      </a>
-      <a href="profile.html" class="bottom-nav__item" data-nav-target="profile.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Profile
-      </a>
+      <a href="home.html" class="bottom-nav__item" data-nav-target="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>Home</a>
+      <a href="search.html" class="bottom-nav__item" data-nav-target="search.html,search-results-dishes.html,search-results-restaurants.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search</a>
+      <div class="bottom-nav__scan"><a href="qr-scan.html" class="bottom-nav__scan-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg></a><span class="bottom-nav__scan-label">Scan</span></div>
+      <a href="saved.html" class="bottom-nav__item" data-nav-target="saved.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>Saved</a>
+      <a href="profile.html" class="bottom-nav__item" data-nav-target="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
     </nav>
   </div>
   <script src="js/nav.js"></script>

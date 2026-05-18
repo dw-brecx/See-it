@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>SeeIt — Allergies &amp; Diet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app app--surface" style="padding-bottom: 110px;">
+    <header class="app-header">
+      <a href="settings.html" class="app-header__btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></a>
+      <h1 class="app-header__title">Allergies &amp; diet</h1>
+      <button class="app-header__btn" style="opacity:0;"></button>
+    </header>
+
+    <div style="padding: 12px 22px 4px;">
+      <p class="muted" style="font-size: 13.5px; margin: 0;">We use these to warn you when a dish conflicts and surface ones that match.</p>
+    </div>
+
+    <div style="padding: 18px 22px 4px;">
+      <h3 class="h3" style="margin-bottom: 12px;">🚫 Allergies</h3>
+      <div class="pick-grid">
+        <button class="pick-card" data-pick><span class="emoji">🥜</span>Peanuts</button>
+        <button class="pick-card is-active" data-pick><span class="emoji">🌰</span>Tree nuts</button>
+        <button class="pick-card" data-pick><span class="emoji">🦐</span>Shellfish</button>
+        <button class="pick-card" data-pick><span class="emoji">🐟</span>Fish</button>
+        <button class="pick-card is-active" data-pick><span class="emoji">🥛</span>Dairy</button>
+        <button class="pick-card" data-pick><span class="emoji">🥚</span>Eggs</button>
+        <button class="pick-card" data-pick><span class="emoji">🌾</span>Wheat / Gluten</button>
+        <button class="pick-card" data-pick><span class="emoji">🫘</span>Soy</button>
+        <button class="pick-card" data-pick><span class="emoji">🌱</span>Sesame</button>
+      </div>
+    </div>
+
+    <div style="padding: 18px 22px 18px;">
+      <h3 class="h3" style="margin-bottom: 12px;">🌱 Dietary preferences</h3>
+      <div class="pick-grid">
+        <button class="pick-card" data-pick><span class="emoji">✡️</span>Kosher</button>
+        <button class="pick-card" data-pick><span class="emoji">☪️</span>Halal</button>
+        <button class="pick-card" data-pick><span class="emoji">🌿</span>Vegan</button>
+        <button class="pick-card is-active" data-pick><span class="emoji">🥗</span>Vegetarian</button>
+        <button class="pick-card" data-pick><span class="emoji">🌾</span>Gluten-free</button>
+      </div>
+    </div>
+
+    <div class="sticky-cta">
+      <a href="settings.html" class="btn btn--primary">Save changes</a>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

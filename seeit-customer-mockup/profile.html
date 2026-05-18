@@ -14,40 +14,36 @@
     <header class="app-header app-header--plain">
       <button class="app-header__btn" style="opacity:0;"></button>
       <h1 class="app-header__title">Profile</h1>
-      <a href="settings.html" class="app-header__btn" aria-label="Settings">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
-      </a>
+      <a href="settings.html" class="app-header__btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></a>
     </header>
 
-    <!-- Profile head -->
     <div class="profile-head">
-      <div class="profile-head__avatar">
-        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80&auto=format&fit=crop" alt="" />
-      </div>
+      <div class="profile-head__avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80&auto=format&fit=crop" alt=""/></div>
       <h2 class="profile-head__name">Alex Rivera</h2>
       <p class="profile-head__handle">@alexeats · Mission District, SF</p>
       <button class="btn btn--ghost" style="max-width: 200px; margin: 0 auto; padding: 10px 16px; font-size:14px;">Edit profile</button>
     </div>
 
-    <!-- Stats -->
     <div class="stats">
-      <div class="stat">
-        <div class="stat__num">42</div>
-        <div class="stat__lab">Reviews</div>
-      </div>
-      <div class="stat">
-        <div class="stat__num">128</div>
-        <div class="stat__lab">Photos</div>
-      </div>
-      <div class="stat">
-        <div class="stat__num">67</div>
-        <div class="stat__lab">Spots visited</div>
-      </div>
+      <div class="stat"><div class="stat__num">42</div><div class="stat__lab">Reviews</div></div>
+      <div class="stat"><div class="stat__num">128</div><div class="stat__lab">Photos</div></div>
+      <div class="stat"><div class="stat__num">67</div><div class="stat__lab">Spots visited</div></div>
     </div>
+
+    <a href="order-history.html" class="settings-row" style="margin-top: 14px; border-top: 1px solid var(--color-border);">
+      <div class="settings-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+      <span class="settings-row__label">Order history</span>
+      <span class="settings-row__value">12 lists</span>
+      <span class="settings-row__chev">›</span>
+    </a>
+    <a href="settings.html" class="settings-row">
+      <div class="settings-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></div>
+      <span class="settings-row__label">Settings</span>
+      <span class="settings-row__chev">›</span>
+    </a>
 
     <div class="divider"></div>
 
-    <!-- Recent reviews -->
     <div class="section">
       <div class="section__head">
         <h3 class="section__title" style="font-size:17px;">Your recent reviews</h3>
@@ -57,12 +53,10 @@
 
     <div class="review">
       <div class="review__head">
-        <div class="review__avatar">
-          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=120&q=80&auto=format&fit=crop" alt="" />
-        </div>
-        <div style="flex:1;">
-          <p class="review__user">Tonkotsu Ramen</p>
-          <p class="review__date">Ippudo Ramen House · 2d ago</p>
+        <div class="review__avatar"><img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=120&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="review__user-body">
+          <p class="review__user">Truffle Tagliatelle</p>
+          <p class="review__date">Bella's Italian Kitchen · 2d ago</p>
         </div>
         <div class="stars">
           <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
@@ -72,22 +66,20 @@
           <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
         </div>
       </div>
-      <p class="review__text">Best tonkotsu in SF, hands down. The broth is so rich it's almost chewy. Came back two nights in a row.</p>
+      <p class="review__text">"Best plate of pasta I've had in SF. Came back two nights in a row."</p>
       <div class="review__photos">
-        <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-        <img src="https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-        <img src="https://images.unsplash.com/photo-1607301406259-dfb186e15de8?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" />
+        <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=200&q=80&auto=format&fit=crop" alt=""/>
+        <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?w=200&q=80&auto=format&fit=crop" alt=""/>
+        <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=200&q=80&auto=format&fit=crop" alt=""/>
       </div>
     </div>
 
     <div class="review">
       <div class="review__head">
-        <div class="review__avatar">
-          <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=80&auto=format&fit=crop" alt="" />
-        </div>
-        <div style="flex:1;">
-          <p class="review__user">Birria Tacos</p>
-          <p class="review__date">El Farolito · 5d ago</p>
+        <div class="review__avatar"><img src="https://images.unsplash.com/photo-1604908554027-a2b683c2dba4?w=120&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="review__user-body">
+          <p class="review__user">Lamb Shawarma Plate</p>
+          <p class="review__date">Tel Aviv Grill · 5d ago</p>
         </div>
         <div class="stars">
           <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
@@ -97,65 +89,15 @@
           <svg class="star" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
         </div>
       </div>
-      <p class="review__text">Consomé was 🔥 — perfect for dipping. Tortillas held up great. The line moves fast even at peak hours.</p>
-      <div class="review__photos">
-        <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-        <img src="https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-      </div>
+      <p class="review__text">"Lamb fell apart at the touch of a fork. Generous portion — split it with my dad and we were full."</p>
     </div>
 
-    <div class="review">
-      <div class="review__head">
-        <div class="review__avatar">
-          <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=120&q=80&auto=format&fit=crop" alt="" />
-        </div>
-        <div style="flex:1;">
-          <p class="review__user">Truffle Tagliatelle</p>
-          <p class="review__date">Forno &amp; Vino · 1w ago</p>
-        </div>
-        <div class="stars">
-          <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-          <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-          <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-          <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-          <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-        </div>
-      </div>
-      <p class="review__text">Generous shavings of truffle. Pasta cooked just right. Worth every penny — already made a reservation for next month.</p>
-    </div>
-
-    <a href="settings.html" class="settings-row" style="margin-top: 18px; border-top: 1px solid var(--color-border);">
-      <div class="settings-row__icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
-      </div>
-      <span class="settings-row__label">Settings</span>
-      <span class="settings-row__chev">›</span>
-    </a>
-
-    <!-- Bottom navigation -->
     <nav class="bottom-nav">
-      <a href="home.html" class="bottom-nav__item" data-nav-target="home.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>
-        Home
-      </a>
-      <a href="search.html" class="bottom-nav__item" data-nav-target="search.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Search
-      </a>
-      <div class="bottom-nav__scan">
-        <a href="qr-scan.html" class="bottom-nav__scan-btn" aria-label="Scan menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>
-        </a>
-        <span class="bottom-nav__scan-label">Scan</span>
-      </div>
-      <a href="saved.html" class="bottom-nav__item" data-nav-target="saved.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-        Saved
-      </a>
-      <a href="profile.html" class="bottom-nav__item bottom-nav__item--active" data-nav-target="profile.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Profile
-      </a>
+      <a href="home.html" class="bottom-nav__item" data-nav-target="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>Home</a>
+      <a href="search.html" class="bottom-nav__item" data-nav-target="search.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search</a>
+      <div class="bottom-nav__scan"><a href="qr-scan.html" class="bottom-nav__scan-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg></a><span class="bottom-nav__scan-label">Scan</span></div>
+      <a href="saved.html" class="bottom-nav__item" data-nav-target="saved.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>Saved</a>
+      <a href="profile.html" class="bottom-nav__item" data-nav-target="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
     </nav>
   </div>
   <script src="js/nav.js"></script>

@@ -10,30 +10,53 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div class="app app--no-nav app--full" style="padding-bottom: 100px;">
-    <header class="app-header app-header--plain">
-      <a href="dish-detail.html" class="app-header__btn" aria-label="Close">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </a>
+  <div class="app app--no-nav app--surface" style="padding-bottom: 100px;">
+    <header class="app-header app-header--plain" style="border-bottom: 1px solid var(--color-border);">
+      <a href="dish-detail.html" class="app-header__btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></a>
       <h1 class="app-header__title">Write a review</h1>
-      <button class="app-header__btn" aria-label="More" style="opacity:0;"></button>
+      <button class="app-header__btn" style="opacity:0;"></button>
     </header>
 
     <!-- Dish context -->
-    <div style="padding: 6px 18px 14px; display:flex; gap:12px; align-items:center;">
+    <div style="padding: 8px 18px 14px; display:flex; gap:12px; align-items:center;">
       <div style="width:60px; height:60px; border-radius: var(--radius-md); overflow:hidden; flex:0 0 auto;">
-        <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=200&q=80&auto=format&fit=crop" alt="" style="width:100%; height:100%; object-fit:cover;" />
+        <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=200&q=80&auto=format&fit=crop" alt="" style="width:100%; height:100%; object-fit:cover;"/>
       </div>
       <div>
-        <h3 style="font-size:16px; font-weight:600; margin:0 0 2px; letter-spacing:-0.01em;">Tonkotsu Ramen</h3>
-        <p class="muted" style="font-size:13px; margin:0;">Ippudo Ramen House</p>
+        <h3 style="font-size:16px; font-weight:600; margin:0 0 2px; letter-spacing:-0.01em;">Truffle Tagliatelle</h3>
+        <p class="muted" style="font-size:13px; margin:0;">Bella's Italian Kitchen — Mission</p>
       </div>
     </div>
 
-    <div style="height:8px; background: var(--color-bg);"></div>
+    <div class="divider"></div>
+
+    <!-- Photos FIRST -->
+    <div style="padding: 18px; background: var(--color-surface);">
+      <h3 class="h3" style="margin: 0 0 4px;">📸 Add photos</h3>
+      <p class="muted" style="font-size:13.5px; margin: 4px 0 12px;">Photos help others know what to expect — add at least one to publish.</p>
+
+      <div class="photo-grid">
+        <div class="photo-grid__item">
+          <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=300&q=80&auto=format&fit=crop" alt=""/>
+          <button style="position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:50%; background: rgba(0,0,0,.6); color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="photo-grid__item">
+          <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?w=300&q=80&auto=format&fit=crop" alt=""/>
+          <button style="position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:50%; background: rgba(0,0,0,.6); color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <button class="photo-grid__item photo-grid__add">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="3.5"/><path d="M3 7h3l2-3h8l2 3h3v13H3z"/></svg>
+            <span style="font-size:11px; font-weight:600;">Add photo</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
 
     <!-- Star rating -->
-    <div style="padding: 22px 18px 10px; text-align:center; background: var(--color-surface);">
+    <div style="padding: 22px 18px 14px; text-align:center; background: var(--color-surface);">
       <h3 class="h3" style="margin: 0 0 4px;">How was it?</h3>
       <p class="muted" style="font-size:13px; margin: 0;">Tap a star to rate</p>
       <div class="star-select" data-star-select>
@@ -45,69 +68,60 @@
       </div>
     </div>
 
-    <div style="height:8px; background: var(--color-bg);"></div>
+    <div class="divider"></div>
 
-    <!-- Photo upload -->
+    <!-- Portion size picker -->
     <div style="padding: 18px; background: var(--color-surface);">
-      <h3 class="h4" style="margin: 0 0 4px;">Add photos</h3>
-      <p class="muted" style="font-size:13px; margin: 0 0 12px;">Real photos help others know what to expect.</p>
-
-      <div class="photo-grid">
-        <div class="photo-grid__item">
-          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&q=80&auto=format&fit=crop" alt="" />
-          <button style="position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:50%; background: rgba(0,0,0,.6); color:#fff; display:flex; align-items:center; justify-content:center;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <div class="photo-grid__item">
-          <img src="https://images.unsplash.com/photo-1607301406259-dfb186e15de8?w=300&q=80&auto=format&fit=crop" alt="" />
-          <button style="position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:50%; background: rgba(0,0,0,.6); color:#fff; display:flex; align-items:center; justify-content:center;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <button class="photo-grid__item photo-grid__add">
-          <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="13" r="3.5"/><path d="M3 7h3l2-3h8l2 3h3v13H3z"/>
-            </svg>
-            <span style="font-size:11px; font-weight:600;">Add photo</span>
-          </div>
-        </button>
+      <h3 class="h4" style="margin: 0 0 4px;">Portion size</h3>
+      <p class="muted" style="font-size:13px; margin: 4px 0 12px;">How big was the serving?</p>
+      <div class="picker-row picker-row--3" data-pick-group>
+        <button class="picker-btn" data-pick-one><span class="emoji">🤏</span>Small</button>
+        <button class="picker-btn" data-pick-one><span class="emoji">👌</span>Fair</button>
+        <button class="picker-btn is-active" data-pick-one><span class="emoji">🍝</span>Generous</button>
       </div>
     </div>
 
-    <div style="height:8px; background: var(--color-bg);"></div>
+    <div class="divider"></div>
+
+    <!-- Worth the price toggle -->
+    <div style="padding: 18px; background: var(--color-surface);">
+      <h3 class="h4" style="margin: 0 0 4px;">Worth the price?</h3>
+      <p class="muted" style="font-size:13px; margin: 4px 0 12px;">Helps others gauge value.</p>
+      <div class="picker-row picker-row--2" data-pick-group>
+        <button class="picker-btn is-active" data-pick-one><span class="emoji">💸</span>Yes, worth it</button>
+        <button class="picker-btn" data-pick-one><span class="emoji">😬</span>Overpriced</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
 
     <!-- Review text -->
     <div style="padding: 18px; background: var(--color-surface);">
       <h3 class="h4" style="margin: 0 0 4px;">Tell the story</h3>
-      <p class="muted" style="font-size:13px; margin: 0 0 12px;">A sentence or two is plenty.</p>
-      <textarea class="field__textarea" placeholder="Best tonkotsu I've had in SF. Came back for a second night."></textarea>
+      <p class="muted" style="font-size:13px; margin: 4px 0 12px;">A sentence or two is plenty.</p>
+      <textarea class="field__textarea" placeholder="Best tagliatelle I've had in SF. Came back the next night.">Best tagliatelle I've had in SF. Came back the next night for the carbonara — chef came out and chatted with us.</textarea>
     </div>
 
-    <div style="height:8px; background: var(--color-bg);"></div>
+    <div class="divider"></div>
 
     <!-- Mood tags -->
     <div style="padding: 18px; background: var(--color-surface);">
       <h3 class="h4" style="margin: 0 0 4px;">How would you describe it?</h3>
-      <p class="muted" style="font-size:13px; margin: 0 0 12px;">Pick all that apply.</p>
+      <p class="muted" style="font-size:13px; margin: 4px 0 12px;">Pick all that apply.</p>
       <div class="mood-grid">
         <button class="mood-tag is-active" data-mood>🌶 Spicy</button>
-        <button class="mood-tag is-active" data-mood>🍱 Generous portion</button>
-        <button class="mood-tag" data-mood>💸 Worth it</button>
-        <button class="mood-tag" data-mood>📸 Instagrammable</button>
-        <button class="mood-tag" data-mood>🛋 Cozy</button>
+        <button class="mood-tag is-active" data-mood>📸 Instagrammable</button>
+        <button class="mood-tag" data-mood>🛋 Comfort food</button>
+        <button class="mood-tag" data-mood>🍷 Date night</button>
         <button class="mood-tag" data-mood>👨‍👩‍👧 Family friendly</button>
         <button class="mood-tag" data-mood>🌱 Plant-forward</button>
         <button class="mood-tag" data-mood>⚡ Quick service</button>
-        <button class="mood-tag" data-mood>🍷 Date night</button>
+        <button class="mood-tag" data-mood>🌅 Brunch vibes</button>
         <button class="mood-tag" data-mood>💼 Solo-friendly</button>
         <button class="mood-tag" data-mood>🎉 Group friendly</button>
-        <button class="mood-tag" data-mood>🌅 Brunch vibes</button>
       </div>
     </div>
 
-    <!-- Sticky submit -->
     <div class="sticky-cta">
       <a href="dish-detail.html" class="btn btn--primary">Post review</a>
     </div>

@@ -14,121 +14,97 @@
     <header class="app-header app-header--plain" style="border-bottom: 1px solid var(--color-border);">
       <button class="app-header__btn" style="opacity:0;"></button>
       <h1 class="app-header__title">Saved</h1>
-      <button class="app-header__btn" aria-label="Filter">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
-      </button>
+      <button class="app-header__btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg></button>
     </header>
 
-    <div class="segmented" data-segment style="margin-top:6px;">
-      <button class="segmented__btn segmented__btn--active">Restaurants <span style="color:var(--color-text-tertiary); font-weight:500;">· 12</span></button>
-      <button class="segmented__btn">Dishes <span style="color:var(--color-text-tertiary); font-weight:500;">· 24</span></button>
+    <div class="tabs" data-tabs style="position: sticky; top: 56px; z-index: 9;">
+      <a href="#rest" class="tabs__item tabs__item--active">Restaurants · 12</a>
+      <a href="#dishes" class="tabs__item">Dishes · 24</a>
+      <a href="#wtt" class="tabs__item">Want to try · 8</a>
     </div>
 
-    <!-- Saved restaurants -->
+    <!-- Saved restaurants tab -->
     <div class="saved-grid">
       <a href="restaurant-detail.html" class="saved-tile">
-        <div class="saved-tile__media">
-          <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-          <button data-save class="disc-card__save is-saved" style="background:#fff;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E85D3A" stroke="#E85D3A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-          </button>
-        </div>
-        <div class="saved-tile__body">
-          <h3 class="saved-tile__title">Ippudo Ramen House</h3>
-          <p class="saved-tile__sub">★ 4.8 · 0.2 mi · $$</p>
-        </div>
+        <div class="saved-tile__media"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="saved-tile__body"><h3 class="saved-tile__title">Tel Aviv Grill</h3><p class="saved-tile__sub">★ 4.8 · 0.2 mi · $$</p></div>
       </a>
-
       <a href="restaurant-detail.html" class="saved-tile">
-        <div class="saved-tile__media">
-          <img src="https://images.unsplash.com/photo-1592861956120-e524fc739696?w=400&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-          <button data-save class="disc-card__save is-saved" style="background:#fff;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E85D3A" stroke="#E85D3A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-          </button>
-        </div>
-        <div class="saved-tile__body">
-          <h3 class="saved-tile__title">Hashimoto Omakase</h3>
-          <p class="saved-tile__sub">★ 4.95 · 0.6 mi · $$$$</p>
-        </div>
+        <div class="saved-tile__media"><img src="https://images.unsplash.com/photo-1592861956120-e524fc739696?w=400&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="saved-tile__body"><h3 class="saved-tile__title">Hashimoto Omakase</h3><p class="saved-tile__sub">★ 4.95 · 0.6 mi · $$$$</p></div>
       </a>
-
-      <a href="restaurant-detail.html" class="saved-tile">
-        <div class="saved-tile__media">
-          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-          <button data-save class="disc-card__save is-saved" style="background:#fff;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E85D3A" stroke="#E85D3A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-          </button>
-        </div>
-        <div class="saved-tile__body">
-          <h3 class="saved-tile__title">Mesa Verde</h3>
-          <p class="saved-tile__sub">★ 4.9 · 0.3 mi · $$$</p>
-        </div>
+      <a href="brand-locations.html" class="saved-tile">
+        <div class="saved-tile__media"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="saved-tile__body"><h3 class="saved-tile__title">Bella's Italian Kitchen</h3><p class="saved-tile__sub">★ 4.7 · 3 locations · $$</p></div>
       </a>
-
       <a href="restaurant-detail.html" class="saved-tile">
-        <div class="saved-tile__media">
-          <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-          <button data-save class="disc-card__save is-saved" style="background:#fff;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E85D3A" stroke="#E85D3A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-          </button>
-        </div>
-        <div class="saved-tile__body">
-          <h3 class="saved-tile__title">Seoul Hot Stone</h3>
-          <p class="saved-tile__sub">★ 4.9 · 0.7 mi · $$$</p>
-        </div>
+        <div class="saved-tile__media"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="saved-tile__body"><h3 class="saved-tile__title">Mesa Verde</h3><p class="saved-tile__sub">★ 4.9 · 0.3 mi · $$$</p></div>
       </a>
-
       <a href="restaurant-detail.html" class="saved-tile">
-        <div class="saved-tile__media">
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-          <button data-save class="disc-card__save is-saved" style="background:#fff;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E85D3A" stroke="#E85D3A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-          </button>
-        </div>
-        <div class="saved-tile__body">
-          <h3 class="saved-tile__title">Forno &amp; Vino</h3>
-          <p class="saved-tile__sub">★ 4.6 · 0.5 mi · $$</p>
-        </div>
+        <div class="saved-tile__media"><img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="saved-tile__body"><h3 class="saved-tile__title">Seoul Hot Stone</h3><p class="saved-tile__sub">★ 4.9 · 0.7 mi · $$$</p></div>
       </a>
-
       <a href="restaurant-detail.html" class="saved-tile">
-        <div class="saved-tile__media">
-          <img src="https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=400&q=80&auto=format&fit=crop" alt="" loading="lazy" />
-          <button data-save class="disc-card__save is-saved" style="background:#fff;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E85D3A" stroke="#E85D3A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-          </button>
-        </div>
-        <div class="saved-tile__body">
-          <h3 class="saved-tile__title">Casita Pequeña</h3>
-          <p class="saved-tile__sub">★ 4.7 · 0.6 mi · $$</p>
-        </div>
+        <div class="saved-tile__media"><img src="https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=400&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="saved-tile__body"><h3 class="saved-tile__title">Casita Pequeña</h3><p class="saved-tile__sub">★ 4.7 · 0.6 mi · $$</p></div>
       </a>
     </div>
 
-    <!-- Bottom navigation -->
-    <nav class="bottom-nav">
-      <a href="home.html" class="bottom-nav__item" data-nav-target="home.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>
-        Home
+    <!-- Preview: Want to try section -->
+    <details style="margin: 8px 18px 18px;">
+      <summary style="font-size:12px; color:var(--color-text-secondary);">Preview: "Want to try" tab</summary>
+
+      <a href="dish-detail.html" class="wtt-row">
+        <div class="wtt-row__media"><img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=200&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="wtt-row__body">
+          <h3 class="wtt-row__title">Truffle Tagliatelle</h3>
+          <p class="wtt-row__sub">Bella's · 0.5 mi · $26</p>
+          <span class="wtt-row__note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            heard about this from Sarah
+          </span>
+        </div>
       </a>
-      <a href="search.html" class="bottom-nav__item" data-nav-target="search.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Search
+
+      <a href="dish-detail.html" class="wtt-row">
+        <div class="wtt-row__media"><img src="https://images.unsplash.com/photo-1604908554027-a2b683c2dba4?w=200&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="wtt-row__body">
+          <h3 class="wtt-row__title">Lamb Shawarma Plate</h3>
+          <p class="wtt-row__sub">Tel Aviv Grill · 0.2 mi · $24</p>
+          <span class="wtt-row__note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            for Friday date night
+          </span>
+        </div>
       </a>
-      <div class="bottom-nav__scan">
-        <a href="qr-scan.html" class="bottom-nav__scan-btn" aria-label="Scan menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>
-        </a>
-        <span class="bottom-nav__scan-label">Scan</span>
+
+      <a href="dish-detail.html" class="wtt-row">
+        <div class="wtt-row__media"><img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=200&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="wtt-row__body">
+          <h3 class="wtt-row__title">Birria Tacos</h3>
+          <p class="wtt-row__sub">El Farolito · 0.4 mi · $14</p>
+        </div>
+      </a>
+    </details>
+
+    <!-- Empty state preview -->
+    <details style="margin: 0 18px 18px;">
+      <summary style="font-size:12px; color:var(--color-text-secondary);">Preview: empty saved state</summary>
+      <div class="state">
+        <div class="state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg></div>
+        <h2 class="state__title">Nothing saved yet</h2>
+        <p class="state__desc">Tap the heart on any restaurant or dish to save it here.</p>
+        <a href="home.html" class="btn btn--primary" style="max-width: 220px; margin: 0 auto;">Browse</a>
       </div>
-      <a href="saved.html" class="bottom-nav__item bottom-nav__item--active" data-nav-target="saved.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-        Saved
-      </a>
-      <a href="profile.html" class="bottom-nav__item" data-nav-target="profile.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Profile
-      </a>
+    </details>
+
+    <nav class="bottom-nav">
+      <a href="home.html" class="bottom-nav__item" data-nav-target="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>Home</a>
+      <a href="search.html" class="bottom-nav__item" data-nav-target="search.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search</a>
+      <div class="bottom-nav__scan"><a href="qr-scan.html" class="bottom-nav__scan-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg></a><span class="bottom-nav__scan-label">Scan</span></div>
+      <a href="saved.html" class="bottom-nav__item" data-nav-target="saved.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>Saved</a>
+      <a href="profile.html" class="bottom-nav__item" data-nav-target="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
     </nav>
   </div>
   <script src="js/nav.js"></script>

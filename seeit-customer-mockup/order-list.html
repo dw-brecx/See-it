@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>SeeIt — Order List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app app--no-nav app--surface" style="padding-bottom: 160px;">
+    <header class="app-header app-header--plain" style="border-bottom: 1px solid var(--color-border);">
+      <a href="restaurant-detail.html" class="app-header__btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></a>
+      <h1 class="app-header__title">Order list</h1>
+      <button class="app-header__btn" aria-label="More"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="6" r="1"/><circle cx="12" cy="18" r="1"/></svg></button>
+    </header>
+
+    <!-- Restaurant context -->
+    <div style="padding: 14px 18px 8px;">
+      <p class="eyebrow" style="color: var(--color-text-tertiary);">FOR YOUR TABLE AT</p>
+      <h2 class="h2" style="margin-top: 4px;">Tel Aviv Grill</h2>
+      <p class="muted" style="font-size: 13px; margin: 4px 0 0;">2845 24th St · Mission, SF</p>
+    </div>
+
+    <div style="padding: 0 18px 4px; display: flex; align-items: center; justify-content: space-between;">
+      <span class="tiny"><strong style="color: var(--color-text); font-size: 13px;">5 items</strong> · 4 people</span>
+      <a href="#" class="section__link" style="font-size: 13px;">Clear list</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Order items -->
+    <div class="order-row">
+      <div class="order-row__media"><img src="https://images.unsplash.com/photo-1604908554027-a2b683c2dba4?w=200&q=80&auto=format&fit=crop" alt=""/></div>
+      <div class="order-row__body">
+        <h3 class="order-row__title">Lamb Shawarma Plate</h3>
+        <p class="order-row__price">$24 each</p>
+        <div class="order-row__note">
+          <input type="text" value="extra tahini, no pickles" />
+        </div>
+        <div class="order-row__tags">
+          <span class="person-tag person-tag--filled"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg> Me</span>
+          <span class="person-tag person-tag--filled"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg> Dad</span>
+        </div>
+      </div>
+      <div class="qty-stepper" data-stepper>
+        <button data-step-down>−</button>
+        <span class="qty-stepper__count" data-step-count>2</span>
+        <button data-step-up>+</button>
+      </div>
+    </div>
+
+    <div class="order-row">
+      <div class="order-row__media"><img src="https://images.unsplash.com/photo-1565299715199-866c917206bb?w=200&q=80&auto=format&fit=crop" alt=""/></div>
+      <div class="order-row__body">
+        <h3 class="order-row__title">Chicken Shish Kebab</h3>
+        <p class="order-row__price">$22 each</p>
+        <div class="order-row__note">
+          <input type="text" value="well-done, side of fries instead of rice" />
+        </div>
+        <div class="order-row__tags">
+          <span class="person-tag person-tag--filled"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg> Mom</span>
+        </div>
+      </div>
+      <div class="qty-stepper" data-stepper>
+        <button data-step-down>−</button>
+        <span class="qty-stepper__count" data-step-count>1</span>
+        <button data-step-up>+</button>
+      </div>
+    </div>
+
+    <div class="order-row">
+      <div class="order-row__media"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200&q=80&auto=format&fit=crop" alt=""/></div>
+      <div class="order-row__body">
+        <h3 class="order-row__title">Classic Hummus</h3>
+        <p class="order-row__price">$11 each</p>
+        <div class="order-row__note">
+          <input type="text" placeholder="Add a note (e.g. extra olive oil, no garlic)…" />
+        </div>
+        <div class="order-row__tags">
+          <span class="person-tag">+ Tag for someone</span>
+        </div>
+      </div>
+      <div class="qty-stepper" data-stepper>
+        <button data-step-down>−</button>
+        <span class="qty-stepper__count" data-step-count>1</span>
+        <button data-step-up>+</button>
+      </div>
+    </div>
+
+    <div class="order-row">
+      <div class="order-row__media"><img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=200&q=80&auto=format&fit=crop" alt=""/></div>
+      <div class="order-row__body">
+        <h3 class="order-row__title">Falafel (6 pieces)</h3>
+        <p class="order-row__price">$10 each</p>
+        <div class="order-row__note">
+          <input type="text" value="for the kids — split between 2 plates please" />
+        </div>
+        <div class="order-row__tags">
+          <span class="person-tag person-tag--filled"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg> Liam &amp; Ava</span>
+        </div>
+      </div>
+      <div class="qty-stepper" data-stepper>
+        <button data-step-down>−</button>
+        <span class="qty-stepper__count" data-step-count>1</span>
+        <button data-step-up>+</button>
+      </div>
+    </div>
+
+    <button style="display: flex; align-items: center; gap: 10px; padding: 16px 18px; background: var(--color-surface); width: 100%; border-bottom: 1px solid var(--color-border); color: var(--color-primary); font-weight: 600; font-size: 14px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add another item from the menu
+    </button>
+
+    <!-- Sticky bottom actions -->
+    <div class="sticky-cta">
+      <a href="order-show-server.html" class="btn btn--primary" style="margin-bottom: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+        Show server (5 items)
+      </a>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn--ghost" style="flex: 1; padding: 12px 16px; font-size: 14px;">Save list for later</button>
+        <a href="restaurant-detail.html" class="btn btn--ghost" style="flex: 1; padding: 12px 16px; font-size: 14px;">Back to menu</a>
+      </div>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

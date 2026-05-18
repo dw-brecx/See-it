@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>SeeIt — Kosher Certification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app app--no-nav app--surface">
+    <header class="app-header app-header--plain">
+      <a href="restaurant-detail.html" class="app-header__btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></a>
+      <h1 class="app-header__title">Kosher certification</h1>
+      <button class="app-header__btn" style="opacity:0;"></button>
+    </header>
+
+    <div style="padding: 8px 18px 18px;">
+      <h2 class="h2">Tel Aviv Grill</h2>
+      <p class="muted" style="margin: 4px 0 0; font-size: 13.5px;">All kosher info for this location. Verified by the restaurant.</p>
+    </div>
+
+    <div style="padding: 0 18px 28px;">
+      <div class="hashgacha-card">
+        <div class="hashgacha-card__head">
+          <div class="hashgacha-card__seal">OU</div>
+          <div style="flex: 1; min-width: 0;">
+            <p class="hashgacha-card__agency-name">Orthodox Union</p>
+            <p class="hashgacha-card__agency-sub">Recognized worldwide · est. 1924</p>
+          </div>
+        </div>
+
+        <div class="hash-row">
+          <span class="hash-row__label">Kosher type</span>
+          <div class="hash-type-chips"><span class="hash-type-chip">🥩 Meat</span></div>
+        </div>
+        <div class="hash-row">
+          <span class="hash-row__label">Sub-certifications</span>
+          <div class="hash-type-chips">
+            <span class="hash-type-chip">Glatt</span>
+            <span class="hash-type-chip">Pas Yisroel</span>
+            <span class="hash-type-chip">Bishul Yisroel</span>
+          </div>
+        </div>
+        <div class="hash-row">
+          <span class="hash-row__label">Certificate</span>
+          <span class="hash-row__value">Valid through Dec 31, 2026</span>
+        </div>
+
+        <div class="hash-cert-image">
+          <div class="hash-cert-image__media"><img src="https://images.unsplash.com/photo-1554224155-1696413565d3?w=600&q=80&auto=format&fit=crop" alt="Kosher certificate"/></div>
+          <div class="hash-cert-image__cap">
+            <span>Tap to view full certificate</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content: center;">
+          <span class="passover-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Kosher for Passover
+          </span>
+        </div>
+      </div>
+
+      <div style="background: var(--color-surface-alt); border-radius: var(--radius-md); padding: 14px 16px; margin-top: 14px;">
+        <h3 class="h4" style="margin: 0 0 8px;">Sub-certification glossary</h3>
+        <p class="tiny" style="margin: 0 0 8px;"><strong style="color: var(--color-text);">Glatt</strong> — Stricter standard for kosher meat (smooth lungs).</p>
+        <p class="tiny" style="margin: 0 0 8px;"><strong style="color: var(--color-text);">Pas Yisroel</strong> — Baked goods baked by a Jewish person.</p>
+        <p class="tiny" style="margin: 0 0 0;"><strong style="color: var(--color-text);">Bishul Yisroel</strong> — Food cooked under Jewish supervision.</p>
+      </div>
+
+      <p class="tiny text-center mt-16">Sub-certifications shown only when applicable. Certificate is provided by the restaurant — verify with the agency directly when in doubt.</p>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>

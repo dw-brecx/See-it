@@ -3,29 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <title>SeeIt — Ippudo Ramen House</title>
+  <title>SeeIt — Tel Aviv Grill</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div class="app">
+  <div class="app" style="padding-bottom: calc(var(--bottom-nav-h) + 70px);">
     <!-- Hero -->
     <div class="hero">
-      <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80&auto=format&fit=crop" alt="Ippudo Ramen House interior" />
+      <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80&auto=format&fit=crop" alt="Tel Aviv Grill"/>
       <div class="hero__overlay"></div>
       <div class="hero__top-actions">
-        <a href="search-results-restaurants.html" class="icon-circle" aria-label="Back">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </a>
+        <a href="search-results-restaurants.html" class="app-header__btn app-header__btn--floating" aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></a>
         <div style="display:flex; gap:8px;">
-          <button class="icon-circle" data-save aria-label="Save">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-          </button>
-          <button class="icon-circle" aria-label="Share">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          </button>
+          <button class="app-header__btn app-header__btn--floating" data-save aria-label="Save"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg></button>
+          <button class="app-header__btn app-header__btn--floating" aria-label="Share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
         </div>
       </div>
       <span class="hero__pager">1 / 28 photos</span>
@@ -33,201 +27,161 @@
 
     <!-- Title block -->
     <div class="detail-head">
-      <h1>Ippudo Ramen House</h1>
+      <h1>Tel Aviv Grill</h1>
       <div class="meta-row" style="margin-bottom:6px;">
         <svg class="star star--md" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-        <strong style="color:#1A1A1A;">4.8</strong>
-        <span>(412 reviews)</span>
-        <span>·</span>
-        <span class="price">$$</span>
-        <span>·</span>
-        <span>Japanese · Ramen</span>
+        <strong style="color:#1A1A1A;">4.8</strong><span>(412 reviews)</span><span>·</span>
+        <span class="price">$$</span><span>·</span><span>Mediterranean · Israeli</span>
+      </div>
+      <div class="meta-row" style="margin-bottom: 4px;">
+        <span class="open">Open now</span><span>·</span>
+        <span>Special hours today: 5:00 PM – 11:00 PM</span>
       </div>
       <div class="meta-row">
-        <span class="open">Open now</span>
-        <span>·</span>
-        <span>Closes 11:00 PM</span>
-        <span>·</span>
-        <span>0.2 mi · 3 min walk</span>
+        <span>2845 24th St · Mission, SF</span><span>·</span><span>0.2 mi · 3 min walk</span>
       </div>
       <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
-        <span class="tag tag--halal">Halal</span>
-        <span class="tag tag--vegan">Vegan opts</span>
-        <span class="tag">Counter seating</span>
-        <span class="tag">Cash & card</span>
+        <a href="hashgacha.html" data-sheet-open="#hashgacha-sheet" class="diet-chip diet-chip--kosher diet-chip--lg" style="cursor: pointer;">
+          ✡ Kosher · OU
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <span class="diet-chip diet-chip--lg">Glatt · Pas Yisroel</span>
+        <span class="diet-chip diet-chip--lg">Family-friendly</span>
       </div>
     </div>
 
+    <!-- What's Good Here? CTA -->
+    <a href="whats-good.html" data-sheet-open="#whats-good-sheet" class="whats-good-cta">
+      <div class="whats-good-cta__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21 12 17.77 5.82 21 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="whats-good-cta__body">
+        <p class="whats-good-cta__title">What's good here?</p>
+        <p class="whats-good-cta__sub">See the top 5 dishes by photo count &amp; rating →</p>
+      </div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
     <!-- Action pills -->
-    <div class="action-pills">
-      <button class="action-pill">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 22 12 17 2 22 12 2"/></svg>
-        Directions
-      </button>
-      <button class="action-pill">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13 1.05.37 2.07.72 3.06a2 2 0 0 1-.45 2.11L8.09 10.2a16 16 0 0 0 6 6l1.31-1.31a2 2 0 0 1 2.11-.45c.99.35 2.01.59 3.06.72A2 2 0 0 1 22 16.92Z"/></svg>
-        Call
-      </button>
-      <button class="action-pill" data-save>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-        Save
-      </button>
-      <button class="action-pill">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        Share
-      </button>
+    <div class="action-pills" style="margin-top: 14px;">
+      <button class="action-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 22 12 17 2 22 12 2"/></svg>Directions</button>
+      <button class="action-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13 1.05.37 2.07.72 3.06a2 2 0 0 1-.45 2.11L8.09 10.2a16 16 0 0 0 6 6l1.31-1.31a2 2 0 0 1 2.11-.45c.99.35 2.01.59 3.06.72A2 2 0 0 1 22 16.92Z"/></svg>Call</button>
+      <button class="action-pill" data-save><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>Save</button>
+      <button class="action-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>Want to try</button>
     </div>
 
     <!-- Tabs -->
     <div class="tabs" data-tabs>
       <a class="tabs__item tabs__item--active" href="#menu">Menu</a>
-      <a class="tabs__item" href="#reviews">Reviews</a>
-      <a class="tabs__item" href="#photos">Photos</a>
+      <a class="tabs__item" href="#reviews">Reviews · 412</a>
+      <a class="tabs__item" href="#photos">Photos · 847</a>
       <a class="tabs__item" href="#info">Info</a>
     </div>
 
     <!-- Menu sections -->
     <section id="menu" class="menu-category">
-      <h3>🥢 Appetizers</h3>
+      <h3>🥙 Mezze &amp; Starters</h3>
 
       <a href="dish-detail.html" class="menu-item">
-        <div class="menu-item__media">
-          <img src="https://images.unsplash.com/photo-1607301406259-dfb186e15de8?w=300&q=80&auto=format&fit=crop" alt="Pork gyoza" loading="lazy" />
-        </div>
+        <div class="menu-item__media"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300&q=80&auto=format&fit=crop" alt=""/></div>
         <div class="menu-item__body">
-          <div class="menu-item__title-row">
-            <h4 class="menu-item__title">Pork Gyoza (6)</h4>
-            <span class="menu-item__price">$9</span>
-          </div>
-          <p class="menu-item__desc">Hand-folded dumplings, pan-seared crisp on one side, served with chili-soy.</p>
+          <div class="menu-item__title-row"><h4 class="menu-item__title">Classic Hummus</h4><span class="menu-item__price">$11</span></div>
+          <p class="menu-item__desc">Tahini-rich hummus, fresh olive oil, paprika, warm laffa bread.</p>
           <div class="menu-item__meta">
             <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-            <span style="color:#1A1A1A; font-weight:600;">4.7</span>
+            <span style="color:#1A1A1A; font-weight:600;">4.9</span>
             <span>· 184 photos</span>
+            <span class="diet-chip diet-chip--vegan">Vegan</span>
           </div>
         </div>
       </a>
 
       <a href="dish-detail.html" class="menu-item">
-        <div class="menu-item__media">
-          <img src="https://images.unsplash.com/photo-1606851094291-6efff8e0f6c2?w=300&q=80&auto=format&fit=crop" alt="Edamame" loading="lazy" />
-        </div>
+        <div class="menu-item__media"><img src="https://images.unsplash.com/photo-1626200419199-391ae4be7a90?w=300&q=80&auto=format&fit=crop" alt=""/></div>
         <div class="menu-item__body">
-          <div class="menu-item__title-row">
-            <h4 class="menu-item__title">Spicy Garlic Edamame</h4>
-            <span class="menu-item__price">$7</span>
-          </div>
-          <p class="menu-item__desc">Steamed soybeans tossed in garlic chili oil and Maldon salt.</p>
+          <div class="menu-item__title-row"><h4 class="menu-item__title">Baba Ganoush</h4><span class="menu-item__price">$12</span></div>
+          <p class="menu-item__desc">Smoky charred eggplant, tahini, pomegranate, parsley.</p>
           <div class="menu-item__meta">
             <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-            <span style="color:#1A1A1A; font-weight:600;">4.5</span>
+            <span style="color:#1A1A1A; font-weight:600;">4.7</span>
             <span>· 92 photos</span>
-            <span class="tag tag--vegan" style="margin-left:6px;">Vegan</span>
+            <span class="diet-chip diet-chip--vegan">Vegan</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="dish-detail.html" class="menu-item">
+        <div class="menu-item__media"><img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=300&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="menu-item__body">
+          <div class="menu-item__title-row"><h4 class="menu-item__title">Falafel (6 pieces)</h4><span class="menu-item__price">$10</span></div>
+          <p class="menu-item__desc">Hand-rolled, fried to order. Crispy outside, herbed inside.</p>
+          <div class="menu-item__meta">
+            <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+            <span style="color:#1A1A1A; font-weight:600;">4.6</span>
+            <span>· 73 photos</span>
+            <span class="diet-chip diet-chip--vegan">Vegan</span>
           </div>
         </div>
       </a>
     </section>
 
     <section class="menu-category">
-      <h3>🍜 Ramen Bowls</h3>
+      <h3>🍢 From the Grill</h3>
 
       <a href="dish-detail.html" class="menu-item">
-        <div class="menu-item__media">
-          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&q=80&auto=format&fit=crop" alt="Tonkotsu ramen" loading="lazy" />
-        </div>
+        <div class="menu-item__media"><img src="https://images.unsplash.com/photo-1604908554027-a2b683c2dba4?w=300&q=80&auto=format&fit=crop" alt=""/></div>
         <div class="menu-item__body">
-          <div class="menu-item__title-row">
-            <h4 class="menu-item__title">Tonkotsu Ramen</h4>
-            <span class="menu-item__price">$18</span>
-          </div>
-          <p class="menu-item__desc">12-hour pork bone broth, chashu, ajitama, scallion, kikurage. The signature.</p>
+          <div class="menu-item__title-row"><h4 class="menu-item__title">Lamb Shawarma Plate</h4><span class="menu-item__price">$24</span></div>
+          <p class="menu-item__desc">Slow-roasted lamb shoulder, basmati rice, tahini, Israeli salad, pickled turnips.</p>
           <div class="menu-item__meta">
             <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
             <span style="color:#1A1A1A; font-weight:600;">4.9</span>
             <span>· 612 photos</span>
-            <span class="tag tag--spicy" style="margin-left:6px;">Most popular</span>
+            <span class="diet-chip diet-chip--spicy">Most popular</span>
           </div>
         </div>
       </a>
 
       <a href="dish-detail.html" class="menu-item">
-        <div class="menu-item__media">
-          <img src="https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=300&q=80&auto=format&fit=crop" alt="Spicy miso ramen" loading="lazy" />
-        </div>
+        <div class="menu-item__media"><img src="https://images.unsplash.com/photo-1565299715199-866c917206bb?w=300&q=80&auto=format&fit=crop" alt=""/></div>
         <div class="menu-item__body">
-          <div class="menu-item__title-row">
-            <h4 class="menu-item__title">Spicy Miso Ramen</h4>
-            <span class="menu-item__price">$19</span>
-          </div>
-          <p class="menu-item__desc">Smoky red miso broth with ground pork, corn, butter, and a soft egg.</p>
+          <div class="menu-item__title-row"><h4 class="menu-item__title">Chicken Shish Kebab</h4><span class="menu-item__price">$22</span></div>
+          <p class="menu-item__desc">Marinated chicken thighs, charred peppers &amp; onions, garlic-lemon tahini.</p>
           <div class="menu-item__meta">
             <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
             <span style="color:#1A1A1A; font-weight:600;">4.7</span>
             <span>· 248 photos</span>
-            <span class="tag tag--spicy" style="margin-left:6px;">🌶 Spicy</span>
           </div>
         </div>
       </a>
 
       <a href="dish-detail.html" class="menu-item">
-        <div class="menu-item__media">
-          <img src="https://images.unsplash.com/photo-1591814468924-caf88d1232e1?w=300&q=80&auto=format&fit=crop" alt="Vegan shoyu ramen" loading="lazy" />
-        </div>
+        <div class="menu-item__media"><img src="https://images.unsplash.com/photo-1633237308525-cd587cf71926?w=300&q=80&auto=format&fit=crop" alt=""/></div>
         <div class="menu-item__body">
-          <div class="menu-item__title-row">
-            <h4 class="menu-item__title">Vegan Shoyu Ramen</h4>
-            <span class="menu-item__price">$17</span>
-          </div>
-          <p class="menu-item__desc">Mushroom-dashi shoyu broth with smoked tofu, bok choy, and chili oil.</p>
-          <div class="menu-item__meta">
-            <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-            <span style="color:#1A1A1A; font-weight:600;">4.6</span>
-            <span>· 87 photos</span>
-            <span class="tag tag--vegan" style="margin-left:6px;">Vegan</span>
-          </div>
-        </div>
-      </a>
-    </section>
-
-    <section class="menu-category">
-      <h3>🍱 Rice Bowls</h3>
-
-      <a href="dish-detail.html" class="menu-item">
-        <div class="menu-item__media">
-          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80&auto=format&fit=crop" alt="Chashu don" loading="lazy" />
-        </div>
-        <div class="menu-item__body">
-          <div class="menu-item__title-row">
-            <h4 class="menu-item__title">Chashu Don</h4>
-            <span class="menu-item__price">$15</span>
-          </div>
-          <p class="menu-item__desc">Sliced pork belly, soft egg, pickled ginger over short-grain rice.</p>
-          <div class="menu-item__meta">
-            <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
-            <span style="color:#1A1A1A; font-weight:600;">4.5</span>
-            <span>· 73 photos</span>
-          </div>
-        </div>
-      </a>
-    </section>
-
-    <section class="menu-category">
-      <h3>🍮 Desserts</h3>
-
-      <a href="dish-detail.html" class="menu-item">
-        <div class="menu-item__media">
-          <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&q=80&auto=format&fit=crop" alt="Matcha soft serve" loading="lazy" />
-        </div>
-        <div class="menu-item__body">
-          <div class="menu-item__title-row">
-            <h4 class="menu-item__title">Matcha Soft Serve</h4>
-            <span class="menu-item__price">$8</span>
-          </div>
-          <p class="menu-item__desc">House-made matcha soft serve with toasted black sesame and mochi bits.</p>
+          <div class="menu-item__title-row"><h4 class="menu-item__title">Mixed Grill for Two</h4><span class="menu-item__price">$58</span></div>
+          <p class="menu-item__desc">Lamb kofta, chicken thigh, beef kebab, hearts &amp; livers — served with salads &amp; bread.</p>
           <div class="menu-item__meta">
             <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
             <span style="color:#1A1A1A; font-weight:600;">4.8</span>
-            <span>· 156 photos</span>
+            <span>· 187 photos</span>
+            <span class="diet-chip diet-chip--spicy">Generous portion</span>
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <section class="menu-category">
+      <h3>🍰 Dessert</h3>
+
+      <a href="dish-detail.html" class="menu-item">
+        <div class="menu-item__media"><img src="https://images.unsplash.com/photo-1612203985729-70726954388c?w=300&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="menu-item__body">
+          <div class="menu-item__title-row"><h4 class="menu-item__title">Baklava (3 pieces)</h4><span class="menu-item__price">$9</span></div>
+          <p class="menu-item__desc">Phyllo, walnuts, pistachio, honey-rosewater syrup.</p>
+          <div class="menu-item__meta">
+            <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+            <span style="color:#1A1A1A; font-weight:600;">4.7</span>
+            <span>· 142 photos</span>
           </div>
         </div>
       </a>
@@ -235,32 +189,164 @@
 
     <div class="spacer"></div>
 
-    <!-- Bottom navigation -->
+    <!-- Floating Order List button -->
+    <a href="order-list.html" class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Your order list
+      <span class="fab__count">3</span>
+    </a>
+
     <nav class="bottom-nav">
-      <a href="home.html" class="bottom-nav__item" data-nav-target="home.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>
-        Home
-      </a>
-      <a href="search.html" class="bottom-nav__item" data-nav-target="search.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Search
-      </a>
-      <div class="bottom-nav__scan">
-        <a href="qr-scan.html" class="bottom-nav__scan-btn" aria-label="Scan menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>
-        </a>
-        <span class="bottom-nav__scan-label">Scan</span>
-      </div>
-      <a href="saved.html" class="bottom-nav__item" data-nav-target="saved.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
-        Saved
-      </a>
-      <a href="profile.html" class="bottom-nav__item" data-nav-target="profile.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Profile
-      </a>
+      <a href="home.html" class="bottom-nav__item" data-nav-target="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>Home</a>
+      <a href="search.html" class="bottom-nav__item" data-nav-target="search.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search</a>
+      <div class="bottom-nav__scan"><a href="qr-scan.html" class="bottom-nav__scan-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg></a><span class="bottom-nav__scan-label">Scan</span></div>
+      <a href="saved.html" class="bottom-nav__item" data-nav-target="saved.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>Saved</a>
+      <a href="profile.html" class="bottom-nav__item" data-nav-target="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
     </nav>
   </div>
+
+  <!-- Hashgacha bottom sheet -->
+  <div class="sheet" id="hashgacha-sheet" style="display: none;">
+    <div class="sheet__inner">
+      <div class="sheet__handle"></div>
+      <div class="sheet__head">
+        <h2 class="sheet__title">Kosher certification</h2>
+        <button class="sheet__close" data-sheet-close><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="sheet__body">
+        <div class="hashgacha-card">
+          <div class="hashgacha-card__head">
+            <div class="hashgacha-card__seal">OU</div>
+            <div style="flex: 1; min-width: 0;">
+              <p class="hashgacha-card__agency-name">Orthodox Union</p>
+              <p class="hashgacha-card__agency-sub">Recognized worldwide · est. 1924</p>
+            </div>
+          </div>
+
+          <div class="hash-row">
+            <span class="hash-row__label">Kosher type</span>
+            <div class="hash-type-chips"><span class="hash-type-chip">🥩 Meat</span></div>
+          </div>
+          <div class="hash-row">
+            <span class="hash-row__label">Sub-certifications</span>
+            <div class="hash-type-chips">
+              <span class="hash-type-chip">Glatt</span>
+              <span class="hash-type-chip">Pas Yisroel</span>
+              <span class="hash-type-chip">Bishul Yisroel</span>
+            </div>
+          </div>
+          <div class="hash-row">
+            <span class="hash-row__label">Certificate</span>
+            <span class="hash-row__value">Valid through Dec 31, 2026</span>
+          </div>
+
+          <div class="hash-cert-image">
+            <div class="hash-cert-image__media"><img src="https://images.unsplash.com/photo-1554224155-1696413565d3?w=600&q=80&auto=format&fit=crop" alt="Kosher certificate"/></div>
+            <div class="hash-cert-image__cap">
+              <span>Tap to view full certificate</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content: center;">
+            <span class="passover-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Kosher for Passover
+            </span>
+          </div>
+        </div>
+
+        <p class="tiny text-center" style="padding: 0 8px;">Sub-certifications shown only when applicable. Certificate is provided by the restaurant — tap to verify with the agency.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- What's Good Here sheet -->
+  <div class="sheet" id="whats-good-sheet" style="display: none;">
+    <div class="sheet__inner">
+      <div class="sheet__handle"></div>
+      <div class="sheet__head">
+        <h2 class="sheet__title">🌟 What's good here?</h2>
+        <button class="sheet__close" data-sheet-close><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="sheet__body">
+        <p class="muted" style="font-size: 13px; margin: 0 0 14px;">The top 5 dishes here, ranked by photo count + customer rating.</p>
+
+        <a href="dish-detail.html" class="good-dish">
+          <span class="good-dish__rank">1</span>
+          <div class="good-dish__media"><img src="https://images.unsplash.com/photo-1604908554027-a2b683c2dba4?w=300&q=80&auto=format&fit=crop" alt=""/></div>
+          <div class="good-dish__body">
+            <h3 class="good-dish__title">Lamb Shawarma Plate</h3>
+            <p class="good-dish__price">$24</p>
+            <div class="good-dish__meta">
+              <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+              <span style="color: var(--color-text); font-weight:600;">4.9</span>
+              <span>📸 612 photos</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="dish-detail.html" class="good-dish">
+          <span class="good-dish__rank">2</span>
+          <div class="good-dish__media"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300&q=80&auto=format&fit=crop" alt=""/></div>
+          <div class="good-dish__body">
+            <h3 class="good-dish__title">Classic Hummus</h3>
+            <p class="good-dish__price">$11</p>
+            <div class="good-dish__meta">
+              <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+              <span style="color: var(--color-text); font-weight:600;">4.9</span>
+              <span>📸 184 photos</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="dish-detail.html" class="good-dish">
+          <span class="good-dish__rank">3</span>
+          <div class="good-dish__media"><img src="https://images.unsplash.com/photo-1565299715199-866c917206bb?w=300&q=80&auto=format&fit=crop" alt=""/></div>
+          <div class="good-dish__body">
+            <h3 class="good-dish__title">Chicken Shish Kebab</h3>
+            <p class="good-dish__price">$22</p>
+            <div class="good-dish__meta">
+              <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+              <span style="color: var(--color-text); font-weight:600;">4.7</span>
+              <span>📸 248 photos</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="dish-detail.html" class="good-dish">
+          <span class="good-dish__rank">4</span>
+          <div class="good-dish__media"><img src="https://images.unsplash.com/photo-1633237308525-cd587cf71926?w=300&q=80&auto=format&fit=crop" alt=""/></div>
+          <div class="good-dish__body">
+            <h3 class="good-dish__title">Mixed Grill for Two</h3>
+            <p class="good-dish__price">$58</p>
+            <div class="good-dish__meta">
+              <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+              <span style="color: var(--color-text); font-weight:600;">4.8</span>
+              <span>📸 187 photos</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="dish-detail.html" class="good-dish">
+          <span class="good-dish__rank">5</span>
+          <div class="good-dish__media"><img src="https://images.unsplash.com/photo-1612203985729-70726954388c?w=300&q=80&auto=format&fit=crop" alt=""/></div>
+          <div class="good-dish__body">
+            <h3 class="good-dish__title">Baklava (3 pieces)</h3>
+            <p class="good-dish__price">$9</p>
+            <div class="good-dish__meta">
+              <svg class="star" viewBox="0 0 24 24" fill="#F5A623"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01Z"/></svg>
+              <span style="color: var(--color-text); font-weight:600;">4.7</span>
+              <span>📸 142 photos</span>
+            </div>
+          </div>
+        </a>
+
+        <p class="tiny text-center mt-12">Based on 847 photos and 412 reviews at this location.</p>
+      </div>
+    </div>
+  </div>
+
   <script src="js/nav.js"></script>
 </body>
 </html>

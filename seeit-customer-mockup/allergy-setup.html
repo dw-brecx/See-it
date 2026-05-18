@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>SeeIt — Allergies &amp; Diet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app app--no-nav app--surface" style="padding-bottom: 110px;">
+    <header class="app-header app-header--plain">
+      <button class="app-header__btn" style="opacity:0;"></button>
+      <h1 class="app-header__title">Allergies &amp; diet</h1>
+      <a href="home.html" style="font-size:14px; font-weight:600; color: var(--color-primary);">Skip</a>
+    </header>
+
+    <div style="padding: 8px 22px 18px;">
+      <h2 class="h1" style="font-size: 24px;">What should we look out for?</h2>
+      <p class="muted" style="margin: 8px 0 0; font-size: 14px;">We'll warn you on dishes that conflict and surface ones that match. You can change these any time in Settings.</p>
+    </div>
+
+    <!-- Allergies -->
+    <div style="padding: 6px 22px 4px;">
+      <h3 class="h3" style="margin-bottom: 12px;">🚫 Allergies</h3>
+      <p class="tiny mb-12" style="margin-top: -4px;">We'll show a clear warning on dishes containing these.</p>
+      <div class="pick-grid">
+        <button class="pick-card" data-pick><span class="emoji">🥜</span> Peanuts</button>
+        <button class="pick-card is-active" data-pick><span class="emoji">🌰</span> Tree nuts</button>
+        <button class="pick-card" data-pick><span class="emoji">🦐</span> Shellfish</button>
+        <button class="pick-card" data-pick><span class="emoji">🐟</span> Fish</button>
+        <button class="pick-card is-active" data-pick><span class="emoji">🥛</span> Dairy</button>
+        <button class="pick-card" data-pick><span class="emoji">🥚</span> Eggs</button>
+        <button class="pick-card" data-pick><span class="emoji">🌾</span> Wheat / Gluten</button>
+        <button class="pick-card" data-pick><span class="emoji">🫘</span> Soy</button>
+        <button class="pick-card" data-pick><span class="emoji">🌱</span> Sesame</button>
+      </div>
+    </div>
+
+    <div style="height: 18px;"></div>
+
+    <!-- Dietary preferences -->
+    <div style="padding: 6px 22px 18px;">
+      <h3 class="h3" style="margin-bottom: 12px;">🌱 Dietary preferences</h3>
+      <p class="tiny mb-12" style="margin-top: -4px;">We'll match these with restaurant tags &amp; certifications.</p>
+      <div class="pick-grid">
+        <button class="pick-card" data-pick><span class="emoji">✡️</span> Kosher</button>
+        <button class="pick-card" data-pick><span class="emoji">☪️</span> Halal</button>
+        <button class="pick-card" data-pick><span class="emoji">🌿</span> Vegan</button>
+        <button class="pick-card is-active" data-pick><span class="emoji">🥗</span> Vegetarian</button>
+        <button class="pick-card" data-pick><span class="emoji">🌾</span> Gluten-free</button>
+      </div>
+    </div>
+
+    <div class="sticky-cta">
+      <a href="home.html" class="btn btn--primary">Save &amp; continue</a>
+    </div>
+  </div>
+  <script src="js/nav.js"></script>
+</body>
+</html>
