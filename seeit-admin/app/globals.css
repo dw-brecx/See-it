@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Surface */
+    --background: 60 11% 97%;          /* #FAFAF7 off-white */
+    --foreground: 0 0% 10%;            /* #1A1A1A charcoal */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    /* Brand: terracotta #E85D3A */
+    --primary: 14 80% 57%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 60 9% 94%;
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 60 9% 94%;
+    --muted-foreground: 220 9% 46%;    /* #6B7280 soft gray */
+
+    --accent: 14 100% 96%;             /* terracotta-50 */
+    --accent-foreground: 14 75% 38%;
+
+    --destructive: 0 70% 47%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 50 11% 91%;              /* #ECECE7 */
+    --input: 50 11% 88%;
+    --ring: 14 80% 57%;
+
+    --radius: 0.625rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+
+/* Tabular numbers in tables / stats */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
