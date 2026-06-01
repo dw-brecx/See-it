@@ -33,6 +33,7 @@ import { FormSheet } from '@/components/FormSheet';
 import { MOOD_TAGS, PORTION_SIZES, STORAGE } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
+import type { PortionSize } from '@/lib/database.types';
 
 const schema = z.object({
   user_email: z.string().email('Pick a user by email').optional().or(z.literal('')),
@@ -186,6 +187,10 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
       }
       userId = row.id;
     }
+    if (!userId) {
+      toast.error('Missing user id');
+      return;
+    }
 
     const payload = {
       user_id: userId,
@@ -193,7 +198,7 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
       menu_item_id: values.menu_item_id || null,
       rating: values.rating,
       text: values.text || null,
-      portion_size: values.portion_size || null,
+      portion_size: (values.portion_size || null) as PortionSize | null,
       worth_it:
         values.worth_it === true ? true : values.worth_it === false ? false : null,
       mood_tags: values.mood_tags,
@@ -226,8 +231,16 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
     // Sync photos (replace all on save)
     if (values.photos.length > 0) {
       await supabase.from('review_photos').delete().eq('review_id', reviewId);
-      const rows = values.photos.map((url) => ({ review_id: reviewId, url }));
-      await supabase.from('review_photos').insert(rows);
+      const rows = values.photos.map((url) => ({
+        review_id: reviewId,
+        photo_url: url,
+      }));
+      const { error: photoErr } = await supabase
+        .from('review_photos')
+        .insert(rows);
+      if (photoErr) {
+        toast.error(`Saved review but photos failed: ${photoErr.message}`);
+      }
     } else if (isEdit) {
       await supabase.from('review_photos').delete().eq('review_id', reviewId);
     }
@@ -323,14 +336,19 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Menu item (optional)</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value || '__none__'}
+                    onValueChange={(v) =>
+                      field.onChange(v === '__none__' ? '' : v)
+                    }
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Pick a dish — or leave blank for overall review" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">— overall review —</SelectItem>
+                      <SelectItem value="__none__">— overall review —</SelectItem>
                       {menuItems.map((i) => (
                         <SelectItem key={i.id} value={i.id}>
                           {i.name}
@@ -401,14 +419,19 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Portion size</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value || '__none__'}
+                    onValueChange={(v) =>
+                      field.onChange(v === '__none__' ? '' : v)
+                    }
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Skip" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">— skip —</SelectItem>
+                      <SelectItem value="__none__">— skip —</SelectItem>
                       {PORTION_SIZES.map((p) => (
                         <SelectItem key={p.value} value={p.value}>
                           {p.label}

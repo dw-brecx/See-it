@@ -29,7 +29,7 @@ type Item = {
   category_id: string;
   dietary_tags: string[] | null;
   is_visible: boolean;
-  photos: { id: string; url: string; is_cover: boolean }[];
+  photos: { id: string; photo_url: string; is_cover: boolean }[];
 };
 type Loc = { id: string; name: string; city: string };
 
@@ -69,7 +69,7 @@ export function MenuPanel({ brandId, locations }: Props) {
       supabase
         .from('menu_items')
         .select(
-          'id, name, description, price, category_id, dietary_tags, is_visible, menu_item_photos(id, url, is_cover)',
+          'id, name, description, price, category_id, dietary_tags, is_visible, menu_item_photos(id, photo_url, is_cover)',
         )
         .eq('location_id', locationId)
         .order('name', { ascending: true }),
@@ -272,7 +272,7 @@ export function MenuPanel({ brandId, locations }: Props) {
                           className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center"
                         >
                           <Avatar className="h-12 w-12 shrink-0 rounded-md">
-                            {cover ? <AvatarImage src={cover.url} /> : null}
+                            {cover ? <AvatarImage src={cover.photo_url} /> : null}
                             <AvatarFallback className="rounded-md">
                               <UtensilsCrossed className="h-4 w-4" />
                             </AvatarFallback>
@@ -374,7 +374,7 @@ export function MenuPanel({ brandId, locations }: Props) {
           editItem
             ? {
                 ...editItem,
-                photos: editItem.photos.map((p) => p.url),
+                photos: editItem.photos.map((p) => p.photo_url),
               }
             : null
         }

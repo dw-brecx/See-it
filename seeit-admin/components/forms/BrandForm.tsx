@@ -40,6 +40,7 @@ import {
   STORAGE,
 } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/client';
+import type { SubscriptionStatus } from '@/lib/database.types';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required').max(120),
@@ -144,7 +145,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
       secondary_cuisines: values.secondary_cuisines,
       logo_url: values.logo_url || null,
       owner_id: ownerId,
-      subscription_status: values.subscription_status,
+      subscription_status: values.subscription_status as SubscriptionStatus,
     };
 
     if (isEdit && brand) {

@@ -1,15 +1,17 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import type { Database } from '@/lib/database.types';
 
 /**
  * Server Supabase client — use in server components, server actions,
- * and route handlers. Reads/writes cookies via next/headers so the
- * session stays in sync between server and browser.
+ * and route handlers. Typed with our hand-written `Database` schema.
+ * Reads/writes cookies via next/headers so the session stays in sync
+ * between server and browser.
  */
 export function createClient() {
   const cookieStore = cookies();
 
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {

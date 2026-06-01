@@ -7,7 +7,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  * Throws on error — callers should wrap in try/catch and surface a toast.
  */
 export async function uploadToBucket(
-  supabase: SupabaseClient,
+  supabase: SupabaseClient<any, any, any>,
   bucket: string,
   file: File,
   options: { prefix?: string; ownerId?: string } = {},
@@ -36,7 +36,7 @@ export async function uploadToBucket(
  * Delete by path. Used when removing an image from a form before save.
  */
 export async function deleteFromBucket(
-  supabase: SupabaseClient,
+  supabase: SupabaseClient<any, any, any>,
   bucket: string,
   path: string,
 ) {

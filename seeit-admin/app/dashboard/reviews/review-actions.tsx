@@ -33,7 +33,7 @@ type Review = {
   user: { id: string; name: string | null; email: string; avatar_url: string | null } | null;
   location: { id: string; name: string } | null;
   menu_item: { id: string; name: string } | null;
-  review_photos: { id: string; url: string }[];
+  review_photos: { id: string; photo_url: string }[];
   review_replies: { id: string; text: string; created_at: string }[];
 };
 
@@ -117,13 +117,13 @@ export function ReviewModal({ review, children }: Props) {
               </p>
             )}
 
-            {review.review_photos?.length > 0 && (
+            {review.review_photos && review.review_photos.length > 0 && (
               <div className="grid grid-cols-3 gap-2">
                 {review.review_photos.map((p) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={p.id}
-                    src={p.url}
+                    src={p.photo_url}
                     alt=""
                     className="aspect-square w-full rounded-md object-cover"
                     loading="lazy"
@@ -213,7 +213,7 @@ export function ReviewModal({ review, children }: Props) {
           portion_size: review.portion_size,
           worth_it: review.worth_it,
           mood_tags: review.mood_tags,
-          photos: review.review_photos?.map((p) => p.url) ?? [],
+          photos: review.review_photos?.map((p) => p.photo_url) ?? [],
           user_email: review.user?.email,
         }}
       />

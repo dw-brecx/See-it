@@ -19,6 +19,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { RoleBadge } from '@/components/RoleBadge';
 import { InviteUserButton } from '@/components/InviteUserButton';
 import { formatDate, initials } from '@/lib/utils';
+import type { UserRole } from '@/lib/database.types';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -45,7 +46,7 @@ async function fetchUsers(params: SearchParams) {
   if (params.q) {
     query = query.or(`email.ilike.%${params.q}%,name.ilike.%${params.q}%`);
   }
-  if (params.role) query = query.eq('role', params.role);
+  if (params.role) query = query.eq('role', params.role as UserRole);
 
   const { data, count, error } = await query;
   return {

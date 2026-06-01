@@ -46,6 +46,7 @@ import {
   type WeekHours,
 } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/client';
+import type { KosherKind } from '@/lib/database.types';
 
 const kosherSchema = z.object({
   agency: z.string().optional().or(z.literal('')),
@@ -57,7 +58,7 @@ const kosherSchema = z.object({
   is_bishul_yisroel: z.boolean().default(false),
   is_yoshon: z.boolean().default(false),
   is_kosher_for_passover: z.boolean().default(false),
-  certificate_url: z.string().optional().nullable().or(z.literal('')),
+  certificate_image_url: z.string().optional().nullable().or(z.literal('')),
   expiration_date: z.string().optional().or(z.literal('')),
 });
 
@@ -122,7 +123,7 @@ type KosherCert = {
   is_bishul_yisroel?: boolean;
   is_yoshon?: boolean;
   is_kosher_for_passover?: boolean;
-  certificate_url: string | null;
+  certificate_image_url: string | null;
   expiration_date: string | null;
 };
 
@@ -177,7 +178,7 @@ export function LocationForm({
         is_bishul_yisroel: !!kosherCert?.is_bishul_yisroel,
         is_yoshon: !!kosherCert?.is_yoshon,
         is_kosher_for_passover: !!kosherCert?.is_kosher_for_passover,
-        certificate_url: kosherCert?.certificate_url ?? '',
+        certificate_image_url: kosherCert?.certificate_image_url ?? '',
         expiration_date: kosherCert?.expiration_date ?? '',
       },
     },
@@ -245,14 +246,14 @@ export function LocationForm({
         agency: kosher.agency || null,
         agency_other:
           kosher.agency === 'Other' ? kosher.agency_other || null : null,
-        kosher_type: kosher.kosher_type || null,
+        kosher_type: (kosher.kosher_type || null) as KosherKind | null,
         is_glatt: !!kosher.is_glatt,
         is_cholov_yisroel: !!kosher.is_cholov_yisroel,
         is_pas_yisroel: !!kosher.is_pas_yisroel,
         is_bishul_yisroel: !!kosher.is_bishul_yisroel,
         is_yoshon: !!kosher.is_yoshon,
         is_kosher_for_passover: !!kosher.is_kosher_for_passover,
-        certificate_url: kosher.certificate_url || null,
+        certificate_image_url: kosher.certificate_image_url || null,
         expiration_date: kosher.expiration_date || null,
       };
       const { error: kErr } = await supabase
@@ -723,7 +724,7 @@ export function LocationForm({
 
                 <FormField
                   control={form.control}
-                  name="kosher.certificate_url"
+                  name="kosher.certificate_image_url"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Certificate image / PDF</FormLabel>

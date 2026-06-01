@@ -19,6 +19,7 @@ import { Pagination } from '@/components/Pagination';
 import { EmptyState } from '@/components/EmptyState';
 import { AddBrandButton } from '@/components/AddBrandButton';
 import { formatDate, initials } from '@/lib/utils';
+import type { SubscriptionStatus } from '@/lib/database.types';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -52,7 +53,8 @@ async function fetchBrands(params: SearchParams) {
       `name.ilike.%${params.q}%,primary_cuisine.ilike.%${params.q}%`,
     );
   }
-  if (params.status) query = query.eq('subscription_status', params.status);
+  if (params.status)
+    query = query.eq('subscription_status', params.status as SubscriptionStatus);
   if (params.suspended === 'true') query = query.eq('is_suspended', true);
   if (params.suspended === 'false') query = query.eq('is_suspended', false);
 
