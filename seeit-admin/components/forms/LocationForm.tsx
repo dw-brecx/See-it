@@ -36,10 +36,13 @@ import { FormSheet } from '@/components/FormSheet';
 import {
   DIETARY_TAGS,
   STYLE_TAGS,
+  ESTABLISHMENT_TYPES,
   KOSHER_AGENCIES,
   KOSHER_TYPES,
   DEFAULT_HOURS,
   STORAGE,
+  splitStyleTags,
+  mergeStyleTags,
   type WeekHours,
 } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/client';
@@ -77,6 +80,7 @@ const schema = z.object({
   cover_photo_url: z.string().optional().nullable().or(z.literal('')),
   description: z.string().max(1000).optional().or(z.literal('')),
   dietary_tags: z.array(z.string()).default([]),
+  establishment_types: z.array(z.string()).default([]),
   style_tags: z.array(z.string()).default([]),
   is_temporarily_closed: z.boolean().default(false),
   reopening_date: z.string().optional().or(z.literal('')),
@@ -157,7 +161,9 @@ export function LocationForm({
       cover_photo_url: location?.cover_photo_url ?? '',
       description: location?.description ?? '',
       dietary_tags: location?.dietary_tags ?? [],
-      style_tags: location?.style_tags ?? [],
+      // Split the stored style_tags array into the two UI buckets
+      establishment_types: splitStyleTags(location?.style_tags).establishment_types,
+      style_tags: splitStyleTags(location?.style_tags).style_tags,
       is_temporarily_closed: !!location?.is_temporarily_closed,
       reopening_date: location?.reopening_date ?? '',
       hours: location?.hours ?? DEFAULT_HOURS,
@@ -189,7 +195,11 @@ export function LocationForm({
 
   async function onSubmit(values: FormValues) {
     const supabase = createClient();
-    const { kosher, ...locPayloadRaw } = values;
+    const { kosher, establishment_types, style_tags, ...locPayloadRaw } = values;
+
+    // Preserve any tags that aren't in either constant list (set via SQL etc.)
+    const other = splitStyleTags(location?.style_tags).other;
+
     const locPayload = {
       ...locPayloadRaw,
       brand_id: brandId,
@@ -199,6 +209,8 @@ export function LocationForm({
       reopening_date: locPayloadRaw.reopening_date || null,
       latitude: locPayloadRaw.latitude ?? null,
       longitude: locPayloadRaw.longitude ?? null,
+      // Merge establishment types + style tags back into one column
+      style_tags: mergeStyleTags(establishment_types, style_tags, other),
     };
 
     let locationId: string;
@@ -560,6 +572,28 @@ export function LocationForm({
               />
               <FormField
                 control={form.control}
+                name="establishment_types"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Establishment type</FormLabel>
+                    <FormControl>
+                      <MultiSelect
+                        options={ESTABLISHMENT_TYPES}
+                        value={field.value ?? []}
+                        onChange={field.onChange}
+                        placeholder="Restaurant, bakery, food truck…"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      What kind of place this is. Separate from "Style &amp; setting"
+                      (vibe) below.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="style_tags"
                 render={({ field }) => (
                   <FormItem>
@@ -572,6 +606,10 @@ export function LocationForm({
                         placeholder="Sit-down, takeout, outdoor seating…"
                       />
                     </FormControl>
+                    <FormDescription>
+                      Vibe and service style. Both this and "Establishment type" save into
+                      the same column.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -22,7 +22,10 @@ import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -31,6 +34,7 @@ import { MultiSelect } from '@/components/MultiSelect';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { FormSheet } from '@/components/FormSheet';
 import {
+  CUISINE_GROUPS,
   PRIMARY_CUISINES,
   SUBSCRIPTION_STATUSES,
   STORAGE,
@@ -236,11 +240,17 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
                         <SelectValue placeholder="Pick a cuisine" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      {PRIMARY_CUISINES.map((c) => (
-                        <SelectItem key={c} value={c}>
-                          {c}
-                        </SelectItem>
+                    <SelectContent className="max-h-[60vh]">
+                      {CUISINE_GROUPS.map((group, idx) => (
+                        <SelectGroup key={group.label}>
+                          {idx > 0 && <SelectSeparator />}
+                          <SelectLabel>{group.label}</SelectLabel>
+                          {group.options.map((c) => (
+                            <SelectItem key={c} value={c}>
+                              {c}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
                       ))}
                     </SelectContent>
                   </Select>
