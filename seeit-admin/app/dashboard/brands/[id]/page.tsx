@@ -1,8 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
-  Building2,
-  MapPin,
   Users,
   Activity as ActivityIcon,
   ChevronLeft,
@@ -18,10 +16,11 @@ import {
 } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { SubscriptionStatusBadge, SuspendedBadge, LocationOpenBadge } from '@/components/StatusBadge';
+import { SubscriptionStatusBadge, SuspendedBadge } from '@/components/StatusBadge';
 import { EmptyState } from '@/components/EmptyState';
 import { BrandActions } from './brand-actions';
+import { LocationsPanel } from './locations-panel';
+import { MenuPanel } from './menu-panel';
 import { formatDate, initials } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -32,14 +31,14 @@ async function fetchBrand(id: string) {
     supabase
       .from('brands')
       .select(
-        'id, name, logo_url, description, primary_cuisine, secondary_cuisines, is_suspended, subscription_status, created_at, owner:users!brands_owner_id_fkey(id, email, name, avatar_url, phone)',
+        'id, name, logo_url, description, primary_cuisine, secondary_cuisines, is_suspended, subscription_status, created_at, owner_id, owner:users!brands_owner_id_fkey(id, email, name, avatar_url, phone)',
       )
       .eq('id', id)
       .maybeSingle(),
     supabase
       .from('locations')
       .select(
-        'id, name, address, city, state, cover_photo_url, average_rating, review_count, is_temporarily_closed',
+        'id, brand_id, name, address, city, state, zip, country, phone, latitude, longitude, cover_photo_url, description, dietary_tags, style_tags, is_temporarily_closed, reopening_date, hours, average_rating, review_count',
       )
       .eq('brand_id', id)
       .order('created_at', { ascending: true }),
@@ -78,11 +77,16 @@ export default async function BrandDetailPage({
   if (!data) notFound();
 
   const { brand, locations, team, reviews } = data;
+  const locationOptions = locations.map((l) => ({
+    id: l.id,
+    name: l.name,
+    city: l.city,
+  }));
 
   return (
     <>
       <TopBar title={brand.name} subtitle="Brand details" />
-      <div className="flex-1 space-y-6 px-6 py-6">
+      <div className="flex-1 space-y-5 px-4 py-5 sm:space-y-6 sm:px-6 sm:py-6">
         <Link
           href="/dashboard/brands"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -92,19 +96,21 @@ export default async function BrandDetailPage({
 
         {/* Header card */}
         <Card>
-          <CardContent className="flex flex-col gap-5 p-6 md:flex-row md:items-start md:justify-between">
+          <CardContent className="flex flex-col gap-5 p-4 sm:p-6 md:flex-row md:items-start md:justify-between">
             <div className="flex items-start gap-4">
-              <Avatar className="h-16 w-16 rounded-lg">
+              <Avatar className="h-14 w-14 rounded-lg sm:h-16 sm:w-16">
                 {brand.logo_url ? (
                   <AvatarImage src={brand.logo_url} alt={brand.name} />
                 ) : null}
-                <AvatarFallback className="rounded-lg bg-terracotta-100 text-2xl text-terracotta-700">
+                <AvatarFallback className="rounded-lg bg-terracotta-100 text-xl text-terracotta-700 sm:text-2xl">
                   {initials(brand.name)}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl font-bold tracking-tight">{brand.name}</h2>
+                  <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
+                    {brand.name}
+                  </h2>
                   <SuspendedBadge suspended={!!brand.is_suspended} />
                   <SubscriptionStatusBadge status={brand.subscription_status} />
                 </div>
@@ -114,7 +120,7 @@ export default async function BrandDetailPage({
                   {formatDate(brand.created_at)}
                 </p>
                 {brand.owner && (
-                  <p className="mt-2 text-sm">
+                  <p className="mt-2 truncate text-sm">
                     <span className="text-muted-foreground">Owner:</span>{' '}
                     <Link
                       href={`/dashboard/users/${brand.owner.id}`}
@@ -127,17 +133,29 @@ export default async function BrandDetailPage({
               </div>
             </div>
             <BrandActions
-              brandId={brand.id}
-              brandName={brand.name}
-              isSuspended={!!brand.is_suspended}
+              brand={{
+                id: brand.id,
+                name: brand.name,
+                description: brand.description,
+                primary_cuisine: brand.primary_cuisine,
+                secondary_cuisines: brand.secondary_cuisines,
+                logo_url: brand.logo_url,
+                owner_id: brand.owner_id,
+                subscription_status: brand.subscription_status,
+                is_suspended: !!brand.is_suspended,
+              }}
+              ownerEmail={brand.owner?.email ?? null}
             />
           </CardContent>
         </Card>
 
         <Tabs defaultValue="overview">
-          <TabsList>
+          <TabsList className="flex w-full overflow-x-auto sm:inline-flex sm:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="locations">Locations ({locations.length})</TabsTrigger>
+            <TabsTrigger value="locations">
+              Locations ({locations.length})
+            </TabsTrigger>
+            <TabsTrigger value="menu">Menu</TabsTrigger>
             <TabsTrigger value="team">Team ({team.length})</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
@@ -205,60 +223,11 @@ export default async function BrandDetailPage({
           </TabsContent>
 
           <TabsContent value="locations">
-            <Card>
-              <CardContent className="p-0">
-                {locations.length === 0 ? (
-                  <EmptyState
-                    icon={MapPin}
-                    title="No locations yet"
-                    description="This brand hasn't added any locations."
-                  />
-                ) : (
-                  <ul className="divide-y divide-border">
-                    {locations.map((loc) => (
-                      <li
-                        key={loc.id}
-                        className="flex items-start gap-3 px-6 py-4"
-                      >
-                        <Avatar className="h-12 w-12 rounded-md">
-                          {loc.cover_photo_url ? (
-                            <AvatarImage
-                              src={loc.cover_photo_url}
-                              alt={loc.name}
-                            />
-                          ) : null}
-                          <AvatarFallback className="rounded-md">
-                            <MapPin className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="font-medium">{loc.name}</p>
-                            <LocationOpenBadge
-                              closed={!!loc.is_temporarily_closed}
-                            />
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {loc.address}
-                            {loc.city ? `, ${loc.city}` : ''}
-                            {loc.state ? `, ${loc.state}` : ''}
-                          </p>
-                          <p className="mt-0.5 text-xs text-muted-foreground">
-                            ★ {loc.average_rating?.toFixed(1) ?? '—'} ·{' '}
-                            {loc.review_count ?? 0} reviews
-                          </p>
-                        </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/dashboard/locations?brand=${brand.id}`}>
-                            View
-                          </Link>
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </CardContent>
-            </Card>
+            <LocationsPanel brandId={brand.id} locations={locations} />
+          </TabsContent>
+
+          <TabsContent value="menu">
+            <MenuPanel brandId={brand.id} locations={locationOptions} />
           </TabsContent>
 
           <TabsContent value="team">
@@ -275,36 +244,40 @@ export default async function BrandDetailPage({
                     {team.map((m) => (
                       <li
                         key={m.id}
-                        className="flex items-center gap-3 px-6 py-3"
+                        className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-3 sm:px-6"
                       >
-                        <Avatar className="h-9 w-9">
-                          <AvatarImage src={m.user?.avatar_url ?? undefined} />
-                          <AvatarFallback>
-                            {initials(m.user?.name ?? m.user?.email ?? '?')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium">
-                            {m.user?.name ?? m.user?.email ?? 'Unknown'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {m.user?.email}
-                          </p>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-9 w-9">
+                            <AvatarImage src={m.user?.avatar_url ?? undefined} />
+                            <AvatarFallback>
+                              {initials(m.user?.name ?? m.user?.email ?? '?')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <p className="truncate font-medium">
+                              {m.user?.name ?? m.user?.email ?? 'Unknown'}
+                            </p>
+                            <p className="truncate text-xs text-muted-foreground">
+                              {m.user?.email}
+                            </p>
+                          </div>
                         </div>
-                        <Badge variant="default" className="capitalize">
-                          {m.role}
-                        </Badge>
-                        <Badge
-                          variant={
-                            m.invite_status === 'active'
-                              ? 'success'
-                              : m.invite_status === 'pending'
-                              ? 'warning'
-                              : 'destructive'
-                          }
-                        >
-                          {m.invite_status}
-                        </Badge>
+                        <div className="ml-auto flex shrink-0 items-center gap-2">
+                          <Badge variant="default" className="capitalize">
+                            {m.role}
+                          </Badge>
+                          <Badge
+                            variant={
+                              m.invite_status === 'active'
+                                ? 'success'
+                                : m.invite_status === 'pending'
+                                ? 'warning'
+                                : 'destructive'
+                            }
+                          >
+                            {m.invite_status}
+                          </Badge>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -327,16 +300,16 @@ export default async function BrandDetailPage({
                     {reviews.map((r) => (
                       <li
                         key={r.id}
-                        className="flex items-start gap-3 px-6 py-3"
+                        className="flex items-start gap-3 px-4 py-3 sm:px-6"
                       >
-                        <Avatar className="h-8 w-8">
+                        <Avatar className="h-8 w-8 shrink-0">
                           <AvatarImage src={r.user?.avatar_url ?? undefined} />
                           <AvatarFallback>
                             {initials(r.user?.name ?? r.user?.email ?? '?')}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm">
+                          <p className="truncate text-sm">
                             <span className="font-semibold">
                               {r.user?.name ?? r.user?.email ?? 'Anon'}
                             </span>{' '}

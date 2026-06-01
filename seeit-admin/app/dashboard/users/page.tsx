@@ -17,6 +17,7 @@ import { FilterSelect } from '@/components/FilterSelect';
 import { Pagination } from '@/components/Pagination';
 import { EmptyState } from '@/components/EmptyState';
 import { RoleBadge } from '@/components/RoleBadge';
+import { InviteUserButton } from '@/components/InviteUserButton';
 import { formatDate, initials } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -67,9 +68,11 @@ export default async function UsersPage({
       <TopBar
         title="Users"
         subtitle={`${total.toLocaleString()} user${total === 1 ? '' : 's'} on the platform`}
-      />
-      <div className="flex-1 space-y-4 px-6 py-6">
-        <div className="flex flex-wrap items-center gap-3">
+      >
+        <InviteUserButton />
+      </TopBar>
+      <div className="flex-1 space-y-4 px-4 py-5 sm:px-6 sm:py-6">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <SearchInput placeholder="Search email or name…" />
           <FilterSelect
             paramName="role"
@@ -98,54 +101,96 @@ export default async function UsersPage({
             />
           ) : (
             <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Joined</TableHead>
-                    <TableHead>Reviews</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map((u) => {
-                    const revCount =
-                      Array.isArray(u.reviews) && u.reviews[0]
-                        ? u.reviews[0].count
-                        : 0;
-                    return (
-                      <TableRow key={u.id}>
-                        <TableCell>
-                          <Link
-                            href={`/dashboard/users/${u.id}`}
-                            className="flex items-center gap-3"
-                          >
-                            <Avatar className="h-9 w-9">
-                              <AvatarImage src={u.avatar_url ?? undefined} />
-                              <AvatarFallback>
-                                {initials(u.name ?? u.email)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="min-w-0">
-                              <p className="font-medium">{u.name ?? '—'}</p>
-                              <p className="truncate text-xs text-muted-foreground">
-                                {u.email}
-                              </p>
-                            </div>
-                          </Link>
-                        </TableCell>
-                        <TableCell>
-                          <RoleBadge role={u.role} />
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {formatDate(u.created_at)}
-                        </TableCell>
-                        <TableCell className="tabular-nums">{revCount}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+              {/* Desktop table */}
+              <div className="hidden md:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Joined</TableHead>
+                      <TableHead>Reviews</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users.map((u) => {
+                      const revCount =
+                        Array.isArray(u.reviews) && u.reviews[0]
+                          ? u.reviews[0].count
+                          : 0;
+                      return (
+                        <TableRow key={u.id}>
+                          <TableCell>
+                            <Link
+                              href={`/dashboard/users/${u.id}`}
+                              className="flex items-center gap-3"
+                            >
+                              <Avatar className="h-9 w-9">
+                                <AvatarImage src={u.avatar_url ?? undefined} />
+                                <AvatarFallback>
+                                  {initials(u.name ?? u.email)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="min-w-0">
+                                <p className="truncate font-medium">{u.name ?? '—'}</p>
+                                <p className="truncate text-xs text-muted-foreground">
+                                  {u.email}
+                                </p>
+                              </div>
+                            </Link>
+                          </TableCell>
+                          <TableCell>
+                            <RoleBadge role={u.role} />
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {formatDate(u.created_at)}
+                          </TableCell>
+                          <TableCell className="tabular-nums">{revCount}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile cards */}
+              <ul className="divide-y divide-border md:hidden">
+                {users.map((u) => {
+                  const revCount =
+                    Array.isArray(u.reviews) && u.reviews[0]
+                      ? u.reviews[0].count
+                      : 0;
+                  return (
+                    <li key={u.id}>
+                      <Link
+                        href={`/dashboard/users/${u.id}`}
+                        className="flex items-start gap-3 px-4 py-3.5 active:bg-muted/50"
+                      >
+                        <Avatar className="h-10 w-10 shrink-0">
+                          <AvatarImage src={u.avatar_url ?? undefined} />
+                          <AvatarFallback>
+                            {initials(u.name ?? u.email)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-semibold">{u.name ?? '—'}</p>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {u.email}
+                          </p>
+                          <div className="mt-1 flex flex-wrap items-center gap-2">
+                            <RoleBadge role={u.role} />
+                            <span className="text-[11px] text-muted-foreground">
+                              {revCount} review{revCount === 1 ? '' : 's'} ·{' '}
+                              {formatDate(u.created_at)}
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+
               <Pagination page={page} pageSize={PAGE_SIZE} total={total} />
             </>
           )}

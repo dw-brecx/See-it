@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Flag, Trash2, MessageSquare } from 'lucide-react';
+import { Flag, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { ReviewForm } from '@/components/forms/ReviewForm';
 import { createClient } from '@/lib/supabase/client';
 import { formatRelative, initials } from '@/lib/utils';
 
@@ -45,6 +46,7 @@ export function ReviewModal({ review, children }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [pending, setPending] = useState(false);
 
   async function toggleFlag() {
@@ -82,7 +84,7 @@ export function ReviewModal({ review, children }: Props) {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>{children}</DialogTrigger>
-        <DialogContent className="sm:max-w-[560px]">
+        <DialogContent className="max-w-[92vw] sm:max-w-[560px]">
           <DialogHeader>
             <DialogTitle>Review</DialogTitle>
             <DialogDescription>
@@ -99,10 +101,10 @@ export function ReviewModal({ review, children }: Props) {
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="font-medium">
+                <p className="truncate font-medium">
                   {review.user?.name ?? review.user?.email ?? 'Anon'}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="truncate text-xs text-muted-foreground">
                   {review.user?.email ?? ''} · {formatRelative(review.created_at)}
                 </p>
               </div>
@@ -160,9 +162,16 @@ export function ReviewModal({ review, children }: Props) {
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
               variant="outline"
+              onClick={() => setEditOpen(true)}
+              className="w-full gap-1.5 sm:w-auto"
+            >
+              <Pencil className="h-3.5 w-3.5" /> Edit
+            </Button>
+            <Button
+              variant="outline"
               onClick={toggleFlag}
               disabled={pending}
-              className="gap-1.5"
+              className="w-full gap-1.5 sm:w-auto"
             >
               <Flag className="h-3.5 w-3.5" />
               {review.is_flagged ? 'Unflag' : 'Flag'}
@@ -170,9 +179,9 @@ export function ReviewModal({ review, children }: Props) {
             <Button
               variant="destructive"
               onClick={() => setConfirmDelete(true)}
-              className="gap-1.5"
+              className="w-full gap-1.5 sm:w-auto"
             >
-              <Trash2 className="h-3.5 w-3.5" /> Delete review
+              <Trash2 className="h-3.5 w-3.5" /> Delete
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -186,6 +195,27 @@ export function ReviewModal({ review, children }: Props) {
         confirmLabel="Delete review"
         destructive
         onConfirm={deleteReview}
+      />
+
+      <ReviewForm
+        open={editOpen}
+        onOpenChange={(o) => {
+          setEditOpen(o);
+          if (!o) setOpen(false);
+        }}
+        review={{
+          id: review.id,
+          user_id: review.user?.id ?? '',
+          location_id: review.location?.id ?? '',
+          menu_item_id: review.menu_item?.id ?? null,
+          rating: review.rating,
+          text: review.text,
+          portion_size: review.portion_size,
+          worth_it: review.worth_it,
+          mood_tags: review.mood_tags,
+          photos: review.review_photos?.map((p) => p.url) ?? [],
+          user_email: review.user?.email,
+        }}
       />
     </>
   );
