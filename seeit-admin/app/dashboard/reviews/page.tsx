@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { FilterSelect } from '@/components/FilterSelect';
 import { Pagination } from '@/components/Pagination';
 import { EmptyState } from '@/components/EmptyState';
+import { AddReviewButton } from '@/components/AddReviewButton';
 import { ReviewModal } from './review-actions';
 import { formatRelative, initials, truncate } from '@/lib/utils';
 
@@ -42,10 +43,6 @@ async function fetchReviews(params: SearchParams) {
 
   if (params.filter === 'flagged') query = query.eq('is_flagged', true);
   if (params.filter === 'low') query = query.lte('rating', 2);
-  if (params.filter === 'unreplied') {
-    // can't easily express "no replies" in postgrest filter without RPC.
-    // We'll filter client-side after fetch for unreplied. Keep server query simple.
-  }
 
   const { data, count, error } = await query;
   let reviews = (data ?? []) as any[];
@@ -66,17 +63,16 @@ export default async function ReviewsPage({
   searchParams: SearchParams;
 }) {
   const { reviews, total, page, error } = await fetchReviews(searchParams);
-  const activeReview = searchParams.open
-    ? reviews.find((r) => r.id === searchParams.open)
-    : null;
 
   return (
     <>
       <TopBar
         title="Reviews"
         subtitle={`${total.toLocaleString()} review${total === 1 ? '' : 's'} across the platform`}
-      />
-      <div className="flex-1 space-y-4 px-6 py-6">
+      >
+        <AddReviewButton />
+      </TopBar>
+      <div className="flex-1 space-y-4 px-4 py-5 sm:px-6 sm:py-6">
         <div className="flex flex-wrap items-center gap-3">
           <FilterSelect
             paramName="filter"
@@ -105,67 +101,120 @@ export default async function ReviewsPage({
             />
           ) : (
             <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Reviewer</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Dish / Location</TableHead>
-                    <TableHead>Text</TableHead>
-                    <TableHead>Photos</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>When</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {reviews.map((r) => (
-                    <ReviewModal key={r.id} review={r}>
-                      <TableRow className="cursor-pointer">
-                        <TableCell>
+              {/* Desktop table */}
+              <div className="hidden md:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Reviewer</TableHead>
+                      <TableHead>Rating</TableHead>
+                      <TableHead>Dish / Location</TableHead>
+                      <TableHead>Text</TableHead>
+                      <TableHead>Photos</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>When</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {reviews.map((r) => (
+                      <ReviewModal key={r.id} review={r}>
+                        <TableRow className="cursor-pointer">
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-7 w-7">
+                                <AvatarImage src={r.user?.avatar_url ?? undefined} />
+                                <AvatarFallback>
+                                  {initials(r.user?.name ?? r.user?.email ?? '?')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="truncate text-sm">
+                                {r.user?.name ?? r.user?.email ?? 'Anon'}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-semibold text-amber-600">
+                            ★ {r.rating}
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            <p className="truncate font-medium">{r.menu_item?.name ?? '—'}</p>
+                            <p className="truncate text-xs text-muted-foreground">
+                              {r.location?.name ?? 'Unknown'}
+                            </p>
+                          </TableCell>
+                          <TableCell className="max-w-[300px] text-sm text-muted-foreground">
+                            {truncate(r.text, 90)}
+                          </TableCell>
+                          <TableCell className="tabular-nums">
+                            {r.review_photos?.length ?? 0}
+                          </TableCell>
+                          <TableCell>
+                            {r.is_flagged ? (
+                              <Badge variant="destructive">Flagged</Badge>
+                            ) : r.rating <= 2 ? (
+                              <Badge variant="warning">Low rating</Badge>
+                            ) : (
+                              <Badge variant="success">OK</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {formatRelative(r.created_at)}
+                          </TableCell>
+                        </TableRow>
+                      </ReviewModal>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile cards */}
+              <ul className="divide-y divide-border md:hidden">
+                {reviews.map((r) => (
+                  <ReviewModal key={r.id} review={r}>
+                    <li className="cursor-pointer px-4 py-3.5 active:bg-muted/50">
+                      <div className="flex items-start gap-3">
+                        <Avatar className="h-9 w-9 shrink-0">
+                          <AvatarImage src={r.user?.avatar_url ?? undefined} />
+                          <AvatarFallback>
+                            {initials(r.user?.name ?? r.user?.email ?? '?')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <Avatar className="h-7 w-7">
-                              <AvatarImage src={r.user?.avatar_url ?? undefined} />
-                              <AvatarFallback>
-                                {initials(r.user?.name ?? r.user?.email ?? '?')}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm">
+                            <p className="truncate text-sm font-semibold">
                               {r.user?.name ?? r.user?.email ?? 'Anon'}
+                            </p>
+                            <span className="shrink-0 text-sm font-semibold text-amber-600">
+                              ★ {r.rating}
                             </span>
                           </div>
-                        </TableCell>
-                        <TableCell className="font-semibold text-amber-600">
-                          ★ {r.rating}
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          <p className="font-medium">{r.menu_item?.name ?? '—'}</p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="truncate text-xs text-muted-foreground">
+                            {r.menu_item?.name ? `${r.menu_item.name} · ` : ''}
                             {r.location?.name ?? 'Unknown'}
                           </p>
-                        </TableCell>
-                        <TableCell className="max-w-[300px] text-sm text-muted-foreground">
-                          {truncate(r.text, 90)}
-                        </TableCell>
-                        <TableCell className="tabular-nums">
-                          {r.review_photos?.length ?? 0}
-                        </TableCell>
-                        <TableCell>
-                          {r.is_flagged ? (
-                            <Badge variant="destructive">Flagged</Badge>
-                          ) : r.rating <= 2 ? (
-                            <Badge variant="warning">Low rating</Badge>
-                          ) : (
-                            <Badge variant="success">OK</Badge>
+                          {r.text && (
+                            <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                              "{r.text}"
+                            </p>
                           )}
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {formatRelative(r.created_at)}
-                        </TableCell>
-                      </TableRow>
-                    </ReviewModal>
-                  ))}
-                </TableBody>
-              </Table>
+                          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                            {r.is_flagged ? (
+                              <Badge variant="destructive">Flagged</Badge>
+                            ) : r.rating <= 2 ? (
+                              <Badge variant="warning">Low rating</Badge>
+                            ) : (
+                              <Badge variant="success">OK</Badge>
+                            )}
+                            <span className="text-[11px] text-muted-foreground">
+                              {formatRelative(r.created_at)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ReviewModal>
+                ))}
+              </ul>
+
               <Pagination page={page} pageSize={PAGE_SIZE} total={total} />
             </>
           )}

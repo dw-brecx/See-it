@@ -109,7 +109,7 @@ export default async function DashboardHome() {
         title="Dashboard"
         subtitle="Real-time overview of the SeeIt platform"
       />
-      <div className="flex-1 space-y-6 px-6 py-6">
+      <div className="flex-1 space-y-5 px-4 py-5 sm:space-y-6 sm:px-6 sm:py-6">
         {data.error && (
           <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             Couldn't load some stats: {data.error}

@@ -65,7 +65,7 @@ export default async function UserDetailPage({
   return (
     <>
       <TopBar title={user.name ?? user.email} subtitle="User details" />
-      <div className="flex-1 space-y-6 px-6 py-6">
+      <div className="flex-1 space-y-5 px-4 py-5 sm:space-y-6 sm:px-6 sm:py-6">
         <Link
           href="/dashboard/users"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -107,7 +107,11 @@ export default async function UserDetailPage({
                 </dl>
               </div>
             </div>
-            <RoleChanger userId={user.id} currentRole={user.role} />
+            <RoleChanger
+              userId={user.id}
+              currentRole={user.role}
+              currentName={user.name}
+            />
           </CardContent>
         </Card>
 

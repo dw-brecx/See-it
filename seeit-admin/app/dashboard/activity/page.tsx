@@ -164,7 +164,7 @@ export default async function ActivityPage() {
         title="Activity"
         subtitle="Recent activity across the platform — newest first"
       />
-      <div className="flex-1 px-6 py-6">
+      <div className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
         {error && (
           <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             Failed to load activity: {error}

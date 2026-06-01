@@ -24,7 +24,7 @@ export default async function SettingsPage() {
   return (
     <>
       <TopBar title="Settings" subtitle="Your admin profile" />
-      <div className="flex-1 px-6 py-6">
+      <div className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
         <div className="mx-auto max-w-2xl space-y-6">
           <Card>
             <CardHeader>

@@ -24,8 +24,11 @@ used by this app.
   more with the CLI later)
 - **Supabase** via `@supabase/supabase-js` and `@supabase/ssr` (the
   modern, non-deprecated package)
+- **react-hook-form + zod** for form validation
 - **Lucide React** for icons
 - **Sonner** for toast notifications
+- Fully responsive — sidebar drawer on mobile, card-layout tables on
+  small screens, full-screen sheet modals
 
 ---
 
@@ -45,17 +48,26 @@ Supabase project keys. **Never commit real values.** The file is in
 `.gitignore`.
 
 ```env
+# Required — public, safe in browser
 NEXT_PUBLIC_SUPABASE_URL=https://<your-project-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOi...your-anon-key...
+
+# Required for the "Invite user" feature only — server-only, NEVER expose
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...your-service-role-key...
 ```
 
-Both keys come from your Supabase dashboard:
-**Project Settings → API → Project URL + Project API keys (anon /
-public)**.
+All three come from your Supabase dashboard:
+**Project Settings → API → Project URL + Project API keys**.
 
-The dashboard only uses the **anon key** — it never needs the service
-role key because admin role checks are enforced via RLS policies and a
-server-side role check on every request.
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` are the
+  public keys — used by browser-side and server-side queries.
+- `SUPABASE_SERVICE_ROLE_KEY` is used **only** by the
+  `/api/admin/invite` route (admin-gated server route that calls
+  `supabase.auth.admin.inviteUserByEmail`). Without it the Invite
+  button returns a 500. Make sure to add this in Vercel env vars too.
+
+The browser bundle never sees the service role key — it's only read in
+the API route handler.
 
 ### 3. Make sure your admin user has `role = 'admin'`
 

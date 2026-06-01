@@ -11,6 +11,7 @@ import {
   CreditCard,
   Activity,
   Settings,
+  X,
   type LucideIcon,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,16 +37,28 @@ type Props = {
     email: string;
     avatar_url: string | null;
   };
+  onLinkClick?: () => void;
 };
 
-export function Sidebar({ user }: Props) {
+export function Sidebar({ user, onLinkClick }: Props) {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 flex h-screen w-[240px] shrink-0 flex-col border-r border-border bg-card px-4 py-5">
-      <Link href="/dashboard" className="px-2 pb-5">
-        <Logo />
-      </Link>
+    <aside className="flex h-screen w-full flex-col border-r border-border bg-card px-4 py-5">
+      <div className="flex items-center justify-between px-2 pb-5">
+        <Link href="/dashboard" onClick={onLinkClick}>
+          <Logo />
+        </Link>
+        {/* Close button on mobile only */}
+        <button
+          type="button"
+          onClick={onLinkClick}
+          aria-label="Close menu"
+          className="-mr-1 inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-muted md:hidden"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
 
       <div className="mb-3 flex items-center gap-3 rounded-lg bg-muted/60 px-3 py-2.5">
         <Avatar className="h-8 w-8">
@@ -60,7 +73,7 @@ export function Sidebar({ user }: Props) {
         </div>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-0.5">
+      <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto">
         {NAV.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;
@@ -68,8 +81,9 @@ export function Sidebar({ user }: Props) {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onLinkClick}
               className={cn(
-                'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors',
+                'flex min-h-11 items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors',
                 active
                   ? 'bg-terracotta-100 text-terracotta-700'
                   : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
@@ -81,7 +95,7 @@ export function Sidebar({ user }: Props) {
                   active ? 'text-terracotta-500' : 'text-muted-foreground/80',
                 )}
               />
-              <span>{item.label}</span>
+              <span className="truncate">{item.label}</span>
             </Link>
           );
         })}
