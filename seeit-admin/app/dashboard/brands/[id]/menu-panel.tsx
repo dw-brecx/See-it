@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, GripVertical, MapPin, Pencil, Plus, Trash2, UtensilsCrossed } from 'lucide-react';
+import { Copy, Eye, EyeOff, GripVertical, MapPin, Pencil, Plus, Trash2, UtensilsCrossed } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Select,
@@ -102,6 +102,40 @@ export function MenuPanel({ brandId, locations }: Props) {
     }
     toast.success(`Deleted "${delCat.name}"`);
     setDelCat(null);
+    refresh();
+    router.refresh();
+  }
+
+  async function duplicateItem(item: Item) {
+    const supabase = createClient();
+    const { data: full, error: fetchErr } = await supabase
+      .from('menu_items')
+      .select('location_id, category_id, name, description, price, dietary_tags, is_visible')
+      .eq('id', item.id)
+      .single();
+    if (fetchErr || !full) {
+      toast.error(`Duplicate failed: ${fetchErr?.message ?? 'not found'}`);
+      return;
+    }
+    const { data: newRow, error: insertErr } = await supabase
+      .from('menu_items')
+      .insert({ ...full, name: `${full.name} (copy)` })
+      .select('id')
+      .single();
+    if (insertErr || !newRow) {
+      toast.error(`Duplicate failed: ${insertErr?.message ?? 'unknown'}`);
+      return;
+    }
+    // Clone the photos too — same urls, same featured flag on the first one
+    if (item.photos.length > 0) {
+      const photoRows = item.photos.map((p, i) => ({
+        menu_item_id: newRow.id,
+        photo_url: p.photo_url,
+        is_featured: i === 0,
+      }));
+      await supabase.from('menu_item_photos').insert(photoRows);
+    }
+    toast.success(`Duplicated "${item.name}"`);
     refresh();
     router.refresh();
   }
@@ -320,6 +354,15 @@ export function MenuPanel({ brandId, locations }: Props) {
                             >
                               <Pencil className="h-3.5 w-3.5" />
                               <span className="sr-only sm:not-sr-only">Edit</span>
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => duplicateItem(item)}
+                              aria-label="Duplicate"
+                              title="Duplicate"
+                            >
+                              <Copy className="h-3.5 w-3.5" />
                             </Button>
                             <Button
                               variant="outline"

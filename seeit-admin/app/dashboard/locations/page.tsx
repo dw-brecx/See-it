@@ -1,23 +1,14 @@
 import Link from 'next/link';
-import { MapPin, Plus, Star } from 'lucide-react';
+import { MapPin, Plus } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { TopBar } from '@/components/TopBar';
 import { Card } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { LocationOpenBadge } from '@/components/StatusBadge';
 import { SearchInput } from '@/components/SearchInput';
 import { FilterSelect } from '@/components/FilterSelect';
 import { Pagination } from '@/components/Pagination';
 import { EmptyState } from '@/components/EmptyState';
+import { LocationsList } from './locations-list';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -71,7 +62,7 @@ async function fetchBrandOptions() {
     .select('id, name')
     .order('name', { ascending: true })
     .limit(200);
-  return (data ?? []).map((b) => ({ value: b.id, label: b.name }));
+  return (data ?? []) as { id: string; name: string }[];
 }
 
 export default async function LocationsPage({
@@ -79,7 +70,7 @@ export default async function LocationsPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const [data, brandOptions] = await Promise.all([
+  const [data, brands] = await Promise.all([
     fetchLocations(searchParams),
     fetchBrandOptions(),
   ]);
@@ -103,7 +94,7 @@ export default async function LocationsPage({
             paramName="brand"
             allLabel="All brands"
             placeholder="Brand"
-            options={brandOptions}
+            options={brands.map((b) => ({ value: b.id, label: b.name }))}
           />
           <FilterSelect
             paramName="status"
@@ -122,134 +113,20 @@ export default async function LocationsPage({
           </div>
         )}
 
-        <Card className="overflow-hidden p-0">
-          {data.locations.length === 0 ? (
+        {data.locations.length === 0 ? (
+          <Card className="overflow-hidden p-0">
             <EmptyState
               icon={MapPin}
               title="No locations found"
               description="Try clearing filters, or click Add location to create one."
             />
-          ) : (
-            <>
-              {/* Desktop table */}
-              <div className="hidden md:block">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Brand</TableHead>
-                      <TableHead>City</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Reviews</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {data.locations.map((loc) => (
-                      <TableRow key={loc.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10 rounded-md">
-                              {loc.cover_photo_url ? (
-                                <AvatarImage src={loc.cover_photo_url} alt={loc.name} />
-                              ) : null}
-                              <AvatarFallback className="rounded-md">
-                                <MapPin className="h-4 w-4" />
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="min-w-0">
-                              <p className="truncate font-medium">{loc.name}</p>
-                              <p className="truncate text-xs text-muted-foreground">
-                                {loc.address}
-                              </p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {loc.brand ? (
-                            <Link
-                              href={`/dashboard/brands/${loc.brand.id}`}
-                              className="font-medium text-primary hover:underline"
-                            >
-                              {loc.brand.name}
-                            </Link>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          {loc.city}
-                          {loc.state ? `, ${loc.state}` : ''}
-                        </TableCell>
-                        <TableCell>
-                          <LocationOpenBadge closed={!!loc.is_temporarily_closed} />
-                        </TableCell>
-                        <TableCell className="tabular-nums">
-                          {loc.average_rating != null ? (
-                            <span className="inline-flex items-center gap-1 text-amber-600">
-                              <Star className="h-3.5 w-3.5 fill-current" />
-                              {Number(loc.average_rating).toFixed(1)}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="tabular-nums">
-                          {loc.review_count ?? 0}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-
-              {/* Mobile card list */}
-              <ul className="divide-y divide-border md:hidden">
-                {data.locations.map((loc) => (
-                  <li key={loc.id} className="flex items-start gap-3 px-4 py-3.5">
-                    <Avatar className="h-12 w-12 shrink-0 rounded-md">
-                      {loc.cover_photo_url ? (
-                        <AvatarImage src={loc.cover_photo_url} alt={loc.name} />
-                      ) : null}
-                      <AvatarFallback className="rounded-md">
-                        <MapPin className="h-4 w-4" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="truncate font-semibold">{loc.name}</p>
-                        <LocationOpenBadge closed={!!loc.is_temporarily_closed} />
-                      </div>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {loc.address}
-                      </p>
-                      {loc.brand && (
-                        <Link
-                          href={`/dashboard/brands/${loc.brand.id}`}
-                          className="mt-0.5 inline-block text-xs font-medium text-primary"
-                        >
-                          {loc.brand.name}
-                        </Link>
-                      )}
-                      <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                        <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                        <span className="tabular-nums">
-                          {loc.average_rating != null
-                            ? Number(loc.average_rating).toFixed(1)
-                            : '—'}
-                        </span>
-                        <span>·</span>
-                        <span>{loc.review_count ?? 0} reviews</span>
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-
-              <Pagination page={data.page} pageSize={PAGE_SIZE} total={data.total} />
-            </>
-          )}
-        </Card>
+          </Card>
+        ) : (
+          <>
+            <LocationsList rows={data.locations} brands={brands} />
+            <Pagination page={data.page} pageSize={PAGE_SIZE} total={data.total} />
+          </>
+        )}
       </div>
     </>
   );
