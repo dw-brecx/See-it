@@ -105,6 +105,7 @@ export type Database = {
           secondary_cuisines: string[] | null;
           owner_id: string | null;
           subscription_status: SubscriptionStatus | null;
+          plan_id: string | null;
           is_suspended: boolean | null;
           created_at: string | null;
           updated_at: string | null;
@@ -118,6 +119,7 @@ export type Database = {
           secondary_cuisines?: string[] | null;
           owner_id?: string | null;
           subscription_status?: SubscriptionStatus | null;
+          plan_id?: string | null;
           is_suspended?: boolean | null;
           created_at?: string | null;
           updated_at?: string | null;
@@ -131,6 +133,7 @@ export type Database = {
           secondary_cuisines?: string[] | null;
           owner_id?: string | null;
           subscription_status?: SubscriptionStatus | null;
+          plan_id?: string | null;
           is_suspended?: boolean | null;
           created_at?: string | null;
           updated_at?: string | null;
@@ -671,6 +674,98 @@ export type Database = {
         Relationships: [];
       };
 
+      plans: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          price_cents: number;
+          billing_interval: 'month' | 'year';
+          location_limit: number | null;
+          features: string[];
+          is_active: boolean;
+          display_order: number;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          price_cents?: number;
+          billing_interval?: 'month' | 'year';
+          location_limit?: number | null;
+          features?: string[];
+          is_active?: boolean;
+          display_order?: number;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          slug?: string;
+          price_cents?: number;
+          billing_interval?: 'month' | 'year';
+          location_limit?: number | null;
+          features?: string[];
+          is_active?: boolean;
+          display_order?: number;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+
+      discount_codes: {
+        Row: {
+          id: string;
+          code: string;
+          description: string | null;
+          percent_off: number | null;
+          amount_off_cents: number | null;
+          valid_from: string | null;
+          valid_until: string | null;
+          max_uses: number | null;
+          used_count: number;
+          applies_to_plan_id: string | null;
+          is_active: boolean;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          description?: string | null;
+          percent_off?: number | null;
+          amount_off_cents?: number | null;
+          valid_from?: string | null;
+          valid_until?: string | null;
+          max_uses?: number | null;
+          used_count?: number;
+          applies_to_plan_id?: string | null;
+          is_active?: boolean;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          description?: string | null;
+          percent_off?: number | null;
+          amount_off_cents?: number | null;
+          valid_from?: string | null;
+          valid_until?: string | null;
+          max_uses?: number | null;
+          used_count?: number;
+          applies_to_plan_id?: string | null;
+          is_active?: boolean;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+
       qr_codes: {
         Row: {
           id: string;
@@ -731,3 +826,5 @@ export type OrderListItem = Tables<'order_list_items'>;
 export type Notification = Tables<'notifications'>;
 export type QrCode = Tables<'qr_codes'>;
 export type UserPreferences = Tables<'user_preferences'>;
+export type Plan = Tables<'plans'>;
+export type DiscountCode = Tables<'discount_codes'>;
