@@ -189,6 +189,9 @@ export function BulkUploadFlow() {
 
   async function runImport() {
     if (submittingRef.current) return;
+    // Pin the location id so the closure has a non-null string type.
+    const locId = locationId;
+    if (!locId) return;
     submittingRef.current = true;
     setImporting(true);
     const supabase = createClient();
@@ -197,7 +200,7 @@ export function BulkUploadFlow() {
       const { data: existingCats } = await supabase
         .from('menu_categories')
         .select('id, name, display_order')
-        .eq('location_id', locationId);
+        .eq('location_id', locId);
       const catByName = new Map<string, string>();
       let nextOrder = 0;
       for (const c of existingCats ?? []) {
@@ -220,7 +223,7 @@ export function BulkUploadFlow() {
             const { data: newCat, error: catErr } = await supabase
               .from('menu_categories')
               .insert({
-                location_id: locationId,
+                location_id: locId,
                 name: row.data.category,
                 display_order: nextOrder,
               })
@@ -238,7 +241,7 @@ export function BulkUploadFlow() {
         }
 
         const { error } = await supabase.from('menu_items').insert({
-          location_id: locationId,
+          location_id: locId,
           category_id: categoryId,
           name: row.data.name,
           description: row.data.description,
