@@ -35,7 +35,7 @@ async function fetchReviews(params: SearchParams) {
   let query = supabase
     .from('reviews')
     .select(
-      'id, rating, text, is_flagged, created_at, portion_size, worth_it, mood_tags, user:users(id, name, email, avatar_url), location:locations(id, name, brand:brands(id, name)), menu_item:menu_items(id, name), review_photos(id, photo_url), review_replies(id, text, created_at)',
+      'id, rating, text, is_flagged, created_at, portion_size, mood_tags, user:users(id, name, email, avatar_url), location:locations(id, name, brand:brands(id, name)), menu_item:menu_items(id, name), review_photos(id, photo_url), review_replies(id, text, created_at)',
       { count: 'exact' },
     )
     .order('created_at', { ascending: false })

@@ -42,10 +42,6 @@ const schema = z.object({
   rating: z.number().int().min(1).max(5),
   text: z.string().max(2000).optional().or(z.literal('')),
   portion_size: z.string().optional().or(z.literal('')),
-  worth_it: z
-    .union([z.boolean(), z.literal('skip')])
-    .optional()
-    .nullable(),
   mood_tags: z.array(z.string()).default([]),
   photos: z.array(z.string()).default([]),
 });
@@ -60,7 +56,6 @@ type ExistingReview = {
   rating: number;
   text: string | null;
   portion_size: string | null;
-  worth_it: boolean | null;
   mood_tags: string[] | null;
   photos?: string[];
   user_email?: string;
@@ -86,12 +81,6 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
       rating: review?.rating ?? 5,
       text: review?.text ?? '',
       portion_size: review?.portion_size ?? '',
-      worth_it:
-        review?.worth_it === true
-          ? true
-          : review?.worth_it === false
-          ? false
-          : 'skip',
       mood_tags: review?.mood_tags ?? [],
       photos: review?.photos ?? [],
     },
@@ -199,8 +188,6 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
       rating: values.rating,
       text: values.text || null,
       portion_size: (values.portion_size || null) as PortionSize | null,
-      worth_it:
-        values.worth_it === true ? true : values.worth_it === false ? false : null,
       mood_tags: values.mood_tags,
     };
 
@@ -437,34 +424,6 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
                           {p.label}
                         </SelectItem>
                       ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="worth_it"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Worth the price?</FormLabel>
-                  <Select
-                    value={String(field.value ?? 'skip')}
-                    onValueChange={(v) =>
-                      field.onChange(v === 'true' ? true : v === 'false' ? false : 'skip')
-                    }
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="skip">— skip —</SelectItem>
-                      <SelectItem value="true">Yes, worth it</SelectItem>
-                      <SelectItem value="false">Overpriced</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

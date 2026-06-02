@@ -388,7 +388,6 @@ export type Database = {
           rating: number;
           text: string | null;
           portion_size: PortionSize | null;
-          worth_it: boolean | null;
           mood_tags: string[] | null;
           is_flagged: boolean;
           created_at: string;
@@ -401,7 +400,6 @@ export type Database = {
           rating: number;
           text?: string | null;
           portion_size?: PortionSize | null;
-          worth_it?: boolean | null;
           mood_tags?: string[] | null;
           is_flagged?: boolean;
           created_at?: string;
@@ -414,7 +412,6 @@ export type Database = {
           rating?: number;
           text?: string | null;
           portion_size?: PortionSize | null;
-          worth_it?: boolean | null;
           mood_tags?: string[] | null;
           is_flagged?: boolean;
           created_at?: string;
