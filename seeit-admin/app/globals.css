@@ -4,37 +4,44 @@
 
 @layer base {
   :root {
-    /* Surface */
-    --background: 60 11% 97%;          /* #FAFAF7 off-white */
-    --foreground: 0 0% 10%;            /* #1A1A1A charcoal */
+    /* Surface — warm off-white, paper-like */
+    --background: 40 33% 98%;          /* #FBF9F4 — warm canvas */
+    --foreground: 30 10% 12%;          /* #211E1B — soft black, not harsh */
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 30 10% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 30 10% 12%;
 
-    /* Brand: terracotta #E85D3A */
-    --primary: 14 80% 57%;
+    /* Brand — terracotta #E85D3A */
+    --primary: 14 80% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 9% 94%;
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 36 25% 95%;           /* warm cream surface */
+    --secondary-foreground: 30 10% 18%;
 
-    --muted: 60 9% 94%;
-    --muted-foreground: 220 9% 46%;    /* #6B7280 soft gray */
+    --muted: 36 22% 95%;
+    --muted-foreground: 30 6% 42%;     /* #6F695F — warm gray */
 
-    --accent: 14 100% 96%;             /* terracotta-50 */
-    --accent-foreground: 14 75% 38%;
+    --accent: 14 100% 96%;             /* terracotta-50 wash */
+    --accent-foreground: 14 75% 35%;
 
-    --destructive: 0 70% 47%;
+    --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 50 11% 91%;              /* #ECECE7 */
-    --input: 50 11% 88%;
-    --ring: 14 80% 57%;
+    --border: 36 18% 91%;              /* warm soft border */
+    --input: 36 18% 88%;
+    --ring: 14 80% 56%;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;                  /* 12px — friendlier */
+
+    /* Warm-tinted shadow stack */
+    --shadow-xs: 0 1px 2px 0 rgba(33, 30, 27, 0.04);
+    --shadow-sm: 0 1px 2px 0 rgba(33, 30, 27, 0.04), 0 1px 3px 0 rgba(33, 30, 27, 0.05);
+    --shadow-md: 0 2px 4px -1px rgba(33, 30, 27, 0.05), 0 4px 8px -2px rgba(33, 30, 27, 0.06);
+    --shadow-lg: 0 4px 8px -2px rgba(33, 30, 27, 0.06), 0 12px 24px -6px rgba(33, 30, 27, 0.10);
+    --shadow-xl: 0 8px 16px -4px rgba(33, 30, 27, 0.08), 0 24px 48px -12px rgba(33, 30, 27, 0.14);
   }
 }
 
@@ -44,14 +51,39 @@
   }
   html {
     -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings: 'rlig' 1, 'calt' 1, 'ss01' 1, 'cv11' 1;
   }
+  /* Tighter tracking on display headings */
+  h1, h2, h3 { letter-spacing: -0.015em; }
 }
 
-/* Tabular numbers in tables / stats */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+@layer utilities {
+  .shadow-xs { box-shadow: var(--shadow-xs); }
+  .shadow-soft { box-shadow: var(--shadow-sm); }
+  .shadow-soft-md { box-shadow: var(--shadow-md); }
+  .shadow-soft-lg { box-shadow: var(--shadow-lg); }
+  .shadow-soft-xl { box-shadow: var(--shadow-xl); }
+
+  /* Tabular numbers in tables / stats */
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+
+  /* Subtle radial wash used on auth + hero surfaces */
+  .bg-warm-wash {
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 0%, rgba(232, 93, 58, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(232, 93, 58, 0.04) 0%, transparent 60%),
+      hsl(var(--background));
+  }
+
+  /* Fine 1px grid for the auth marketing panel */
+  .bg-warm-grid {
+    background-image:
+      linear-gradient(to right, rgba(33, 30, 27, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(33, 30, 27, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
 }

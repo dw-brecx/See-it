@@ -15,7 +15,7 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -51,19 +51,45 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // Brand-specific
+        // Brand — terracotta with full scale
         terracotta: {
-          50: '#FFF6F2',
-          100: '#FCE9E2',
+          50:  '#FFF5F0',
+          100: '#FCE7DD',
+          200: '#F9CDB9',
+          300: '#F3A88A',
+          400: '#EE825D',
           500: '#E85D3A',
           600: '#C94924',
           700: '#A53A18',
+          800: '#7C2C12',
+          900: '#5A210E',
+        },
+        // Warm neutrals — paired with terracotta for body chrome
+        warm: {
+          25:  '#FCFBF8',
+          50:  '#F8F6F0',
+          100: '#F0EDE3',
+          200: '#E5E0D2',
+          300: '#CFC8B4',
+          400: '#A39B85',
+          500: '#79725F',
+          600: '#5E5849',
+          700: '#464136',
+          800: '#2B271F',
+          900: '#1C1915',
         },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      boxShadow: {
+        xs: 'var(--shadow-xs)',
+        soft: 'var(--shadow-sm)',
+        'soft-md': 'var(--shadow-md)',
+        'soft-lg': 'var(--shadow-lg)',
+        'soft-xl': 'var(--shadow-xl)',
       },
       keyframes: {
         'accordion-down': {
@@ -78,11 +104,16 @@ const config: Config = {
           '0%': { backgroundPosition: '200% 0' },
           '100%': { backgroundPosition: '-200% 0' },
         },
+        'fade-in-up': {
+          from: { opacity: '0', transform: 'translateY(4px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         shimmer: 'shimmer 1.5s ease-in-out infinite',
+        'fade-in-up': 'fade-in-up 0.25s ease-out both',
       },
     },
   },

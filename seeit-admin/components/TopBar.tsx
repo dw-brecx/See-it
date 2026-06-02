@@ -28,37 +28,36 @@ export function TopBar({ title, subtitle, children }: Props) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur-md sm:px-6">
-      {/* Hamburger — mobile only */}
+    <header className="sticky top-0 z-30 flex h-[68px] items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md sm:px-8">
       <Button
         variant="outline"
         size="icon"
         onClick={() => setMobileOpen(true)}
-        className="md:hidden"
+        className="h-10 w-10 md:hidden"
         aria-label="Open menu"
       >
-        <Menu className="h-4 w-4" />
+        <Menu className="h-4.5 w-4.5" />
       </Button>
 
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-base font-semibold tracking-tight sm:text-lg">
+        <h1 className="truncate text-[17px] font-semibold tracking-tight text-foreground sm:text-[19px]">
           {title}
         </h1>
         {subtitle && (
-          <p className="hidden truncate text-xs text-muted-foreground sm:block">
+          <p className="hidden truncate text-[13px] text-muted-foreground sm:block">
             {subtitle}
           </p>
         )}
       </div>
 
-      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         {children}
         <Button
           variant="outline"
           size="sm"
           onClick={refresh}
           disabled={isPending}
-          className="gap-1.5"
+          className="h-9 gap-1.5 px-3"
           aria-label="Refresh"
         >
           <RefreshCw

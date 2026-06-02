@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Form,
@@ -620,8 +620,9 @@ export function LocationForm({
             {/* Kosher cert (only when Kosher dietary tag selected) */}
             {isKosher && (
               <div className="space-y-4 rounded-lg border border-blue-200 bg-blue-50/50 p-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-blue-700">
-                  ✡ Kosher certification
+                <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-blue-700">
+                  <ShieldCheck className="h-4 w-4" />
+                  Kosher certification
                 </h3>
 
                 <FormField

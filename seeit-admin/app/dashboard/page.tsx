@@ -6,6 +6,8 @@ import {
   CreditCard,
   Camera,
   UserPlus,
+  ArrowRight,
+  Star,
 } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
@@ -13,7 +15,6 @@ import { TopBar } from '@/components/TopBar';
 import { StatCard } from '@/components/StatCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/EmptyState';
 import { formatRelative, initials } from '@/lib/utils';
 import { RoleBadge } from '@/components/RoleBadge';
@@ -26,7 +27,6 @@ async function fetchOverview() {
 
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  // Run all count queries in parallel for speed
   const [
     brandsCount,
     locationsCount,
@@ -39,6 +39,7 @@ async function fetchOverview() {
     photosWeekCount,
     recentReviews,
     recentSignups,
+    me,
   ] = await Promise.all([
     supabase.from('brands').select('*', { count: 'exact', head: true }),
     supabase.from('locations').select('*', { count: 'exact', head: true }),
@@ -70,15 +71,29 @@ async function fetchOverview() {
         'id, rating, text, created_at, user:users(id, name, email, avatar_url), location:locations(id, name)',
       )
       .order('created_at', { ascending: false })
-      .limit(10),
+      .limit(8),
     supabase
       .from('users')
       .select('id, name, email, avatar_url, role, created_at')
       .order('created_at', { ascending: false })
       .limit(5),
+    supabase.auth.getUser(),
   ]);
 
+  // Resolve the signed-in admin's display name for the greeting
+  let myName: string | null = null;
+  const meId = me.data.user?.id;
+  if (meId) {
+    const { data: profile } = await supabase
+      .from('users')
+      .select('name')
+      .eq('id', meId)
+      .maybeSingle();
+    myName = profile?.name ?? null;
+  }
+
   return {
+    myName,
     brands: brandsCount.count ?? 0,
     locations: locationsCount.count ?? 0,
     activeSubs: activeSubsCount.count ?? 0,
@@ -100,22 +115,48 @@ async function fetchOverview() {
   };
 }
 
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 5) return 'Working late';
+  if (h < 12) return 'Good morning';
+  if (h < 18) return 'Good afternoon';
+  return 'Good evening';
+}
+
 export default async function DashboardHome() {
   const data = await fetchOverview();
+  const firstName = data.myName?.split(' ')[0] ?? null;
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
     <>
-      <TopBar
-        title="Dashboard"
-        subtitle="Real-time overview of the SeeIt platform"
-      />
-      <div className="flex-1 space-y-5 px-4 py-5 sm:space-y-6 sm:px-6 sm:py-6">
+      <TopBar title="Dashboard" subtitle="Real-time overview of the SeeIt platform" />
+      <div className="flex-1 space-y-6 px-4 py-6 sm:px-8 sm:py-8">
         {data.error && (
-          <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700">
             Couldn't load some stats: {data.error}
           </div>
         )}
 
+        {/* Greeting hero */}
+        <div className="flex flex-col gap-1">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            {today}
+          </p>
+          <h2 className="text-[26px] font-bold tracking-tight text-foreground sm:text-[28px]">
+            {greeting()}
+            {firstName ? `, ${firstName}` : ''}.
+          </h2>
+          <p className="text-[14px] text-muted-foreground">
+            Here's what's happening across the platform today.
+          </p>
+        </div>
+
+        {/* Primary stats */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             label="Total brands"
@@ -139,6 +180,7 @@ export default async function DashboardHome() {
           />
         </div>
 
+        {/* Secondary stats */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard
             label="Total users"
@@ -150,10 +192,10 @@ export default async function DashboardHome() {
             label="Photos this week"
             value={data.photosWeek.toLocaleString()}
             icon={Camera}
-            hint="Customer + restaurant uploads"
+            hint="Customer and restaurant uploads in the last 7 days"
           />
           <StatCard
-            label="New signups (5 recent)"
+            label="Newest signups"
             value={data.recentSignups.length}
             icon={UserPlus}
             hint={
@@ -164,15 +206,22 @@ export default async function DashboardHome() {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-2">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle>Recent reviews</CardTitle>
+        {/* Recent activity */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+          <Card className="lg:col-span-2 overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+              <div className="space-y-0.5">
+                <CardTitle>Recent reviews</CardTitle>
+                <p className="text-[12.5px] text-muted-foreground">
+                  Most recent customer feedback across the platform
+                </p>
+              </div>
               <Link
                 href="/dashboard/reviews"
-                className="text-xs font-semibold text-primary hover:underline"
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[12.5px] font-semibold text-primary transition-colors hover:bg-terracotta-50"
               >
-                View all →
+                View all
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </CardHeader>
             <CardContent className="px-0 pt-0">
@@ -185,33 +234,38 @@ export default async function DashboardHome() {
               ) : (
                 <ul className="divide-y divide-border">
                   {data.recentReviews.map((r) => (
-                    <li key={r.id} className="flex items-start gap-3 px-6 py-3">
-                      <Avatar className="h-8 w-8">
+                    <li
+                      key={r.id}
+                      className="flex items-start gap-3 px-6 py-3.5 transition-colors hover:bg-warm-50/60"
+                    >
+                      <Avatar className="h-9 w-9">
                         <AvatarImage src={r.user?.avatar_url ?? undefined} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-terracotta-50 text-terracotta-700 text-[11px] font-semibold">
                           {initials(r.user?.name ?? r.user?.email ?? '?')}
                         </AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1">
-                        <p className="flex items-center gap-2 text-sm">
-                          <span className="font-semibold">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                          <span className="text-[13.5px] font-semibold text-foreground">
                             {r.user?.name ?? r.user?.email ?? 'Unknown'}
                           </span>
-                          <span className="text-muted-foreground">·</span>
                           <span className="inline-flex items-center gap-0.5 text-amber-600">
-                            ★ {r.rating}
+                            <Star className="h-3.5 w-3.5 fill-current" />
+                            <span className="text-[12.5px] font-semibold tabular-nums">
+                              {r.rating}
+                            </span>
                           </span>
-                          <span className="text-muted-foreground">·</span>
-                          <span className="truncate text-muted-foreground">
+                          <span className="text-muted-foreground/40">·</span>
+                          <span className="truncate text-[12.5px] text-muted-foreground">
                             {r.location?.name ?? 'Unknown location'}
                           </span>
-                        </p>
+                        </div>
                         {r.text && (
-                          <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                          <p className="mt-0.5 line-clamp-1 text-[12.5px] text-muted-foreground">
                             "{r.text}"
                           </p>
                         )}
-                        <p className="mt-0.5 text-[11px] text-muted-foreground">
+                        <p className="mt-0.5 text-[11px] text-muted-foreground/80">
                           {formatRelative(r.created_at)}
                         </p>
                       </div>
@@ -222,14 +276,20 @@ export default async function DashboardHome() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle>Newest users</CardTitle>
+          <Card className="overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+              <div className="space-y-0.5">
+                <CardTitle>Newest users</CardTitle>
+                <p className="text-[12.5px] text-muted-foreground">
+                  Most recent signups
+                </p>
+              </div>
               <Link
                 href="/dashboard/users"
-                className="text-xs font-semibold text-primary hover:underline"
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[12.5px] font-semibold text-primary transition-colors hover:bg-terracotta-50"
               >
-                View all →
+                View all
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </CardHeader>
             <CardContent className="px-0 pt-0">
@@ -242,21 +302,24 @@ export default async function DashboardHome() {
               ) : (
                 <ul className="divide-y divide-border">
                   {data.recentSignups.map((u) => (
-                    <li key={u.id} className="flex items-start gap-3 px-6 py-3">
-                      <Avatar className="h-8 w-8">
+                    <li
+                      key={u.id}
+                      className="flex items-start gap-3 px-6 py-3.5 transition-colors hover:bg-warm-50/60"
+                    >
+                      <Avatar className="h-9 w-9">
                         <AvatarImage src={u.avatar_url ?? undefined} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-warm-100 text-warm-700 text-[11px] font-semibold">
                           {initials(u.name ?? u.email)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">
+                        <p className="truncate text-[13.5px] font-semibold text-foreground">
                           {u.name ?? u.email}
                         </p>
-                        <p className="truncate text-xs text-muted-foreground">
+                        <p className="truncate text-[12px] text-muted-foreground">
                           {u.email}
                         </p>
-                        <div className="mt-1 flex items-center gap-2">
+                        <div className="mt-1.5 flex items-center gap-2">
                           <RoleBadge role={u.role} />
                           <span className="text-[11px] text-muted-foreground">
                             {formatRelative(u.created_at)}

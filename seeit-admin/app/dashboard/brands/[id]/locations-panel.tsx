@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MapPin, Pencil, Plus, Trash2 } from 'lucide-react';
+import { MapPin, Pencil, Plus, Star, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -126,9 +126,13 @@ export function LocationsPanel({ brandId, locations }: Props) {
                   {loc.city ? `, ${loc.city}` : ''}
                   {loc.state ? `, ${loc.state}` : ''}
                 </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  ★ {loc.average_rating?.toFixed(1) ?? '—'} ·{' '}
-                  {loc.review_count ?? 0} reviews
+                <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-muted-foreground">
+                  <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                  <span className="tabular-nums">
+                    {loc.average_rating?.toFixed(1) ?? '—'}
+                  </span>
+                  <span>·</span>
+                  <span>{loc.review_count ?? 0} reviews</span>
                 </p>
               </div>
               <div className="flex shrink-0 gap-2">

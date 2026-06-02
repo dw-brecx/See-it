@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MapPin, Plus } from 'lucide-react';
+import { MapPin, Plus, Star } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { TopBar } from '@/components/TopBar';
 import { Card } from '@/components/ui/card';
@@ -186,12 +186,12 @@ export default async function LocationsPage({
                         </TableCell>
                         <TableCell className="tabular-nums">
                           {loc.average_rating != null ? (
-                            <span className="inline-flex items-center gap-0.5">
-                              <span className="text-amber-600">★</span>
+                            <span className="inline-flex items-center gap-1 text-amber-600">
+                              <Star className="h-3.5 w-3.5 fill-current" />
                               {Number(loc.average_rating).toFixed(1)}
                             </span>
                           ) : (
-                            '—'
+                            <span className="text-muted-foreground">—</span>
                           )}
                         </TableCell>
                         <TableCell className="tabular-nums">
@@ -231,9 +231,15 @@ export default async function LocationsPage({
                           {loc.brand.name}
                         </Link>
                       )}
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        ★ {loc.average_rating != null ? Number(loc.average_rating).toFixed(1) : '—'}{' '}
-                        · {loc.review_count ?? 0} reviews
+                      <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                        <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                        <span className="tabular-nums">
+                          {loc.average_rating != null
+                            ? Number(loc.average_rating).toFixed(1)
+                            : '—'}
+                        </span>
+                        <span>·</span>
+                        <span>{loc.review_count ?? 0} reviews</span>
                       </p>
                     </div>
                   </li>

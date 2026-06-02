@@ -5,6 +5,7 @@ import {
   Building2,
   MapPin,
   Activity as ActivityIcon,
+  Star,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { TopBar } from '@/components/TopBar';
@@ -77,7 +78,11 @@ async function fetchActivity(): Promise<{ items: ActivityItem[]; error: string |
       title: (
         <>
           <strong>{r.user?.name ?? r.user?.email ?? 'Anon'}</strong> left a{' '}
-          <span className="text-amber-600">★ {r.rating}</span> review at{' '}
+          <span className="inline-flex items-center gap-0.5 align-middle text-amber-600">
+            <Star className="h-3.5 w-3.5 fill-current" />
+            <span className="font-semibold tabular-nums">{r.rating}</span>
+          </span>{' '}
+          review at{' '}
           <strong>{r.location?.name ?? 'Unknown'}</strong>
         </>
       ),

@@ -4,6 +4,7 @@ import {
   Users,
   Activity as ActivityIcon,
   ChevronLeft,
+  Star,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { TopBar } from '@/components/TopBar';
@@ -313,7 +314,10 @@ export default async function BrandDetailPage({
                             <span className="font-semibold">
                               {r.user?.name ?? r.user?.email ?? 'Anon'}
                             </span>{' '}
-                            <span className="text-amber-600">★ {r.rating}</span>{' '}
+                            <span className="inline-flex items-center gap-0.5 align-middle text-amber-600">
+                              <Star className="h-3.5 w-3.5 fill-current" />
+                              <span className="font-semibold tabular-nums">{r.rating}</span>
+                            </span>{' '}
                             <span className="text-muted-foreground">at</span>{' '}
                             <span className="text-muted-foreground">
                               {r.location?.name ?? '—'}

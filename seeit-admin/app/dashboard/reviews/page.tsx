@@ -1,4 +1,4 @@
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Star } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { TopBar } from '@/components/TopBar';
 import { Card } from '@/components/ui/card';
@@ -80,7 +80,7 @@ export default async function ReviewsPage({
             placeholder="Filter"
             options={[
               { value: 'flagged', label: 'Flagged only' },
-              { value: 'low', label: 'Low rated (1–2 ★)' },
+              { value: 'low', label: 'Low rated (1–2 stars)' },
               { value: 'unreplied', label: 'Awaiting reply' },
             ]}
           />
@@ -132,8 +132,11 @@ export default async function ReviewsPage({
                               </span>
                             </div>
                           </TableCell>
-                          <TableCell className="font-semibold text-amber-600">
-                            ★ {r.rating}
+                          <TableCell>
+                            <span className="inline-flex items-center gap-1 font-semibold tabular-nums text-amber-600">
+                              <Star className="h-3.5 w-3.5 fill-current" />
+                              {r.rating}
+                            </span>
                           </TableCell>
                           <TableCell className="text-sm">
                             <p className="truncate font-medium">{r.menu_item?.name ?? '—'}</p>
@@ -183,8 +186,9 @@ export default async function ReviewsPage({
                             <p className="truncate text-sm font-semibold">
                               {r.user?.name ?? r.user?.email ?? 'Anon'}
                             </p>
-                            <span className="shrink-0 text-sm font-semibold text-amber-600">
-                              ★ {r.rating}
+                            <span className="inline-flex shrink-0 items-center gap-0.5 text-sm font-semibold tabular-nums text-amber-600">
+                              <Star className="h-3.5 w-3.5 fill-current" />
+                              {r.rating}
                             </span>
                           </div>
                           <p className="truncate text-xs text-muted-foreground">

@@ -1,30 +1,50 @@
 import { cn } from '@/lib/utils';
 
-export function Logo({ className, withText = true }: { className?: string; withText?: boolean }) {
+type Props = {
+  className?: string;
+  withText?: boolean;
+  /** Show the small "Admin" suffix beside the wordmark. */
+  showAdmin?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+};
+
+const SIZES = {
+  sm: { mark: 'h-6 w-6', text: 'text-base' },
+  md: { mark: 'h-8 w-8', text: 'text-lg' },
+  lg: { mark: 'h-10 w-10', text: 'text-2xl' },
+};
+
+export function Logo({
+  className,
+  withText = true,
+  showAdmin = false,
+  size = 'md',
+}: Props) {
+  const s = SIZES[size];
   return (
-    <div className={cn('flex items-center gap-2', className)}>
+    <div className={cn('flex items-center gap-2.5', className)}>
       <svg
-        viewBox="0 0 48 48"
+        viewBox="0 0 40 40"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-7"
+        className={s.mark}
         aria-hidden
       >
-        <rect width="48" height="48" rx="12" fill="#E85D3A" />
+        <rect width="40" height="40" rx="10" fill="#E85D3A" />
         <path
-          d="M9 24c4-7 10-10 15-10s11 3 15 10c-4 7-10 10-15 10S13 31 9 24Z"
+          d="M8 20c3.2-6 7.6-9 12-9s8.8 3 12 9c-3.2 6-7.6 9-12 9s-8.8-3-12-9Z"
           stroke="#fff"
-          strokeWidth="2.5"
+          strokeWidth="2"
           strokeLinejoin="round"
         />
-        <circle cx="24" cy="24" r="4.5" fill="#fff" />
+        <circle cx="20" cy="20" r="3.5" fill="#fff" />
       </svg>
       {withText && (
-        <span className="text-lg font-extrabold tracking-tight">
-          See<span className="text-terracotta-500">It</span>
-          <span className="ml-1.5 inline-flex items-center rounded-full bg-terracotta-100 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-terracotta-700">
-            ADMIN
-          </span>
+        <span className={cn('font-semibold tracking-tight text-foreground', s.text)}>
+          SeeIt
+          {showAdmin && (
+            <span className="ml-1.5 text-muted-foreground font-medium">Admin</span>
+          )}
         </span>
       )}
     </div>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Flag, Pencil, Trash2 } from 'lucide-react';
+import { Flag, Pencil, Star, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -108,7 +108,10 @@ export function ReviewModal({ review, children }: Props) {
                   {review.user?.email ?? ''} · {formatRelative(review.created_at)}
                 </p>
               </div>
-              <span className="font-semibold text-amber-600">★ {review.rating}</span>
+              <span className="inline-flex items-center gap-1 font-semibold tabular-nums text-amber-600">
+                <Star className="h-3.5 w-3.5 fill-current" />
+                {review.rating}
+              </span>
             </div>
 
             {review.text && (

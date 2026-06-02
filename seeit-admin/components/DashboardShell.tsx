@@ -67,7 +67,7 @@ export function DashboardShell({ user, children }: Props) {
         {/* Sidebar — fixed on desktop, slide-in drawer on mobile */}
         <div
           className={cn(
-            'fixed inset-y-0 left-0 z-50 w-[260px] transform bg-card transition-transform md:sticky md:top-0 md:z-auto md:w-[240px] md:translate-x-0',
+            'fixed inset-y-0 left-0 z-50 w-[272px] transform bg-card shadow-soft-xl transition-transform md:sticky md:top-0 md:z-auto md:w-[256px] md:translate-x-0 md:shadow-none',
             mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
           )}
         >
