@@ -93,32 +93,60 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, review?.id]);
 
+  const [brands, setBrands] = React.useState<
+    { id: string; name: string }[]
+  >([]);
+  const [brandId, setBrandId] = React.useState<string>('');
   const [locations, setLocations] = React.useState<
     { id: string; label: string }[]
   >([]);
   const [menuItems, setMenuItems] = React.useState<
     { id: string; name: string }[]
   >([]);
-  const [locQuery, setLocQuery] = React.useState('');
+  const [brandQuery, setBrandQuery] = React.useState('');
   const watchedLocId = form.watch('location_id');
 
-  // Search locations as the admin types
+  // Load brand list (search filtered)
   React.useEffect(() => {
     let cancelled = false;
     async function run() {
       const supabase = createClient();
-      let query = supabase
+      let q = supabase
+        .from('brands')
+        .select('id, name')
+        .order('name', { ascending: true })
+        .limit(50);
+      if (brandQuery) q = q.ilike('name', `%${brandQuery}%`);
+      const { data } = await q;
+      if (cancelled) return;
+      setBrands((data ?? []) as { id: string; name: string }[]);
+    }
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [brandQuery]);
+
+  // Load locations for the picked brand
+  React.useEffect(() => {
+    if (!brandId) {
+      setLocations([]);
+      return;
+    }
+    let cancelled = false;
+    async function run() {
+      const supabase = createClient();
+      const { data } = await supabase
         .from('locations')
-        .select('id, name, address, city, brand:brands(name)')
-        .order('created_at', { ascending: false })
-        .limit(20);
-      if (locQuery) query = query.ilike('name', `%${locQuery}%`);
-      const { data } = await query;
+        .select('id, name, city, state')
+        .eq('brand_id', brandId)
+        .order('name', { ascending: true })
+        .limit(200);
       if (cancelled) return;
       setLocations(
         (data ?? []).map((l: any) => ({
           id: l.id,
-          label: `${l.brand?.name ? l.brand.name + ' — ' : ''}${l.name} · ${l.city}`,
+          label: `${l.name}${l.city ? ` · ${l.city}` : ''}${l.state ? `, ${l.state}` : ''}`,
         })),
       );
     }
@@ -126,7 +154,26 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [locQuery]);
+  }, [brandId]);
+
+  // When editing, derive the brand from the existing location so the picker pre-fills
+  React.useEffect(() => {
+    if (!review?.location_id) return;
+    let cancelled = false;
+    (async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('locations')
+        .select('brand_id')
+        .eq('id', review.location_id)
+        .maybeSingle();
+      if (cancelled || !data?.brand_id) return;
+      setBrandId(data.brand_id);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [review?.location_id]);
 
   // Load menu items for the picked location
   React.useEffect(() => {
@@ -151,7 +198,19 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
     };
   }, [watchedLocId]);
 
+  const submittingRef = React.useRef(false);
+
   async function onSubmit(values: FormValues) {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    try {
+      await doSubmit(values);
+    } finally {
+      submittingRef.current = false;
+    }
+  }
+
+  async function doSubmit(values: FormValues) {
     const supabase = createClient();
 
     // Resolve user email to id (only required on create — edit keeps existing user)
@@ -279,39 +338,80 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
               />
             )}
 
+            <FormItem>
+              <FormLabel>Brand *</FormLabel>
+              <div className="space-y-2">
+                <Input
+                  placeholder="Search brand…"
+                  value={brandQuery}
+                  onChange={(e) => setBrandQuery(e.target.value)}
+                />
+                <Select
+                  value={brandId}
+                  onValueChange={(v) => {
+                    setBrandId(v);
+                    // reset location when brand changes
+                    form.setValue('location_id', '');
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pick a brand" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brands.length === 0 ? (
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        No matches.
+                      </div>
+                    ) : (
+                      brands.map((b) => (
+                        <SelectItem key={b.id} value={b.id}>
+                          {b.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+            </FormItem>
+
             <FormField
               control={form.control}
               name="location_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Location *</FormLabel>
-                  <div className="space-y-2">
-                    <Input
-                      placeholder="Search location…"
-                      value={locQuery}
-                      onChange={(e) => setLocQuery(e.target.value)}
-                    />
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Pick a location" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {locations.length === 0 ? (
-                          <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                            No matches.
-                          </div>
-                        ) : (
-                          locations.map((l) => (
-                            <SelectItem key={l.id} value={l.id}>
-                              {l.label}
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={!brandId}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            brandId
+                              ? 'Pick a location'
+                              : 'Pick a brand first'
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {locations.length === 0 ? (
+                        <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                          {brandId
+                            ? 'This brand has no locations yet.'
+                            : 'Pick a brand to see its locations.'}
+                        </div>
+                      ) : (
+                        locations.map((l) => (
+                          <SelectItem key={l.id} value={l.id}>
+                            {l.label}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

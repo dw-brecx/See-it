@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MapPin, Pencil, Plus, Star, Trash2 } from 'lucide-react';
+import { Copy, MapPin, Pencil, Plus, Star, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -47,7 +47,25 @@ export function LocationsPanel({ brandId, locations }: Props) {
   const [addOpen, setAddOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<Location | null>(null);
   const [editKosher, setEditKosher] = React.useState<any>(null);
+  const [duplicateOf, setDuplicateOf] = React.useState<Location | null>(null);
+  const [duplicateKosher, setDuplicateKosher] = React.useState<any>(null);
   const [confirmDelete, setConfirmDelete] = React.useState<Location | null>(null);
+
+  async function openDuplicate(loc: Location) {
+    const supabase = createClient();
+    const { data: cert } = await supabase
+      .from('kosher_certifications')
+      .select('*')
+      .eq('location_id', loc.id)
+      .maybeSingle();
+    // Strip id & cert id so the form treats it as a brand-new create
+    setDuplicateKosher(cert ? { ...cert, id: undefined, location_id: undefined } : null);
+    setDuplicateOf({
+      ...loc,
+      // Append "(copy)" so the user sees a clear distinguisher and edits if needed
+      name: `${loc.name} (copy)`,
+    });
+  }
 
   async function openEdit(loc: Location) {
     const supabase = createClient();
@@ -135,7 +153,7 @@ export function LocationsPanel({ brandId, locations }: Props) {
                   <span>{loc.review_count ?? 0} reviews</span>
                 </p>
               </div>
-              <div className="flex shrink-0 gap-2">
+              <div className="flex shrink-0 flex-wrap gap-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -143,6 +161,15 @@ export function LocationsPanel({ brandId, locations }: Props) {
                   onClick={() => openEdit(loc)}
                 >
                   <Pencil className="h-3.5 w-3.5" /> Edit
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => openDuplicate(loc)}
+                  title="Clone this location's details into a new one"
+                >
+                  <Copy className="h-3.5 w-3.5" /> Duplicate
                 </Button>
                 <Button
                   variant="outline"
@@ -178,6 +205,20 @@ export function LocationsPanel({ brandId, locations }: Props) {
         brandId={brandId}
         location={editing}
         kosherCert={editKosher}
+      />
+
+      {/* Duplicate — opens the same form pre-filled as a create (no `location` prop) */}
+      <LocationForm
+        open={!!duplicateOf}
+        onOpenChange={(o) => {
+          if (!o) {
+            setDuplicateOf(null);
+            setDuplicateKosher(null);
+          }
+        }}
+        brandId={brandId}
+        initialValues={duplicateOf ?? undefined}
+        kosherCert={duplicateKosher}
       />
 
       {/* Confirm delete */}

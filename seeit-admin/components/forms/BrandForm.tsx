@@ -111,7 +111,19 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, brand?.id]);
 
+  const submittingRef = React.useRef(false);
+
   async function onSubmit(values: FormValues) {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    try {
+      await doSubmit(values);
+    } finally {
+      submittingRef.current = false;
+    }
+  }
+
+  async function doSubmit(values: FormValues) {
     const supabase = createClient();
 
     // Resolve owner email → user id

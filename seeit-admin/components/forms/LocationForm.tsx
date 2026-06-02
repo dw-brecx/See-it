@@ -132,6 +132,11 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   brandId: string;
   location?: ExistingLocation | null;
+  /**
+   * Pre-fills the form for a new location (e.g. "Duplicate this location").
+   * Ignored if `location` is set — that drives edit mode.
+   */
+  initialValues?: Partial<ExistingLocation> | null;
   kosherCert?: KosherCert | null;
   onSaved?: (locationId: string) => void;
 };
@@ -141,33 +146,37 @@ export function LocationForm({
   onOpenChange,
   brandId,
   location,
+  initialValues,
   kosherCert,
   onSaved,
 }: Props) {
   const router = useRouter();
   const isEdit = !!location;
+  // The seed object used to populate form defaults — either the row we're
+  // editing or the row we're duplicating from. `isEdit` still gates UPDATE vs INSERT.
+  const seed: Partial<ExistingLocation> | null = location ?? initialValues ?? null;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: location?.name ?? '',
-      address: location?.address ?? '',
-      city: location?.city ?? '',
-      state: location?.state ?? '',
-      zip: location?.zip ?? '',
-      country: location?.country ?? 'US',
-      phone: location?.phone ?? '',
-      latitude: (location?.latitude ?? '') as any,
-      longitude: (location?.longitude ?? '') as any,
-      cover_photo_url: location?.cover_photo_url ?? '',
-      description: location?.description ?? '',
-      dietary_tags: location?.dietary_tags ?? [],
+      name: seed?.name ?? '',
+      address: seed?.address ?? '',
+      city: seed?.city ?? '',
+      state: seed?.state ?? '',
+      zip: seed?.zip ?? '',
+      country: seed?.country ?? 'US',
+      phone: seed?.phone ?? '',
+      latitude: (seed?.latitude ?? '') as any,
+      longitude: (seed?.longitude ?? '') as any,
+      cover_photo_url: seed?.cover_photo_url ?? '',
+      description: seed?.description ?? '',
+      dietary_tags: seed?.dietary_tags ?? [],
       // Split the stored style_tags array into the two UI buckets
-      establishment_types: splitStyleTags(location?.style_tags).establishment_types,
-      style_tags: splitStyleTags(location?.style_tags).style_tags,
-      is_temporarily_closed: !!location?.is_temporarily_closed,
-      reopening_date: location?.reopening_date ?? '',
-      hours: location?.hours ?? DEFAULT_HOURS,
+      establishment_types: splitStyleTags(seed?.style_tags).establishment_types,
+      style_tags: splitStyleTags(seed?.style_tags).style_tags,
+      is_temporarily_closed: !!seed?.is_temporarily_closed,
+      reopening_date: seed?.reopening_date ?? '',
+      hours: seed?.hours ?? DEFAULT_HOURS,
       kosher: {
         agency: kosherCert?.agency ?? '',
         agency_other: kosherCert?.agency_other ?? '',
@@ -187,19 +196,31 @@ export function LocationForm({
   React.useEffect(() => {
     if (open) form.reset(form.getValues());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, location?.id]);
+  }, [open, location?.id, initialValues]);
 
   const dietary = form.watch('dietary_tags') ?? [];
   const isKosher = dietary.includes('Kosher');
   const isTemporarilyClosed = form.watch('is_temporarily_closed');
   const kosherAgency = form.watch('kosher.agency');
 
+  const submittingRef = React.useRef(false);
+
   async function onSubmit(values: FormValues) {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    try {
+      await doSubmit(values);
+    } finally {
+      submittingRef.current = false;
+    }
+  }
+
+  async function doSubmit(values: FormValues) {
     const supabase = createClient();
     const { kosher, establishment_types, style_tags, ...locPayloadRaw } = values;
 
     // Preserve any tags that aren't in either constant list (set via SQL etc.)
-    const other = splitStyleTags(location?.style_tags).other;
+    const other = splitStyleTags(seed?.style_tags).other;
 
     const locPayload = {
       ...locPayloadRaw,

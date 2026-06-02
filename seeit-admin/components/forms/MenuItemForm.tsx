@@ -110,7 +110,19 @@ export function MenuItemForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, item?.id]);
 
+  const submittingRef = React.useRef(false);
+
   async function onSubmit(values: FormValues) {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    try {
+      await doSubmit(values);
+    } finally {
+      submittingRef.current = false;
+    }
+  }
+
+  async function doSubmit(values: FormValues) {
     const supabase = createClient();
     const { photos, ...rest } = values;
 
