@@ -10,7 +10,7 @@ export function AddBrandButton() {
   return (
     <>
       <Button onClick={() => setOpen(true)} className="gap-1.5">
-        <Plus className="h-4 w-4" /> Add brand
+        <Plus className="h-4 w-4" /> Add store
       </Button>
       <BrandForm open={open} onOpenChange={setOpen} />
     </>

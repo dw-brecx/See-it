@@ -18,6 +18,7 @@ import { FilterSelect } from '@/components/FilterSelect';
 import { Pagination } from '@/components/Pagination';
 import { EmptyState } from '@/components/EmptyState';
 import { formatDate, initials } from '@/lib/utils';
+import type { SubscriptionPlan, SubscriptionStatus } from '@/lib/database.types';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -41,8 +42,9 @@ async function fetchSubscriptions(params: SearchParams) {
     .order('created_at', { ascending: false })
     .range(from, to);
 
-  if (params.status) query = query.eq('status', params.status);
-  if (params.plan) query = query.eq('plan', params.plan);
+  if (params.status)
+    query = query.eq('status', params.status as SubscriptionStatus);
+  if (params.plan) query = query.eq('plan', params.plan as SubscriptionPlan);
 
   const { data, count, error } = await query;
   return {
@@ -115,7 +117,7 @@ export default async function SubscriptionsPage({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Brand</TableHead>
+                      <TableHead>Store</TableHead>
                       <TableHead>Plan</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Locations</TableHead>

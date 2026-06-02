@@ -33,6 +33,7 @@ import { FormSheet } from '@/components/FormSheet';
 import { MOOD_TAGS, PORTION_SIZES, STORAGE } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
+import type { PortionSize } from '@/lib/database.types';
 
 const schema = z.object({
   user_email: z.string().email('Pick a user by email').optional().or(z.literal('')),
@@ -41,7 +42,7 @@ const schema = z.object({
   rating: z.number().int().min(1).max(5),
   text: z.string().max(2000).optional().or(z.literal('')),
   portion_size: z.string().optional().or(z.literal('')),
-  worth_it: z
+  worth_the_price: z
     .union([z.boolean(), z.literal('skip')])
     .optional()
     .nullable(),
@@ -59,7 +60,7 @@ type ExistingReview = {
   rating: number;
   text: string | null;
   portion_size: string | null;
-  worth_it: boolean | null;
+  worth_the_price: boolean | null;
   mood_tags: string[] | null;
   photos?: string[];
   user_email?: string;
@@ -76,59 +77,93 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
   const router = useRouter();
   const isEdit = !!review;
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
+  const computeDefaults = React.useCallback(
+    (): FormValues => ({
       user_email: review?.user_email ?? '',
       location_id: review?.location_id ?? '',
       menu_item_id: review?.menu_item_id ?? '',
       rating: review?.rating ?? 5,
       text: review?.text ?? '',
       portion_size: review?.portion_size ?? '',
-      worth_it:
-        review?.worth_it === true
+      worth_the_price:
+        review?.worth_the_price === true
           ? true
-          : review?.worth_it === false
+          : review?.worth_the_price === false
           ? false
           : 'skip',
       mood_tags: review?.mood_tags ?? [],
       photos: review?.photos ?? [],
-    },
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [review?.id],
+  );
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: computeDefaults(),
   });
 
   React.useEffect(() => {
     if (open) {
-      form.reset(form.getValues());
+      form.reset(computeDefaults());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, review?.id]);
 
+  const [brands, setBrands] = React.useState<
+    { id: string; name: string }[]
+  >([]);
+  const [brandId, setBrandId] = React.useState<string>('');
   const [locations, setLocations] = React.useState<
     { id: string; label: string }[]
   >([]);
   const [menuItems, setMenuItems] = React.useState<
     { id: string; name: string }[]
   >([]);
-  const [locQuery, setLocQuery] = React.useState('');
+  const [brandQuery, setBrandQuery] = React.useState('');
   const watchedLocId = form.watch('location_id');
 
-  // Search locations as the admin types
+  // Load brand list (search filtered)
   React.useEffect(() => {
     let cancelled = false;
     async function run() {
       const supabase = createClient();
-      let query = supabase
+      let q = supabase
+        .from('brands')
+        .select('id, name')
+        .order('name', { ascending: true })
+        .limit(50);
+      if (brandQuery) q = q.ilike('name', `%${brandQuery}%`);
+      const { data } = await q;
+      if (cancelled) return;
+      setBrands((data ?? []) as { id: string; name: string }[]);
+    }
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [brandQuery]);
+
+  // Load locations for the picked brand
+  React.useEffect(() => {
+    if (!brandId) {
+      setLocations([]);
+      return;
+    }
+    let cancelled = false;
+    async function run() {
+      const supabase = createClient();
+      const { data } = await supabase
         .from('locations')
-        .select('id, name, address, city, brand:brands(name)')
-        .order('created_at', { ascending: false })
-        .limit(20);
-      if (locQuery) query = query.ilike('name', `%${locQuery}%`);
-      const { data } = await query;
+        .select('id, name, city, state')
+        .eq('brand_id', brandId)
+        .order('name', { ascending: true })
+        .limit(200);
       if (cancelled) return;
       setLocations(
         (data ?? []).map((l: any) => ({
           id: l.id,
-          label: `${l.brand?.name ? l.brand.name + ' — ' : ''}${l.name} · ${l.city}`,
+          label: `${l.name}${l.city ? ` · ${l.city}` : ''}${l.state ? `, ${l.state}` : ''}`,
         })),
       );
     }
@@ -136,7 +171,26 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [locQuery]);
+  }, [brandId]);
+
+  // When editing, derive the brand from the existing location so the picker pre-fills
+  React.useEffect(() => {
+    if (!review?.location_id) return;
+    let cancelled = false;
+    (async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('locations')
+        .select('brand_id')
+        .eq('id', review.location_id)
+        .maybeSingle();
+      if (cancelled || !data?.brand_id) return;
+      setBrandId(data.brand_id);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [review?.location_id]);
 
   // Load menu items for the picked location
   React.useEffect(() => {
@@ -161,7 +215,19 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
     };
   }, [watchedLocId]);
 
+  const submittingRef = React.useRef(false);
+
   async function onSubmit(values: FormValues) {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    try {
+      await doSubmit(values);
+    } finally {
+      submittingRef.current = false;
+    }
+  }
+
+  async function doSubmit(values: FormValues) {
     const supabase = createClient();
 
     // Resolve user email to id (only required on create — edit keeps existing user)
@@ -186,6 +252,10 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
       }
       userId = row.id;
     }
+    if (!userId) {
+      toast.error('Missing user id');
+      return;
+    }
 
     const payload = {
       user_id: userId,
@@ -193,9 +263,13 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
       menu_item_id: values.menu_item_id || null,
       rating: values.rating,
       text: values.text || null,
-      portion_size: values.portion_size || null,
-      worth_it:
-        values.worth_it === true ? true : values.worth_it === false ? false : null,
+      portion_size: (values.portion_size || null) as PortionSize | null,
+      worth_the_price:
+        values.worth_the_price === true
+          ? true
+          : values.worth_the_price === false
+          ? false
+          : null,
       mood_tags: values.mood_tags,
     };
 
@@ -226,8 +300,16 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
     // Sync photos (replace all on save)
     if (values.photos.length > 0) {
       await supabase.from('review_photos').delete().eq('review_id', reviewId);
-      const rows = values.photos.map((url) => ({ review_id: reviewId, url }));
-      await supabase.from('review_photos').insert(rows);
+      const rows = values.photos.map((url) => ({
+        review_id: reviewId,
+        photo_url: url,
+      }));
+      const { error: photoErr } = await supabase
+        .from('review_photos')
+        .insert(rows);
+      if (photoErr) {
+        toast.error(`Saved review but photos failed: ${photoErr.message}`);
+      }
     } else if (isEdit) {
       await supabase.from('review_photos').delete().eq('review_id', reviewId);
     }
@@ -279,39 +361,80 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
               />
             )}
 
+            <FormItem>
+              <FormLabel>Store *</FormLabel>
+              <div className="space-y-2">
+                <Input
+                  placeholder="Search store…"
+                  value={brandQuery}
+                  onChange={(e) => setBrandQuery(e.target.value)}
+                />
+                <Select
+                  value={brandId}
+                  onValueChange={(v) => {
+                    setBrandId(v);
+                    // reset location when brand changes
+                    form.setValue('location_id', '');
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pick a store" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brands.length === 0 ? (
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        No matches.
+                      </div>
+                    ) : (
+                      brands.map((b) => (
+                        <SelectItem key={b.id} value={b.id}>
+                          {b.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+            </FormItem>
+
             <FormField
               control={form.control}
               name="location_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Location *</FormLabel>
-                  <div className="space-y-2">
-                    <Input
-                      placeholder="Search location…"
-                      value={locQuery}
-                      onChange={(e) => setLocQuery(e.target.value)}
-                    />
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Pick a location" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {locations.length === 0 ? (
-                          <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                            No matches.
-                          </div>
-                        ) : (
-                          locations.map((l) => (
-                            <SelectItem key={l.id} value={l.id}>
-                              {l.label}
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={!brandId}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            brandId
+                              ? 'Pick a location'
+                              : 'Pick a store first'
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {locations.length === 0 ? (
+                        <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                          {brandId
+                            ? 'This store has no locations yet.'
+                            : 'Pick a store to see its locations.'}
+                        </div>
+                      ) : (
+                        locations.map((l) => (
+                          <SelectItem key={l.id} value={l.id}>
+                            {l.label}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -323,14 +446,19 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Menu item (optional)</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value || '__none__'}
+                    onValueChange={(v) =>
+                      field.onChange(v === '__none__' ? '' : v)
+                    }
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Pick a dish — or leave blank for overall review" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">— overall review —</SelectItem>
+                      <SelectItem value="__none__">— overall review —</SelectItem>
                       {menuItems.map((i) => (
                         <SelectItem key={i.id} value={i.id}>
                           {i.name}
@@ -401,14 +529,19 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Portion size</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value || '__none__'}
+                    onValueChange={(v) =>
+                      field.onChange(v === '__none__' ? '' : v)
+                    }
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Skip" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">— skip —</SelectItem>
+                      <SelectItem value="__none__">— skip —</SelectItem>
                       {PORTION_SIZES.map((p) => (
                         <SelectItem key={p.value} value={p.value}>
                           {p.label}
@@ -423,14 +556,16 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
 
             <FormField
               control={form.control}
-              name="worth_it"
+              name="worth_the_price"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Worth the price?</FormLabel>
                   <Select
                     value={String(field.value ?? 'skip')}
                     onValueChange={(v) =>
-                      field.onChange(v === 'true' ? true : v === 'false' ? false : 'skip')
+                      field.onChange(
+                        v === 'true' ? true : v === 'false' ? false : 'skip',
+                      )
                     }
                   >
                     <FormControl>

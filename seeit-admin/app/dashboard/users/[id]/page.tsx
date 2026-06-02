@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronLeft, Mail, Phone, Calendar, Building2 } from 'lucide-react';
+import { ChevronLeft, Mail, Phone, Calendar, Building2, Star } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { TopBar } from '@/components/TopBar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -157,14 +157,14 @@ export default async function UserDetailPage({
         {user.role === 'restaurant_owner' && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Brands owned</CardTitle>
+              <CardTitle className="text-base">Stores owned</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {brands.length === 0 ? (
                 <EmptyState
                   icon={Building2}
-                  title="No brands"
-                  description="This user is a restaurant owner but hasn't claimed any brands yet."
+                  title="No stores"
+                  description="This user is a restaurant owner but hasn't claimed any stores yet."
                 />
               ) : (
                 <ul className="divide-y divide-border">
@@ -217,7 +217,10 @@ export default async function UserDetailPage({
                 {reviews.map((r) => (
                   <li key={r.id} className="px-6 py-3">
                     <div className="flex flex-wrap items-center gap-2 text-sm">
-                      <span className="text-amber-600">★ {r.rating}</span>
+                      <span className="inline-flex items-center gap-0.5 text-amber-600">
+                        <Star className="h-3.5 w-3.5 fill-current" />
+                        <span className="font-semibold tabular-nums">{r.rating}</span>
+                      </span>
                       <span className="text-muted-foreground">at</span>
                       <span className="font-medium">
                         {r.location?.name ?? 'Unknown location'}

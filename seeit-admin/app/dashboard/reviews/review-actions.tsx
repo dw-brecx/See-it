@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Flag, Pencil, Trash2 } from 'lucide-react';
+import { Flag, Pencil, Star, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -28,12 +28,12 @@ type Review = {
   is_flagged: boolean;
   created_at: string;
   portion_size: string | null;
-  worth_it: boolean | null;
+  worth_the_price: boolean | null;
   mood_tags: string[] | null;
   user: { id: string; name: string | null; email: string; avatar_url: string | null } | null;
   location: { id: string; name: string } | null;
   menu_item: { id: string; name: string } | null;
-  review_photos: { id: string; url: string }[];
+  review_photos: { id: string; photo_url: string }[];
   review_replies: { id: string; text: string; created_at: string }[];
 };
 
@@ -108,7 +108,10 @@ export function ReviewModal({ review, children }: Props) {
                   {review.user?.email ?? ''} · {formatRelative(review.created_at)}
                 </p>
               </div>
-              <span className="font-semibold text-amber-600">★ {review.rating}</span>
+              <span className="inline-flex items-center gap-1 font-semibold tabular-nums text-amber-600">
+                <Star className="h-3.5 w-3.5 fill-current" />
+                {review.rating}
+              </span>
             </div>
 
             {review.text && (
@@ -117,13 +120,13 @@ export function ReviewModal({ review, children }: Props) {
               </p>
             )}
 
-            {review.review_photos?.length > 0 && (
+            {review.review_photos && review.review_photos.length > 0 && (
               <div className="grid grid-cols-3 gap-2">
                 {review.review_photos.map((p) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={p.id}
-                    src={p.url}
+                    src={p.photo_url}
                     alt=""
                     className="aspect-square w-full rounded-md object-cover"
                     loading="lazy"
@@ -137,9 +140,9 @@ export function ReviewModal({ review, children }: Props) {
               {review.portion_size && (
                 <Badge variant="default">Portion: {review.portion_size}</Badge>
               )}
-              {review.worth_it != null && (
-                <Badge variant={review.worth_it ? 'success' : 'warning'}>
-                  {review.worth_it ? 'Worth it' : 'Overpriced'}
+              {review.worth_the_price != null && (
+                <Badge variant={review.worth_the_price ? 'success' : 'warning'}>
+                  {review.worth_the_price ? 'Worth it' : 'Overpriced'}
                 </Badge>
               )}
               {review.mood_tags?.map((t) => (
@@ -211,9 +214,9 @@ export function ReviewModal({ review, children }: Props) {
           rating: review.rating,
           text: review.text,
           portion_size: review.portion_size,
-          worth_it: review.worth_it,
+          worth_the_price: review.worth_the_price,
           mood_tags: review.mood_tags,
-          photos: review.review_photos?.map((p) => p.url) ?? [],
+          photos: review.review_photos?.map((p) => p.photo_url) ?? [],
           user_email: review.user?.email,
         }}
       />

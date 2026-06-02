@@ -4,6 +4,7 @@ import {
   Users,
   Activity as ActivityIcon,
   ChevronLeft,
+  Star,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { TopBar } from '@/components/TopBar';
@@ -21,6 +22,9 @@ import { EmptyState } from '@/components/EmptyState';
 import { BrandActions } from './brand-actions';
 import { LocationsPanel } from './locations-panel';
 import { MenuPanel } from './menu-panel';
+import { StorefrontPanel } from './storefront-panel';
+import { SnapshotStrip } from './snapshot-strip';
+import { TeamPanel } from './team-panel';
 import { formatDate, initials } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -31,7 +35,7 @@ async function fetchBrand(id: string) {
     supabase
       .from('brands')
       .select(
-        'id, name, logo_url, description, primary_cuisine, secondary_cuisines, is_suspended, subscription_status, created_at, owner_id, owner:users!brands_owner_id_fkey(id, email, name, avatar_url, phone)',
+        'id, name, logo_url, description, primary_cuisine, secondary_cuisines, is_suspended, subscription_status, created_at, owner_id, owner:users!brands_owner_id_fkey(id, email, name, avatar_url, phone), tagline, cover_photo_url, story, website_url, instagram_url, tiktok_url, facebook_url, x_url, theme_color, featured_menu_item_ids, storefront_published',
       )
       .eq('id', id)
       .maybeSingle(),
@@ -45,7 +49,7 @@ async function fetchBrand(id: string) {
     supabase
       .from('team_members')
       .select(
-        'id, role, invite_status, created_at, user:users(id, name, email, avatar_url)',
+        'id, role, location_ids, created_at, user:users(id, name, email, avatar_url, is_suspended)',
       )
       .eq('brand_id', id),
     supabase
@@ -60,11 +64,92 @@ async function fetchBrand(id: string) {
 
   if (!brandRes.data) return null;
 
+  const locIds: string[] = (locationsRes.data ?? []).map((l: any) => l.id);
+
+  // Snapshot KPIs: reviews this/last month (30/60d windows) + photos last 7d.
+  // All scoped to this store's locations.
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  let reviewsThisMonth = 0;
+  let reviewsLastMonth = 0;
+  let photosThisWeek = 0;
+
+  if (locIds.length > 0) {
+    const [rThis, rPrev, photosWeek] = await Promise.all([
+      supabase
+        .from('reviews')
+        .select('id', { count: 'exact', head: true })
+        .in('location_id', locIds)
+        .gte('created_at', thirtyDaysAgo),
+      supabase
+        .from('reviews')
+        .select('id', { count: 'exact', head: true })
+        .in('location_id', locIds)
+        .gte('created_at', sixtyDaysAgo)
+        .lt('created_at', thirtyDaysAgo),
+      // Photos require joining menu_item_photos through menu_items to filter
+      // by location. Two queries is simpler than a complex join.
+      (async () => {
+        const { data: items } = await supabase
+          .from('menu_items')
+          .select('id')
+          .in('location_id', locIds);
+        const itemIds = (items ?? []).map((m: any) => m.id);
+        if (itemIds.length === 0) return { count: 0 };
+        const { count } = await supabase
+          .from('menu_item_photos')
+          .select('id', { count: 'exact', head: true })
+          .in('menu_item_id', itemIds)
+          .gte('created_at', sevenDaysAgo);
+        return { count: count ?? 0 };
+      })(),
+    ]);
+    reviewsThisMonth = rThis.count ?? 0;
+    reviewsLastMonth = rPrev.count ?? 0;
+    photosThisWeek = photosWeek.count;
+  }
+
+  const avgRating =
+    (locationsRes.data ?? []).filter((l: any) => l.average_rating != null).length === 0
+      ? null
+      : (locationsRes.data ?? [])
+          .filter((l: any) => l.average_rating != null)
+          .reduce((s: number, l: any) => s + Number(l.average_rating), 0) /
+        (locationsRes.data ?? []).filter((l: any) => l.average_rating != null).length;
+
+  // Resolve menu items list (for the storefront editor's featured-items picker)
+  let menuItems: { id: string; name: string; location_name?: string }[] = [];
+  if (locIds.length > 0) {
+    const { data: items } = await supabase
+      .from('menu_items')
+      .select('id, name, location_id')
+      .in('location_id', locIds)
+      .order('name', { ascending: true });
+    const locById = new Map(
+      (locationsRes.data ?? []).map((l: any) => [l.id, l.name]),
+    );
+    menuItems = (items ?? []).map((m: any) => ({
+      id: m.id,
+      name: m.name,
+      location_name: locById.get(m.location_id) ?? undefined,
+    }));
+  }
+
   return {
     brand: brandRes.data as any,
     locations: (locationsRes.data ?? []) as any[],
     team: (teamRes.data ?? []) as any[],
     reviews: (reviewsRes.data ?? []) as any[],
+    menuItems,
+    snapshot: {
+      reviewsThisMonth,
+      reviewsLastMonth,
+      photosThisWeek,
+      averageRating: avgRating,
+    },
   };
 }
 
@@ -76,7 +161,7 @@ export default async function BrandDetailPage({
   const data = await fetchBrand(params.id);
   if (!data) notFound();
 
-  const { brand, locations, team, reviews } = data;
+  const { brand, locations, team, reviews, menuItems, snapshot } = data;
   const locationOptions = locations.map((l) => ({
     id: l.id,
     name: l.name,
@@ -85,13 +170,13 @@ export default async function BrandDetailPage({
 
   return (
     <>
-      <TopBar title={brand.name} subtitle="Brand details" />
+      <TopBar title={brand.name} subtitle="Store details" />
       <div className="flex-1 space-y-5 px-4 py-5 sm:space-y-6 sm:px-6 sm:py-6">
         <Link
           href="/dashboard/brands"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ChevronLeft className="h-3.5 w-3.5" /> All brands
+          <ChevronLeft className="h-3.5 w-3.5" /> All stores
         </Link>
 
         {/* Header card */}
@@ -149,9 +234,19 @@ export default async function BrandDetailPage({
           </CardContent>
         </Card>
 
+        <SnapshotStrip
+          reviewsThisMonth={snapshot.reviewsThisMonth}
+          reviewsLastMonth={snapshot.reviewsLastMonth}
+          photosThisWeek={snapshot.photosThisWeek}
+          averageRating={snapshot.averageRating}
+          locationCount={locations.length}
+          teamCount={team.length}
+        />
+
         <Tabs defaultValue="overview">
           <TabsList className="flex w-full overflow-x-auto sm:inline-flex sm:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="storefront">Storefront</TabsTrigger>
             <TabsTrigger value="locations">
               Locations ({locations.length})
             </TabsTrigger>
@@ -222,6 +317,10 @@ export default async function BrandDetailPage({
             </Card>
           </TabsContent>
 
+          <TabsContent value="storefront">
+            <StorefrontPanel brand={brand} menuItems={menuItems} />
+          </TabsContent>
+
           <TabsContent value="locations">
             <LocationsPanel brandId={brand.id} locations={locations} />
           </TabsContent>
@@ -231,59 +330,15 @@ export default async function BrandDetailPage({
           </TabsContent>
 
           <TabsContent value="team">
-            <Card>
-              <CardContent className="p-0">
-                {team.length === 0 ? (
-                  <EmptyState
-                    icon={Users}
-                    title="No team members"
-                    description="The owner hasn't invited anyone yet."
-                  />
-                ) : (
-                  <ul className="divide-y divide-border">
-                    {team.map((m) => (
-                      <li
-                        key={m.id}
-                        className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-3 sm:px-6"
-                      >
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-9 w-9">
-                            <AvatarImage src={m.user?.avatar_url ?? undefined} />
-                            <AvatarFallback>
-                              {initials(m.user?.name ?? m.user?.email ?? '?')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="min-w-0">
-                            <p className="truncate font-medium">
-                              {m.user?.name ?? m.user?.email ?? 'Unknown'}
-                            </p>
-                            <p className="truncate text-xs text-muted-foreground">
-                              {m.user?.email}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="ml-auto flex shrink-0 items-center gap-2">
-                          <Badge variant="default" className="capitalize">
-                            {m.role}
-                          </Badge>
-                          <Badge
-                            variant={
-                              m.invite_status === 'active'
-                                ? 'success'
-                                : m.invite_status === 'pending'
-                                ? 'warning'
-                                : 'destructive'
-                            }
-                          >
-                            {m.invite_status}
-                          </Badge>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </CardContent>
-            </Card>
+            <TeamPanel
+              brandId={brand.id}
+              members={team as any}
+              locations={locations.map((l: any) => ({
+                id: l.id,
+                name: l.name,
+                city: l.city,
+              }))}
+            />
           </TabsContent>
 
           <TabsContent value="activity">
@@ -313,7 +368,10 @@ export default async function BrandDetailPage({
                             <span className="font-semibold">
                               {r.user?.name ?? r.user?.email ?? 'Anon'}
                             </span>{' '}
-                            <span className="text-amber-600">★ {r.rating}</span>{' '}
+                            <span className="inline-flex items-center gap-0.5 align-middle text-amber-600">
+                              <Star className="h-3.5 w-3.5 fill-current" />
+                              <span className="font-semibold tabular-nums">{r.rating}</span>
+                            </span>{' '}
                             <span className="text-muted-foreground">at</span>{' '}
                             <span className="text-muted-foreground">
                               {r.location?.name ?? '—'}

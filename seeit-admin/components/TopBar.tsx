@@ -2,8 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { Menu, RefreshCw } from 'lucide-react';
+import { Menu, RefreshCw, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { NotificationsBell } from '@/components/NotificationsBell';
 import { useShell } from '@/components/DashboardShell';
 import { cn } from '@/lib/utils';
 
@@ -28,37 +29,55 @@ export function TopBar({ title, subtitle, children }: Props) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur-md sm:px-6">
-      {/* Hamburger — mobile only */}
+    <header className="sticky top-0 z-30 flex h-[68px] items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md sm:px-8">
       <Button
         variant="outline"
         size="icon"
         onClick={() => setMobileOpen(true)}
-        className="md:hidden"
+        className="h-10 w-10 md:hidden"
         aria-label="Open menu"
       >
-        <Menu className="h-4 w-4" />
+        <Menu className="h-4.5 w-4.5" />
       </Button>
 
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-base font-semibold tracking-tight sm:text-lg">
+        <h1 className="truncate text-[17px] font-semibold tracking-tight text-foreground sm:text-[19px]">
           {title}
         </h1>
         {subtitle && (
-          <p className="hidden truncate text-xs text-muted-foreground sm:block">
+          <p className="hidden truncate text-[13px] text-muted-foreground sm:block">
             {subtitle}
           </p>
         )}
       </div>
 
-      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+      <div className="flex shrink-0 items-center gap-2">
+        {/* Search trigger — opens the global command palette via Cmd+K */}
+        <button
+          type="button"
+          onClick={() => {
+            // Synthesize a Cmd+K event so we don't need a context just for this
+            window.dispatchEvent(
+              new KeyboardEvent('keydown', { key: 'k', metaKey: true }),
+            );
+          }}
+          className="hidden h-9 items-center gap-2 rounded-lg border border-border bg-card px-3 text-[12.5px] text-muted-foreground shadow-xs transition-colors hover:bg-warm-50 hover:text-foreground md:flex"
+          aria-label="Search"
+        >
+          <Search className="h-3.5 w-3.5" />
+          <span>Quick search</span>
+          <kbd className="ml-2 rounded border border-border bg-warm-50 px-1 py-0.5 text-[10px] font-medium">
+            ⌘K
+          </kbd>
+        </button>
         {children}
+        <NotificationsBell />
         <Button
           variant="outline"
           size="sm"
           onClick={refresh}
           disabled={isPending}
-          className="gap-1.5"
+          className="h-9 gap-1.5 px-3"
           aria-label="Refresh"
         >
           <RefreshCw

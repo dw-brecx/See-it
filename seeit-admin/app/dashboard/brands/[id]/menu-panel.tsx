@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, GripVertical, MapPin, Pencil, Plus, Trash2, UtensilsCrossed } from 'lucide-react';
+import { Copy, CopyPlus, Eye, EyeOff, GripVertical, Loader2, MapPin, Pencil, Plus, Trash2, Upload, UtensilsCrossed } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Select,
@@ -16,8 +16,19 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { EmptyState } from '@/components/EmptyState';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { MenuCategoryForm } from '@/components/forms/MenuCategoryForm';
 import { MenuItemForm } from '@/components/forms/MenuItemForm';
+import { CsvExportButton } from '@/components/CsvExportButton';
+import { CsvImportDialog, type ImportField } from '@/components/CsvImportDialog';
 import { createClient } from '@/lib/supabase/client';
 
 type Cat = { id: string; name: string; display_order: number | null };
@@ -29,7 +40,7 @@ type Item = {
   category_id: string;
   dietary_tags: string[] | null;
   is_visible: boolean;
-  photos: { id: string; url: string; is_cover: boolean }[];
+  photos: { id: string; photo_url: string; is_featured: boolean }[];
 };
 type Loc = { id: string; name: string; city: string };
 
@@ -54,6 +65,98 @@ export function MenuPanel({ brandId, locations }: Props) {
   const [addItemOpen, setAddItemOpen] = React.useState(false);
   const [editItem, setEditItem] = React.useState<Item | null>(null);
   const [delItem, setDelItem] = React.useState<Item | null>(null);
+  const [copyItem, setCopyItem] = React.useState<Item | null>(null);
+  const [copyTargets, setCopyTargets] = React.useState<Set<string>>(new Set());
+  const [copyBusy, setCopyBusy] = React.useState(false);
+  const [importOpen, setImportOpen] = React.useState(false);
+
+  const IMPORT_FIELDS: ImportField[] = React.useMemo(
+    () => [
+      { key: 'name', label: 'Name', required: true },
+      { key: 'description', label: 'Description' },
+      {
+        key: 'price',
+        label: 'Price',
+        transform: (v) => (v ? Number(v.replace(/[^0-9.]/g, '')) : null),
+      },
+      {
+        key: 'category_name',
+        label: 'Category name',
+        aliases: ['category'],
+      },
+      {
+        key: 'dietary_tags',
+        label: 'Dietary tags (semicolon-separated)',
+        transform: (v) => v.split(/[;,]/).map((s) => s.trim()).filter(Boolean),
+      },
+      {
+        key: 'is_visible',
+        label: 'Visible (yes/no)',
+        transform: (v) => /^(y|yes|true|1)$/i.test(v),
+      },
+    ],
+    [],
+  );
+
+  async function runImport(records: Record<string, unknown>[]) {
+    const supabase = createClient();
+    // Build a case-insensitive lookup from existing categories at this location
+    const catByName = new Map<string, string>();
+    for (const c of categories) catByName.set(c.name.toLowerCase().trim(), c.id);
+
+    let inserted = 0;
+    let failed = 0;
+    let firstError: string | undefined;
+    for (const rec of records) {
+      const catName = String(rec.category_name ?? '').toLowerCase().trim();
+      let categoryId: string | null = catName ? catByName.get(catName) ?? null : null;
+      // Auto-create missing categories so the import is one-pass-friendly
+      if (catName && !categoryId) {
+        const { data: newCat, error: catErr } = await supabase
+          .from('menu_categories')
+          .insert({
+            location_id: locationId,
+            name: rec.category_name as string,
+            display_order: categories.length + 1,
+          })
+          .select('id')
+          .single();
+        if (catErr || !newCat) {
+          failed++;
+          if (!firstError) firstError = catErr?.message ?? 'category create failed';
+          continue;
+        }
+        categoryId = newCat.id;
+        catByName.set(catName, categoryId);
+      }
+      const { category_name: _ignore, ...rest } = rec;
+      const { error } = await supabase
+        .from('menu_items')
+        .insert({ ...(rest as any), location_id: locationId, category_id: categoryId });
+      if (error) {
+        failed++;
+        if (!firstError) firstError = error.message;
+      } else {
+        inserted++;
+      }
+    }
+    refresh();
+    router.refresh();
+    return { inserted, failed, firstError };
+  }
+
+  async function exportItems() {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('menu_items')
+      .select(
+        'name, description, price, is_visible, dietary_tags, average_rating, review_count, category:menu_categories(name)',
+      )
+      .eq('location_id', locationId)
+      .order('name', { ascending: true });
+    if (error) throw new Error(error.message);
+    return (data ?? []) as any[];
+  }
 
   async function refresh() {
     if (!locationId) return;
@@ -69,7 +172,7 @@ export function MenuPanel({ brandId, locations }: Props) {
       supabase
         .from('menu_items')
         .select(
-          'id, name, description, price, category_id, dietary_tags, is_visible, menu_item_photos(id, url, is_cover)',
+          'id, name, description, price, category_id, dietary_tags, is_visible, menu_item_photos(id, photo_url, is_featured)',
         )
         .eq('location_id', locationId)
         .order('name', { ascending: true }),
@@ -104,6 +207,141 @@ export function MenuPanel({ brandId, locations }: Props) {
     setDelCat(null);
     refresh();
     router.refresh();
+  }
+
+  async function duplicateItem(item: Item) {
+    const supabase = createClient();
+    const { data: full, error: fetchErr } = await supabase
+      .from('menu_items')
+      .select('location_id, category_id, name, description, price, dietary_tags, is_visible')
+      .eq('id', item.id)
+      .single();
+    if (fetchErr || !full) {
+      toast.error(`Duplicate failed: ${fetchErr?.message ?? 'not found'}`);
+      return;
+    }
+    const { data: newRow, error: insertErr } = await supabase
+      .from('menu_items')
+      .insert({ ...full, name: `${full.name} (copy)` })
+      .select('id')
+      .single();
+    if (insertErr || !newRow) {
+      toast.error(`Duplicate failed: ${insertErr?.message ?? 'unknown'}`);
+      return;
+    }
+    // Clone the photos too — same urls, same featured flag on the first one
+    if (item.photos.length > 0) {
+      const photoRows = item.photos.map((p, i) => ({
+        menu_item_id: newRow.id,
+        photo_url: p.photo_url,
+        is_featured: i === 0,
+      }));
+      await supabase.from('menu_item_photos').insert(photoRows);
+    }
+    toast.success(`Duplicated "${item.name}"`);
+    refresh();
+    router.refresh();
+  }
+
+  /**
+   * Clone an item (plus its photos) into one or more OTHER locations of the
+   * same store. If the target location doesn't have a category with the same
+   * name as the source's, create one on the fly so the item lands somewhere
+   * sensible. Per-location rows stay independent — editing one won't update
+   * the others.
+   */
+  async function copyItemToLocations(item: Item, targetLocationIds: string[]) {
+    if (targetLocationIds.length === 0) return;
+    setCopyBusy(true);
+    const supabase = createClient();
+    try {
+      // Pull the source category name so we can resolve the equivalent in each target
+      const srcCategory = categories.find((c) => c.id === item.category_id);
+      const categoryName = srcCategory?.name ?? null;
+
+      let ok = 0;
+      let failed = 0;
+      let firstError: string | undefined;
+
+      for (const targetLoc of targetLocationIds) {
+        // Resolve target category — match by name in that location, or create it
+        let targetCategoryId: string | null = null;
+        if (categoryName) {
+          const { data: existing } = await supabase
+            .from('menu_categories')
+            .select('id')
+            .eq('location_id', targetLoc)
+            .ilike('name', categoryName)
+            .limit(1)
+            .maybeSingle();
+          if (existing?.id) {
+            targetCategoryId = existing.id;
+          } else {
+            const { data: newCat, error: catErr } = await supabase
+              .from('menu_categories')
+              .insert({
+                location_id: targetLoc,
+                name: categoryName,
+                display_order: (srcCategory?.display_order ?? 0) + 1,
+              })
+              .select('id')
+              .single();
+            if (catErr || !newCat) {
+              failed++;
+              if (!firstError) firstError = catErr?.message ?? 'category create failed';
+              continue;
+            }
+            targetCategoryId = newCat.id;
+          }
+        }
+
+        // Insert the menu item into the target location
+        const { data: newItem, error: itemErr } = await supabase
+          .from('menu_items')
+          .insert({
+            location_id: targetLoc,
+            category_id: targetCategoryId,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            dietary_tags: item.dietary_tags,
+            is_visible: item.is_visible,
+          })
+          .select('id')
+          .single();
+        if (itemErr || !newItem) {
+          failed++;
+          if (!firstError) firstError = itemErr?.message ?? 'item create failed';
+          continue;
+        }
+
+        // Clone photos
+        if (item.photos.length > 0) {
+          const photoRows = item.photos.map((p, i) => ({
+            menu_item_id: newItem.id,
+            photo_url: p.photo_url,
+            is_featured: i === 0,
+          }));
+          await supabase.from('menu_item_photos').insert(photoRows);
+        }
+        ok++;
+      }
+
+      if (ok > 0) {
+        toast.success(
+          `Copied "${item.name}" to ${ok} location${ok === 1 ? '' : 's'}` +
+            (failed > 0 ? ` · ${failed} failed` : ''),
+        );
+      }
+      if (ok === 0 && failed > 0) {
+        toast.error(`Copy failed${firstError ? `: ${firstError}` : ''}`);
+      }
+      setCopyItem(null);
+      setCopyTargets(new Set());
+      router.refresh();
+    } finally {
+      setCopyBusy(false);
+    }
   }
 
   async function deleteItem() {
@@ -164,7 +402,31 @@ export function MenuPanel({ brandId, locations }: Props) {
             ))}
           </SelectContent>
         </Select>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <CsvExportButton
+            fetchRows={exportItems}
+            filename="menu-items"
+            columns={[
+              { header: 'Name', accessor: (i: any) => i.name },
+              { header: 'Description', accessor: (i: any) => i.description },
+              { header: 'Price', accessor: (i: any) => i.price },
+              { header: 'Category', accessor: (i: any) => i.category?.name ?? '' },
+              { header: 'Dietary tags', accessor: (i: any) => i.dietary_tags },
+              { header: 'Visible', accessor: (i: any) => i.is_visible ? 'yes' : 'no' },
+              { header: 'Avg rating', accessor: (i: any) => i.average_rating },
+              { header: 'Reviews', accessor: (i: any) => i.review_count },
+            ]}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setImportOpen(true)}
+            className="h-9 gap-1.5"
+            disabled={!locationId}
+          >
+            <Upload className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Import CSV</span>
+          </Button>
           <Button
             variant="outline"
             onClick={() => setAddCatOpen(true)}
@@ -265,14 +527,14 @@ export function MenuPanel({ brandId, locations }: Props) {
                   <ul className="divide-y divide-border">
                     {catItems.map((item) => {
                       const cover =
-                        item.photos.find((p) => p.is_cover) ?? item.photos[0];
+                        item.photos.find((p) => p.is_featured) ?? item.photos[0];
                       return (
                         <li
                           key={item.id}
                           className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center"
                         >
                           <Avatar className="h-12 w-12 shrink-0 rounded-md">
-                            {cover ? <AvatarImage src={cover.url} /> : null}
+                            {cover ? <AvatarImage src={cover.photo_url} /> : null}
                             <AvatarFallback className="rounded-md">
                               <UtensilsCrossed className="h-4 w-4" />
                             </AvatarFallback>
@@ -321,6 +583,29 @@ export function MenuPanel({ brandId, locations }: Props) {
                               <Pencil className="h-3.5 w-3.5" />
                               <span className="sr-only sm:not-sr-only">Edit</span>
                             </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => duplicateItem(item)}
+                              aria-label="Duplicate"
+                              title="Duplicate within this location"
+                            >
+                              <Copy className="h-3.5 w-3.5" />
+                            </Button>
+                            {locations.length > 1 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setCopyItem(item);
+                                  setCopyTargets(new Set());
+                                }}
+                                aria-label="Copy to other locations"
+                                title="Copy to other locations"
+                              >
+                                <CopyPlus className="h-3.5 w-3.5" />
+                              </Button>
+                            )}
                             <Button
                               variant="outline"
                               size="sm"
@@ -374,7 +659,7 @@ export function MenuPanel({ brandId, locations }: Props) {
           editItem
             ? {
                 ...editItem,
-                photos: editItem.photos.map((p) => p.url),
+                photos: editItem.photos.map((p) => p.photo_url),
               }
             : null
         }
@@ -398,6 +683,110 @@ export function MenuPanel({ brandId, locations }: Props) {
         destructive
         onConfirm={deleteItem}
       />
+
+      <CsvImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        entity="menu item"
+        fields={IMPORT_FIELDS}
+        onImport={runImport}
+      />
+
+      {/* Copy to other locations dialog */}
+      <Dialog
+        open={!!copyItem}
+        onOpenChange={(o) => {
+          if (!o && !copyBusy) {
+            setCopyItem(null);
+            setCopyTargets(new Set());
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Copy "{copyItem?.name}" to other locations
+            </DialogTitle>
+            <DialogDescription>
+              Pick the locations to add this item to. Each copy is independent —
+              you can change the price or hide it per location after.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="max-h-[320px] space-y-1.5 overflow-y-auto">
+            {locations
+              .filter((l) => l.id !== locationId)
+              .map((l) => {
+                const checked = copyTargets.has(l.id);
+                return (
+                  <label
+                    key={l.id}
+                    className="flex cursor-pointer items-center gap-2.5 rounded-md border border-border bg-card px-3 py-2.5 hover:border-warm-300"
+                  >
+                    <Checkbox
+                      checked={checked}
+                      onCheckedChange={(c) => {
+                        const next = new Set(copyTargets);
+                        if (c) next.add(l.id);
+                        else next.delete(l.id);
+                        setCopyTargets(next);
+                      }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13.5px] font-medium">{l.name}</p>
+                      {l.city && (
+                        <p className="text-[11.5px] text-muted-foreground">
+                          {l.city}
+                        </p>
+                      )}
+                    </div>
+                  </label>
+                );
+              })}
+          </div>
+
+          {copyItem && categories.find((c) => c.id === copyItem.category_id) && (
+            <p className="text-[12px] text-muted-foreground">
+              Category{' '}
+              <span className="font-semibold">
+                "{categories.find((c) => c.id === copyItem.category_id)?.name}"
+              </span>{' '}
+              will be created in any target location that doesn't have one with
+              that name.
+            </p>
+          )}
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setCopyItem(null);
+                setCopyTargets(new Set());
+              }}
+              disabled={copyBusy}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={() =>
+                copyItem &&
+                copyItemToLocations(copyItem, Array.from(copyTargets))
+              }
+              disabled={copyBusy || copyTargets.size === 0}
+            >
+              {copyBusy ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Copying…
+                </>
+              ) : (
+                `Copy to ${copyTargets.size || ''} location${copyTargets.size === 1 ? '' : 's'}`
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

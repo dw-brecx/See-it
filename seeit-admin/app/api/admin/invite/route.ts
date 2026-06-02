@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient as createServerSupabase } from '@/lib/supabase/server';
 import { createClient as createServiceSupabase } from '@supabase/supabase-js';
+import type { Database } from '@/lib/database.types';
 
 /**
  * POST /api/admin/invite
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const admin = createServiceSupabase(supabaseUrl, serviceKey, {
+  const admin = createServiceSupabase<Database>(supabaseUrl, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 

@@ -22,7 +22,10 @@ import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -31,11 +34,13 @@ import { MultiSelect } from '@/components/MultiSelect';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { FormSheet } from '@/components/FormSheet';
 import {
+  CUISINE_GROUPS,
   PRIMARY_CUISINES,
   SUBSCRIPTION_STATUSES,
   STORAGE,
 } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/client';
+import type { SubscriptionStatus } from '@/lib/database.types';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required').max(120),
@@ -106,7 +111,19 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, brand?.id]);
 
+  const submittingRef = React.useRef(false);
+
   async function onSubmit(values: FormValues) {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    try {
+      await doSubmit(values);
+    } finally {
+      submittingRef.current = false;
+    }
+  }
+
+  async function doSubmit(values: FormValues) {
     const supabase = createClient();
 
     // Resolve owner email → user id
@@ -140,7 +157,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
       secondary_cuisines: values.secondary_cuisines,
       logo_url: values.logo_url || null,
       owner_id: ownerId,
-      subscription_status: values.subscription_status,
+      subscription_status: values.subscription_status as SubscriptionStatus,
     };
 
     if (isEdit && brand) {
@@ -178,9 +195,9 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
     <FormSheet
       open={open}
       onOpenChange={onOpenChange}
-      title={isEdit ? `Edit ${brand?.name ?? 'brand'}` : 'Add brand'}
+      title={isEdit ? `Edit ${brand?.name ?? 'store'}` : 'Add store'}
       description={
-        isEdit ? 'Update brand-level details.' : 'Create a new restaurant brand.'
+        isEdit ? 'Update store-level details.' : 'Create a new restaurant store.'
       }
     >
       <Form {...form}>
@@ -194,7 +211,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Brand name *</FormLabel>
+                  <FormLabel>Store name *</FormLabel>
                   <FormControl>
                     <Input placeholder="Bella's Italian Kitchen" {...field} />
                   </FormControl>
@@ -212,7 +229,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
                   <FormControl>
                     <Textarea
                       rows={3}
-                      placeholder="A short brand description shown across the customer app."
+                      placeholder="A short store description shown across the customer app."
                       {...field}
                     />
                   </FormControl>
@@ -236,11 +253,17 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
                         <SelectValue placeholder="Pick a cuisine" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      {PRIMARY_CUISINES.map((c) => (
-                        <SelectItem key={c} value={c}>
-                          {c}
-                        </SelectItem>
+                    <SelectContent className="max-h-[60vh]">
+                      {CUISINE_GROUPS.map((group, idx) => (
+                        <SelectGroup key={group.label}>
+                          {idx > 0 && <SelectSeparator />}
+                          <SelectLabel>{group.label}</SelectLabel>
+                          {group.options.map((c) => (
+                            <SelectItem key={c} value={c}>
+                              {c}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
                       ))}
                     </SelectContent>
                   </Select>
@@ -264,7 +287,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
                     />
                   </FormControl>
                   <FormDescription>
-                    For brands that span multiple cuisines (e.g. Italian + Pizzeria).
+                    For stores that span multiple cuisines (e.g. Italian + Pizzeria).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -365,7 +388,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
               ) : isEdit ? (
                 'Save changes'
               ) : (
-                'Create brand'
+                'Create store'
               )}
             </Button>
           </SheetFooter>
