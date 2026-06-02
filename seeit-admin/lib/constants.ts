@@ -293,8 +293,19 @@ export type WeekdayKey = (typeof WEEKDAYS)[number]['key'];
 
 export type DayHours = {
   is_closed: boolean;
+  /** Clock time HH:MM for opening — ignored when open_note is set. */
   open?: string;
+  /** Clock time HH:MM for closing — ignored when close_note is set. */
   close?: string;
+  /**
+   * Free-text override for opening, e.g. "after Shabbos", "1 hour after sunset".
+   * Use this when the open time isn't a fixed clock value.
+   */
+  open_note?: string;
+  /**
+   * Free-text override for closing, e.g. "until sunset", "1 hour before Shabbos".
+   */
+  close_note?: string;
 };
 
 export type WeekHours = Record<WeekdayKey, DayHours>;
