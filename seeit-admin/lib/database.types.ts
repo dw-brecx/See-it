@@ -106,6 +106,7 @@ export type Database = {
           owner_id: string | null;
           subscription_status: SubscriptionStatus | null;
           plan_id: string | null;
+          plan: string | null;
           is_suspended: boolean | null;
           // Storefront profile fields (migration 003)
           tagline: string | null;
@@ -132,6 +133,7 @@ export type Database = {
           owner_id?: string | null;
           subscription_status?: SubscriptionStatus | null;
           plan_id?: string | null;
+          plan?: string | null;
           is_suspended?: boolean | null;
           tagline?: string | null;
           cover_photo_url?: string | null;
@@ -157,6 +159,7 @@ export type Database = {
           owner_id?: string | null;
           subscription_status?: SubscriptionStatus | null;
           plan_id?: string | null;
+          plan?: string | null;
           is_suspended?: boolean | null;
           tagline?: string | null;
           cover_photo_url?: string | null;

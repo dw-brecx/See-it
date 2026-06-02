@@ -33,6 +33,9 @@ import { PhotoUpload } from '@/components/PhotoUpload';
 import { FormSheet } from '@/components/FormSheet';
 import { DIETARY_TAGS, STORAGE } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/client';
+import { useBrand } from '@/components/BrandContext';
+import { UpgradeRequired } from '@/components/UpgradeRequired';
+import { getPlan, type PlanSlug } from '@/lib/plans';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required').max(120),
@@ -114,8 +117,15 @@ export function MenuItemForm({
   const [aiBusy, setAiBusy] = React.useState(false);
   // `null` = unknown, `true`/`false` = checked. We probe lazily on first click.
   const [aiAvailable, setAiAvailable] = React.useState<boolean | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = React.useState(false);
+  const { currentBrand } = useBrand();
+  const plan = getPlan(currentBrand?.plan);
 
   async function generateDescription() {
+    if (!plan.aiFeaturesEnabled) {
+      setUpgradeOpen(true);
+      return;
+    }
     const name = form.getValues('name').trim();
     if (!name) {
       toast.error('Add a dish name first');
@@ -464,6 +474,12 @@ export function MenuItemForm({
           </SheetFooter>
         </form>
       </Form>
+      <UpgradeRequired
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        currentPlan={(currentBrand?.plan ?? 'free') as PlanSlug}
+        feature="aiFeatures"
+      />
     </FormSheet>
   );
 }

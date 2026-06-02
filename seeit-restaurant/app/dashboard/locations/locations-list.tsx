@@ -26,6 +26,8 @@ import {
 import { EmptyState } from '@/components/EmptyState';
 import { LocationOpenBadge } from '@/components/StatusBadge';
 import { useBrand } from '@/components/BrandContext';
+import { UpgradeRequired } from '@/components/UpgradeRequired';
+import { getPlan, type PlanSlug } from '@/lib/plans';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { LocationFormSheet } from './location-form-sheet';
@@ -47,13 +49,25 @@ type LocationCardRow = {
 };
 
 export function LocationsList() {
-  const { currentBrandId } = useBrand();
+  const { currentBrandId, currentBrand } = useBrand();
+  const plan = getPlan(currentBrand?.plan);
   const [rows, setRows] = React.useState<LocationCardRow[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [createOpen, setCreateOpen] = React.useState(false);
   const [googleFor, setGoogleFor] = React.useState<LocationCardRow | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = React.useState(false);
+
+  const atLimit = rows != null && rows.length >= plan.maxLocations;
+
+  function handleAdd() {
+    if (atLimit) {
+      setUpgradeOpen(true);
+      return;
+    }
+    setCreateOpen(true);
+  }
 
   const refresh = React.useCallback(async () => {
     if (!currentBrandId) {
@@ -107,7 +121,7 @@ export function LocationsList() {
             title="No locations yet"
             description="Add your first storefront to start collecting reviews and showing up in searches."
             action={
-              <Button onClick={() => setCreateOpen(true)} className="gap-1.5">
+              <Button onClick={handleAdd} className="gap-1.5">
                 <Plus className="h-4 w-4" /> Add location
               </Button>
             }
@@ -123,7 +137,7 @@ export function LocationsList() {
               onConnectGoogle={() => setGoogleFor(loc)}
             />
           ))}
-          <AddLocationCard onClick={() => setCreateOpen(true)} />
+          <AddLocationCard onClick={handleAdd} />
         </div>
       )}
 
@@ -148,6 +162,15 @@ export function LocationsList() {
         location={googleFor}
         onClose={() => setGoogleFor(null)}
         onApplied={refresh}
+      />
+
+      {/* Plan limit paywall */}
+      <UpgradeRequired
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        currentPlan={(currentBrand?.plan ?? 'free') as PlanSlug}
+        feature="locations"
+        context={`You're at ${plan.maxLocations} of ${plan.maxLocations} locations on your ${plan.name} plan`}
       />
     </div>
   );

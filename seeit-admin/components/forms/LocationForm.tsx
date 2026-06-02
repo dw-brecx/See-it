@@ -46,6 +46,7 @@ import {
   type WeekHours,
 } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/client';
+import { DeleteLocationDangerZone } from '@/components/DeleteLocationDangerZone';
 import type { KosherKind } from '@/lib/database.types';
 
 const kosherSchema = z.object({
@@ -789,6 +790,17 @@ export function LocationForm({
                   )}
                 />
               </div>
+            )}
+
+            {isEdit && location && (
+              <DeleteLocationDangerZone
+                locationId={location.id}
+                locationName={location.name}
+                onDeleted={() => {
+                  onOpenChange(false);
+                  onSaved?.(location.id);
+                }}
+              />
             )}
           </SheetBody>
 
