@@ -31,6 +31,7 @@ import { CsvImportDialog, type ImportField } from '@/components/CsvImportDialog'
 import { Card } from '@/components/ui/card';
 import { useRowSelection } from '@/hooks/useRowSelection';
 import { createClient } from '@/lib/supabase/client';
+import { logAudit } from '@/lib/audit';
 import { formatDate, initials } from '@/lib/utils';
 import type { UserRole } from '@/lib/database.types';
 
@@ -71,11 +72,17 @@ export function UsersList({ rows: initialRows }: { rows: Row[] }) {
 
   async function bulkDelete() {
     const supabase = createClient();
-    const { error } = await supabase.from('users').delete().in('id', sel.selectedIds);
+    const ids = [...sel.selectedIds];
+    const { error } = await supabase.from('users').delete().in('id', ids);
     if (error) {
       toast.error(`Delete failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: 'delete',
+      targetType: 'user',
+      metadata: { ids, count: ids.length },
+    });
     toast.success(`Deleted ${sel.count} user${sel.count === 1 ? '' : 's'}`);
     setConfirmDelete(false);
     sel.clear();
@@ -84,14 +91,20 @@ export function UsersList({ rows: initialRows }: { rows: Row[] }) {
 
   async function bulkSuspend(suspend: boolean) {
     const supabase = createClient();
+    const ids = [...sel.selectedIds];
     const { error } = await supabase
       .from('users')
       .update({ is_suspended: suspend })
-      .in('id', sel.selectedIds);
+      .in('id', ids);
     if (error) {
       toast.error(`Update failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: suspend ? 'suspend' : 'unsuspend',
+      targetType: 'user',
+      metadata: { ids, count: ids.length },
+    });
     toast.success(
       `${suspend ? 'Suspended' : 'Unsuspended'} ${sel.count} user${sel.count === 1 ? '' : 's'}`,
     );
@@ -102,14 +115,20 @@ export function UsersList({ rows: initialRows }: { rows: Row[] }) {
 
   async function bulkChangeRole(role: UserRole) {
     const supabase = createClient();
+    const ids = [...sel.selectedIds];
     const { error } = await supabase
       .from('users')
       .update({ role })
-      .in('id', sel.selectedIds);
+      .in('id', ids);
     if (error) {
       toast.error(`Role change failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: 'change_role',
+      targetType: 'user',
+      metadata: { ids, count: ids.length, role },
+    });
     toast.success(`Changed role for ${sel.count} user${sel.count === 1 ? '' : 's'}`);
     sel.clear();
     router.refresh();

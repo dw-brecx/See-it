@@ -821,6 +821,40 @@ export type Database = {
         };
         Relationships: [];
       };
+
+      admin_audit_log: {
+        Row: {
+          id: string;
+          actor_id: string | null;
+          action: string;
+          target_type: string;
+          target_id: string | null;
+          target_label: string | null;
+          metadata: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          actor_id?: string | null;
+          action: string;
+          target_type: string;
+          target_id?: string | null;
+          target_label?: string | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          actor_id?: string | null;
+          action?: string;
+          target_type?: string;
+          target_id?: string | null;
+          target_label?: string | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: { [_ in never]: never };
@@ -862,3 +896,4 @@ export type QrCode = Tables<'qr_codes'>;
 export type UserPreferences = Tables<'user_preferences'>;
 export type Plan = Tables<'plans'>;
 export type DiscountCode = Tables<'discount_codes'>;
+export type AdminAuditLog = Tables<'admin_audit_log'>;

@@ -24,6 +24,7 @@ import { CsvExportButton } from '@/components/CsvExportButton';
 import { useRowSelection } from '@/hooks/useRowSelection';
 import { ReviewModal } from './review-actions';
 import { createClient } from '@/lib/supabase/client';
+import { logAudit } from '@/lib/audit';
 import { formatRelative, initials, truncate } from '@/lib/utils';
 
 type Row = {
@@ -50,11 +51,17 @@ export function ReviewsList({ rows }: { rows: Row[] }) {
 
   async function bulkDelete() {
     const supabase = createClient();
-    const { error } = await supabase.from('reviews').delete().in('id', sel.selectedIds);
+    const ids = [...sel.selectedIds];
+    const { error } = await supabase.from('reviews').delete().in('id', ids);
     if (error) {
       toast.error(`Delete failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: 'delete',
+      targetType: 'review',
+      metadata: { ids, count: ids.length },
+    });
     toast.success(`Deleted ${sel.count} review${sel.count === 1 ? '' : 's'}`);
     setConfirmDelete(false);
     sel.clear();
@@ -63,14 +70,20 @@ export function ReviewsList({ rows }: { rows: Row[] }) {
 
   async function bulkFlag(flag: boolean) {
     const supabase = createClient();
+    const ids = [...sel.selectedIds];
     const { error } = await supabase
       .from('reviews')
       .update({ is_flagged: flag })
-      .in('id', sel.selectedIds);
+      .in('id', ids);
     if (error) {
       toast.error(`Update failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: flag ? 'flag' : 'unflag',
+      targetType: 'review',
+      metadata: { ids, count: ids.length },
+    });
     toast.success(
       `${flag ? 'Flagged' : 'Unflagged'} ${sel.count} review${sel.count === 1 ? '' : 's'}`,
     );

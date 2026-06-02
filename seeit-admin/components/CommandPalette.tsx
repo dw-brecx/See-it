@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {
   Activity,
+  Bell,
   Building2,
   CreditCard,
   LayoutDashboard,
@@ -13,6 +14,7 @@ import {
   MessageSquare,
   Search,
   Settings,
+  ShieldAlert,
   Sparkles,
   UserPlus,
   Users,
@@ -48,6 +50,8 @@ const NAV_ITEMS: Nav[] = [
   { kind: 'nav', id: 'nav-users', label: 'Users', href: '/dashboard/users', icon: Users, group: 'Go to' },
   { kind: 'nav', id: 'nav-subscriptions', label: 'Subscriptions', href: '/dashboard/subscriptions', icon: CreditCard, group: 'Go to' },
   { kind: 'nav', id: 'nav-activity', label: 'Activity', href: '/dashboard/activity', icon: Activity, group: 'Go to' },
+  { kind: 'nav', id: 'nav-audit', label: 'Admin audit log', href: '/dashboard/activity?tab=audit', icon: ShieldAlert, group: 'Go to' },
+  { kind: 'nav', id: 'nav-notifs', label: 'Notifications', href: '/dashboard/notifications', icon: Bell, group: 'Go to' },
   { kind: 'nav', id: 'nav-settings', label: 'Settings', href: '/dashboard/settings', icon: Settings, group: 'Go to' },
   { kind: 'nav', id: 'nav-plans', label: 'Plans & pricing', href: '/dashboard/settings?tab=plans', icon: CreditCard, group: 'Manage' },
   { kind: 'nav', id: 'nav-codes', label: 'Discount codes', href: '/dashboard/settings?tab=codes', icon: Sparkles, group: 'Manage' },

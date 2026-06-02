@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { Menu, RefreshCw, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { NotificationsBell } from '@/components/NotificationsBell';
 import { useShell } from '@/components/DashboardShell';
 import { cn } from '@/lib/utils';
 
@@ -70,6 +71,7 @@ export function TopBar({ title, subtitle, children }: Props) {
           </kbd>
         </button>
         {children}
+        <NotificationsBell />
         <Button
           variant="outline"
           size="sm"

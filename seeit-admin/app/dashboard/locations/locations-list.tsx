@@ -24,6 +24,7 @@ import { CsvExportButton } from '@/components/CsvExportButton';
 import { CsvImportDialog, type ImportField } from '@/components/CsvImportDialog';
 import { useRowSelection } from '@/hooks/useRowSelection';
 import { createClient } from '@/lib/supabase/client';
+import { logAudit } from '@/lib/audit';
 
 type Row = {
   id: string;
@@ -76,11 +77,17 @@ export function LocationsList({
 
   async function bulkDelete() {
     const supabase = createClient();
-    const { error } = await supabase.from('locations').delete().in('id', sel.selectedIds);
+    const ids = [...sel.selectedIds];
+    const { error } = await supabase.from('locations').delete().in('id', ids);
     if (error) {
       toast.error(`Delete failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: 'delete',
+      targetType: 'location',
+      metadata: { ids, count: ids.length },
+    });
     toast.success(`Deleted ${sel.count} location${sel.count === 1 ? '' : 's'}`);
     setConfirmDelete(false);
     sel.clear();
@@ -89,14 +96,20 @@ export function LocationsList({
 
   async function bulkClose(close: boolean) {
     const supabase = createClient();
+    const ids = [...sel.selectedIds];
     const { error } = await supabase
       .from('locations')
       .update({ is_temporarily_closed: close })
-      .in('id', sel.selectedIds);
+      .in('id', ids);
     if (error) {
       toast.error(`Update failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: close ? 'close' : 'reopen',
+      targetType: 'location',
+      metadata: { ids, count: ids.length },
+    });
     toast.success(
       `${close ? 'Closed' : 'Reopened'} ${sel.count} location${sel.count === 1 ? '' : 's'}`,
     );

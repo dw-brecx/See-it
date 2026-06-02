@@ -30,6 +30,7 @@ import { CsvExportButton } from '@/components/CsvExportButton';
 import { CsvImportDialog, type ImportField } from '@/components/CsvImportDialog';
 import { useRowSelection } from '@/hooks/useRowSelection';
 import { createClient } from '@/lib/supabase/client';
+import { logAudit } from '@/lib/audit';
 import { formatDate, initials } from '@/lib/utils';
 import type { SubscriptionStatus } from '@/lib/database.types';
 
@@ -74,11 +75,17 @@ export function BrandsList({ rows }: { rows: Row[] }) {
 
   async function bulkDelete() {
     const supabase = createClient();
-    const { error } = await supabase.from('brands').delete().in('id', sel.selectedIds);
+    const ids = [...sel.selectedIds];
+    const { error } = await supabase.from('brands').delete().in('id', ids);
     if (error) {
       toast.error(`Delete failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: 'delete',
+      targetType: 'store',
+      metadata: { ids, count: ids.length },
+    });
     toast.success(`Deleted ${sel.count} store${sel.count === 1 ? '' : 's'}`);
     setConfirmDelete(false);
     sel.clear();
@@ -87,14 +94,20 @@ export function BrandsList({ rows }: { rows: Row[] }) {
 
   async function bulkSuspend(suspend: boolean) {
     const supabase = createClient();
+    const ids = [...sel.selectedIds];
     const { error } = await supabase
       .from('brands')
       .update({ is_suspended: suspend })
-      .in('id', sel.selectedIds);
+      .in('id', ids);
     if (error) {
       toast.error(`Update failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: suspend ? 'suspend' : 'unsuspend',
+      targetType: 'store',
+      metadata: { ids, count: ids.length },
+    });
     toast.success(
       `${suspend ? 'Suspended' : 'Unsuspended'} ${sel.count} store${sel.count === 1 ? '' : 's'}`,
     );
@@ -104,14 +117,20 @@ export function BrandsList({ rows }: { rows: Row[] }) {
 
   async function bulkSetStatus(status: SubscriptionStatus) {
     const supabase = createClient();
+    const ids = [...sel.selectedIds];
     const { error } = await supabase
       .from('brands')
       .update({ subscription_status: status })
-      .in('id', sel.selectedIds);
+      .in('id', ids);
     if (error) {
       toast.error(`Update failed: ${error.message}`);
       return;
     }
+    await logAudit(supabase, {
+      action: 'change_subscription_status',
+      targetType: 'store',
+      metadata: { ids, count: ids.length, status },
+    });
     toast.success(`Set subscription to ${status}`);
     sel.clear();
     router.refresh();
