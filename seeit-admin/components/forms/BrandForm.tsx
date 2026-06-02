@@ -54,6 +54,7 @@ const schema = z.object({
     .optional()
     .or(z.literal('')),
   subscription_status: z.string().default('inactive'),
+  override_one_brand_rule: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -92,6 +93,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
       logo_url: brand?.logo_url ?? '',
       owner_email: ownerEmail ?? '',
       subscription_status: brand?.subscription_status ?? 'inactive',
+      override_one_brand_rule: false,
     },
   });
 
@@ -106,6 +108,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
         logo_url: brand?.logo_url ?? '',
         owner_email: ownerEmail ?? '',
         subscription_status: brand?.subscription_status ?? 'inactive',
+        override_one_brand_rule: false,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,6 +148,24 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
         return;
       }
       ownerId = ownerRow.id;
+
+      // One brand per user — warn (and require explicit override) if this
+      // user already owns one. Admins can intentionally bypass for support.
+      const isOwnerChanging =
+        !brand || brand.owner_id !== ownerId;
+      if (isOwnerChanging) {
+        const { count: existingCount } = await supabase
+          .from('brands')
+          .select('id', { count: 'exact', head: true })
+          .eq('owner_id', ownerId)
+          .neq('id', brand?.id ?? '00000000-0000-0000-0000-000000000000');
+        if ((existingCount ?? 0) > 0 && !values.override_one_brand_rule) {
+          toast.error(
+            `${values.owner_email} already owns a brand. Tick "Reassign anyway" to override the one-brand-per-user rule.`,
+          );
+          return;
+        }
+      }
     } else if (!isEdit) {
       // Creating with no owner → leave null
       ownerId = null;
@@ -330,9 +351,36 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
                     />
                   </FormControl>
                   <FormDescription>
-                    Must match an existing user. Leave blank to assign later.
+                    Must match an existing user. Each user can only own one
+                    brand — leave blank to assign later.
                   </FormDescription>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="override_one_brand_rule"
+              render={({ field }) => (
+                <FormItem className="flex items-start gap-2.5 rounded-md border border-amber-200 bg-amber-50/50 p-3">
+                  <FormControl>
+                    <input
+                      type="checkbox"
+                      checked={!!field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-amber-600"
+                    />
+                  </FormControl>
+                  <div>
+                    <FormLabel className="text-[12.5px] font-semibold">
+                      Reassign anyway (override one-brand-per-user)
+                    </FormLabel>
+                    <FormDescription className="text-[11.5px]">
+                      Only tick this for support reassignments. Normal restaurant
+                      owners are limited to one brand.
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />

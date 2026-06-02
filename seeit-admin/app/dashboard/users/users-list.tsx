@@ -44,6 +44,7 @@ type Row = {
   is_suspended: boolean | null;
   created_at: string | null;
   reviews?: { count: number }[];
+  brands?: { id: string; name: string }[];
 };
 
 const IMPORT_FIELDS: ImportField[] = [
@@ -241,6 +242,7 @@ export function UsersList({ rows: initialRows }: { rows: Row[] }) {
               </TableHead>
               <TableHead>User</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Brand</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Joined</TableHead>
               <TableHead>Reviews</TableHead>
@@ -284,6 +286,26 @@ export function UsersList({ rows: initialRows }: { rows: Row[] }) {
                   </TableCell>
                   <TableCell>
                     <RoleBadge role={u.role} />
+                  </TableCell>
+                  <TableCell className="text-sm">
+                    {(() => {
+                      const brand = Array.isArray((u as any).brands)
+                        ? (u as any).brands[0]
+                        : (u as any).brands;
+                      if (!brand) {
+                        return (
+                          <span className="text-muted-foreground">No brand</span>
+                        );
+                      }
+                      return (
+                        <Link
+                          href={`/dashboard/brands/${brand.id}`}
+                          className="font-medium text-primary hover:underline"
+                        >
+                          {brand.name}
+                        </Link>
+                      );
+                    })()}
                   </TableCell>
                   <TableCell>
                     {u.is_suspended ? (

@@ -26,7 +26,7 @@ async function fetchUsers(params: SearchParams) {
   let query = supabase
     .from('users')
     .select(
-      'id, email, name, avatar_url, role, is_suspended, created_at, reviews(count)',
+      'id, email, name, avatar_url, role, is_suspended, created_at, reviews(count), brands:brands!brands_owner_id_fkey(id, name)',
       { count: 'exact' },
     )
     .order('created_at', { ascending: false })

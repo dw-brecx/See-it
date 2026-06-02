@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { DashboardShell } from '@/components/DashboardShell';
+import { getUserBrand } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,42 +23,32 @@ export default async function DashboardLayout({
     .maybeSingle();
   if (!profile) redirect('/signin');
 
-  // Find brands the user owns OR is a team member on.
-  const [ownedRes, teamRes] = await Promise.all([
-    supabase
-      .from('brands')
-      .select('id, name, logo_url, plan')
-      .eq('owner_id', authUser.id)
-      .order('name', { ascending: true }),
-    supabase
-      .from('team_members')
-      .select('brand:brands(id, name, logo_url, plan)')
-      .eq('user_id', authUser.id),
-  ]);
+  // SeeIt model: every restaurant_owner works under exactly one brand
+  // (their owned brand, or — if they don't own one — the team they belong to).
+  // Admins are exempt; they have no specific brand context here.
+  const myBrand = await getUserBrand(supabase, authUser.id);
 
-  const owned = (ownedRes.data ?? []) as { id: string; name: string; logo_url: string | null; plan: string | null }[];
-  const teamBrands = ((teamRes.data ?? []) as any[])
-    .map((r) => r.brand)
-    .filter((b): b is { id: string; name: string; logo_url: string | null } => !!b);
-
-  // De-dup
-  const brandMap = new Map<string, { id: string; name: string; logo_url: string | null }>();
-  for (const b of [...owned, ...teamBrands]) brandMap.set(b.id, b);
-  const brands = Array.from(brandMap.values());
-
-  // No brand → straight to onboarding (admins are exempt — they can browse without one)
-  if (brands.length === 0 && profile.role !== 'admin') {
+  if (!myBrand && profile.role !== 'admin') {
     redirect('/onboarding');
   }
 
-  // Fetch locations across all accessible brands
-  const brandIds = brands.map((b) => b.id);
+  const brands = myBrand
+    ? [
+        {
+          id: myBrand.id,
+          name: myBrand.name,
+          logo_url: myBrand.logo_url,
+          plan: myBrand.plan,
+        },
+      ]
+    : [];
+
   let locations: { id: string; name: string; city: string | null; brand_id: string }[] = [];
-  if (brandIds.length > 0) {
+  if (myBrand) {
     const { data } = await supabase
       .from('locations')
       .select('id, name, city, brand_id')
-      .in('brand_id', brandIds)
+      .eq('brand_id', myBrand.id)
       .order('name', { ascending: true });
     locations = (data ?? []) as any;
   }
