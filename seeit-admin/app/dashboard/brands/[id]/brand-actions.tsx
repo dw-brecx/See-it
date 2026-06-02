@@ -40,10 +40,10 @@ export function BrandActions({ brand, ownerEmail }: Props) {
       .update({ is_suspended: !brand.is_suspended })
       .eq('id', brand.id);
     if (error) {
-      toast.error(`Could not update brand: ${error.message}`);
+      toast.error(`Could not update store: ${error.message}`);
       return;
     }
-    toast.success(brand.is_suspended ? 'Brand unsuspended' : 'Brand suspended');
+    toast.success(brand.is_suspended ? 'Store unsuspended' : 'Store suspended');
     router.refresh();
   }
 
@@ -51,7 +51,7 @@ export function BrandActions({ brand, ownerEmail }: Props) {
     const supabase = createClient();
     const { error } = await supabase.from('brands').delete().eq('id', brand.id);
     if (error) {
-      toast.error(`Could not delete brand: ${error.message}`);
+      toast.error(`Could not delete store: ${error.message}`);
       return;
     }
     toast.success(`Deleted ${brand.name}`);
@@ -94,8 +94,8 @@ export function BrandActions({ brand, ownerEmail }: Props) {
         title={brand.is_suspended ? `Unsuspend ${brand.name}?` : `Suspend ${brand.name}?`}
         description={
           brand.is_suspended
-            ? 'The brand and all its locations will become visible again to customers and team members.'
-            : 'The brand and all its locations will be hidden from customers. Team members keep access.'
+            ? 'The store and all its locations will become visible again to customers and team members.'
+            : 'The store and all its locations will be hidden from customers. Team members keep access.'
         }
         confirmLabel={brand.is_suspended ? 'Unsuspend' : 'Suspend'}
         destructive={!brand.is_suspended}
@@ -107,8 +107,8 @@ export function BrandActions({ brand, ownerEmail }: Props) {
         onOpenChange={setShowDelete}
         expected={brand.name}
         title={`Delete ${brand.name}?`}
-        description="This permanently deletes the brand and (depending on your DB cascade rules) all its locations, menu items, reviews, and team data. This cannot be undone."
-        confirmLabel="Delete brand"
+        description="This permanently deletes the store and (depending on your DB cascade rules) all its locations, menu items, reviews, and team data. This cannot be undone."
+        confirmLabel="Delete store"
         onConfirm={deleteBrand}
       />
     </>

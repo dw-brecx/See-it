@@ -111,7 +111,7 @@ export function LocationsPanel({ brandId, locations }: Props) {
           <EmptyState
             icon={MapPin}
             title="No locations yet"
-            description="Add the first location for this brand."
+            description="Add the first location for this store."
             action={
               <Button onClick={() => setAddOpen(true)} className="gap-1.5">
                 <Plus className="h-4 w-4" /> Add location

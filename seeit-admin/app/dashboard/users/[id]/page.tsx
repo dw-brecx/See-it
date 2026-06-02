@@ -157,14 +157,14 @@ export default async function UserDetailPage({
         {user.role === 'restaurant_owner' && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Brands owned</CardTitle>
+              <CardTitle className="text-base">Stores owned</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {brands.length === 0 ? (
                 <EmptyState
                   icon={Building2}
-                  title="No brands"
-                  description="This user is a restaurant owner but hasn't claimed any brands yet."
+                  title="No stores"
+                  description="This user is a restaurant owner but hasn't claimed any stores yet."
                 />
               ) : (
                 <ul className="divide-y divide-border">

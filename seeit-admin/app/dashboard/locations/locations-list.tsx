@@ -41,7 +41,7 @@ type Row = {
 type BrandOption = { id: string; name: string };
 
 const IMPORT_FIELDS: ImportField[] = [
-  { key: 'brand_id', label: 'Brand ID (uuid)', required: true, aliases: ['brand', 'brand uuid'] },
+  { key: 'brand_id', label: 'Store ID (uuid)', required: true, aliases: ['brand', 'brand uuid', 'store', 'store uuid'] },
   { key: 'name', label: 'Name', required: true },
   { key: 'address', label: 'Address', required: true, aliases: ['street', 'street address'] },
   { key: 'city', label: 'City' },
@@ -141,7 +141,7 @@ export function LocationsList({
           fetchRows={exportAll}
           filename="locations"
           columns={[
-            { header: 'Brand', accessor: (l: any) => l.brand?.name ?? '' },
+            { header: 'Store', accessor: (l: any) => l.brand?.name ?? '' },
             { header: 'Name', accessor: (l: any) => l.name },
             { header: 'Address', accessor: (l: any) => l.address },
             { header: 'City', accessor: (l: any) => l.city },
@@ -207,7 +207,7 @@ export function LocationsList({
                   />
                 </TableHead>
                 <TableHead>Location</TableHead>
-                <TableHead>Brand</TableHead>
+                <TableHead>Store</TableHead>
                 <TableHead>City</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Rating</TableHead>

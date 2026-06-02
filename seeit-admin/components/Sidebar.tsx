@@ -49,7 +49,7 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
     items: [
       {
         href: '/dashboard/brands',
-        label: 'Brands',
+        label: 'Stores',
         icon: Building2,
         match: (p) => p.startsWith('/dashboard/brands'),
       },

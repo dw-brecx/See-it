@@ -117,7 +117,7 @@ export default async function SubscriptionsPage({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Brand</TableHead>
+                      <TableHead>Store</TableHead>
                       <TableHead>Plan</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Locations</TableHead>

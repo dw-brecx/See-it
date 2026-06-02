@@ -356,10 +356,10 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
             )}
 
             <FormItem>
-              <FormLabel>Brand *</FormLabel>
+              <FormLabel>Store *</FormLabel>
               <div className="space-y-2">
                 <Input
-                  placeholder="Search brand…"
+                  placeholder="Search store…"
                   value={brandQuery}
                   onChange={(e) => setBrandQuery(e.target.value)}
                 />
@@ -372,7 +372,7 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Pick a brand" />
+                    <SelectValue placeholder="Pick a store" />
                   </SelectTrigger>
                   <SelectContent>
                     {brands.length === 0 ? (
@@ -408,7 +408,7 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
                           placeholder={
                             brandId
                               ? 'Pick a location'
-                              : 'Pick a brand first'
+                              : 'Pick a store first'
                           }
                         />
                       </SelectTrigger>
@@ -417,8 +417,8 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
                       {locations.length === 0 ? (
                         <div className="px-2 py-1.5 text-xs text-muted-foreground">
                           {brandId
-                            ? 'This brand has no locations yet.'
-                            : 'Pick a brand to see its locations.'}
+                            ? 'This store has no locations yet.'
+                            : 'Pick a store to see its locations.'}
                         </div>
                       ) : (
                         locations.map((l) => (

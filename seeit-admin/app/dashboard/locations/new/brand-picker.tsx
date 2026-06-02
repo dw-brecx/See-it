@@ -40,7 +40,7 @@ export function BrandPicker({ brands }: { brands: Brand[] }) {
       <div className="relative">
         <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Search brands…"
+          placeholder="Search stores…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="pl-9"
@@ -49,7 +49,7 @@ export function BrandPicker({ brands }: { brands: Brand[] }) {
 
       {filtered.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">
-          No brands match "{query}".
+          No stores match "{query}".
         </p>
       ) : (
         <ul className="divide-y divide-border rounded-md border border-border">

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { Menu, RefreshCw } from 'lucide-react';
+import { Menu, RefreshCw, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useShell } from '@/components/DashboardShell';
 import { cn } from '@/lib/utils';
@@ -51,6 +51,24 @@ export function TopBar({ title, subtitle, children }: Props) {
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
+        {/* Search trigger — opens the global command palette via Cmd+K */}
+        <button
+          type="button"
+          onClick={() => {
+            // Synthesize a Cmd+K event so we don't need a context just for this
+            window.dispatchEvent(
+              new KeyboardEvent('keydown', { key: 'k', metaKey: true }),
+            );
+          }}
+          className="hidden h-9 items-center gap-2 rounded-lg border border-border bg-card px-3 text-[12.5px] text-muted-foreground shadow-xs transition-colors hover:bg-warm-50 hover:text-foreground md:flex"
+          aria-label="Search"
+        >
+          <Search className="h-3.5 w-3.5" />
+          <span>Quick search</span>
+          <kbd className="ml-2 rounded border border-border bg-warm-50 px-1 py-0.5 text-[10px] font-medium">
+            ⌘K
+          </kbd>
+        </button>
         {children}
         <Button
           variant="outline"

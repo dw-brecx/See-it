@@ -79,7 +79,7 @@ export default async function LocationsPage({
     <>
       <TopBar
         title="Locations"
-        subtitle={`${data.total.toLocaleString()} location${data.total === 1 ? '' : 's'} across all brands`}
+        subtitle={`${data.total.toLocaleString()} location${data.total === 1 ? '' : 's'} across all stores`}
       >
         <Button asChild className="gap-1.5">
           <Link href="/dashboard/locations/new">
@@ -92,8 +92,8 @@ export default async function LocationsPage({
           <SearchInput placeholder="Search name or address…" />
           <FilterSelect
             paramName="brand"
-            allLabel="All brands"
-            placeholder="Brand"
+            allLabel="All stores"
+            placeholder="Store"
             options={brands.map((b) => ({ value: b.id, label: b.name }))}
           />
           <FilterSelect

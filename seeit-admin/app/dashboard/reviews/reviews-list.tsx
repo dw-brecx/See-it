@@ -100,7 +100,7 @@ export function ReviewsList({ rows }: { rows: Row[] }) {
             { header: 'Rating', accessor: (r: any) => r.rating },
             { header: 'Text', accessor: (r: any) => r.text },
             { header: 'Reviewer', accessor: (r: any) => r.user?.email ?? '' },
-            { header: 'Brand', accessor: (r: any) => r.location?.brand?.name ?? '' },
+            { header: 'Store', accessor: (r: any) => r.location?.brand?.name ?? '' },
             { header: 'Location', accessor: (r: any) => r.location?.name ?? '' },
             { header: 'Menu item', accessor: (r: any) => r.menu_item?.name ?? '' },
             { header: 'Portion', accessor: (r: any) => r.portion_size },

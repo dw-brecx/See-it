@@ -9,7 +9,7 @@ const HIGHLIGHTS = [
   {
     icon: Users,
     title: 'Operate the entire platform',
-    description: 'Brands, locations, users, reviews, and subscriptions in one place.',
+    description: 'Stores, locations, users, reviews, and subscriptions in one place.',
   },
   {
     icon: Camera,
@@ -46,7 +46,7 @@ export default function SignInPage() {
               Help diners decide what to eat — one great photo at a time.
             </h2>
             <p className="text-[15px] leading-relaxed text-muted-foreground">
-              The control center for the SeeIt platform. Manage every brand, location,
+              The control center for the SeeIt platform. Manage every store, location,
               and customer experience from a single, focused dashboard.
             </p>
           </div>

@@ -21,7 +21,7 @@ export default async function NewLocationPage() {
   const brands = await fetchBrands();
   return (
     <>
-      <TopBar title="Add location" subtitle="Pick a brand to attach this location to" />
+      <TopBar title="Add location" subtitle="Pick a store to attach this location to" />
       <div className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
         <Link
           href="/dashboard/locations"

@@ -66,14 +66,14 @@ export default async function BrandsPage({
   return (
     <>
       <TopBar
-        title="Brands"
-        subtitle={`${total.toLocaleString()} brand${total === 1 ? '' : 's'} on the platform`}
+        title="Stores"
+        subtitle={`${total.toLocaleString()} store${total === 1 ? '' : 's'} on the platform`}
       >
         <AddBrandButton />
       </TopBar>
       <div className="flex-1 space-y-4 px-4 py-5 sm:px-6 sm:py-6">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <SearchInput placeholder="Search brand or cuisine…" />
+          <SearchInput placeholder="Search store or cuisine…" />
           <FilterSelect
             paramName="status"
             allLabel="All subscriptions"
@@ -88,7 +88,7 @@ export default async function BrandsPage({
           />
           <FilterSelect
             paramName="suspended"
-            allLabel="All brands"
+            allLabel="All stores"
             placeholder="Suspension"
             options={[
               { value: 'true', label: 'Suspended only' },
@@ -99,7 +99,7 @@ export default async function BrandsPage({
 
         {error && (
           <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            Failed to load brands: {error}
+            Failed to load stores: {error}
           </div>
         )}
 
@@ -107,8 +107,8 @@ export default async function BrandsPage({
           <Card className="overflow-hidden p-0">
             <EmptyState
               icon={Building2}
-              title="No brands found"
-              description="Try clearing filters or click Add brand to create one."
+              title="No stores found"
+              description="Try clearing filters or click Add store to create one."
             />
           </Card>
         ) : (

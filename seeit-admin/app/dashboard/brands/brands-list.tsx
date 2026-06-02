@@ -79,7 +79,7 @@ export function BrandsList({ rows }: { rows: Row[] }) {
       toast.error(`Delete failed: ${error.message}`);
       return;
     }
-    toast.success(`Deleted ${sel.count} brand${sel.count === 1 ? '' : 's'}`);
+    toast.success(`Deleted ${sel.count} store${sel.count === 1 ? '' : 's'}`);
     setConfirmDelete(false);
     sel.clear();
     router.refresh();
@@ -96,7 +96,7 @@ export function BrandsList({ rows }: { rows: Row[] }) {
       return;
     }
     toast.success(
-      `${suspend ? 'Suspended' : 'Unsuspended'} ${sel.count} brand${sel.count === 1 ? '' : 's'}`,
+      `${suspend ? 'Suspended' : 'Unsuspended'} ${sel.count} store${sel.count === 1 ? '' : 's'}`,
     );
     sel.clear();
     router.refresh();
@@ -260,7 +260,7 @@ export function BrandsList({ rows }: { rows: Row[] }) {
                     aria-label="Select all rows"
                   />
                 </TableHead>
-                <TableHead>Brand</TableHead>
+                <TableHead>Store</TableHead>
                 <TableHead>Cuisine</TableHead>
                 <TableHead>Owner</TableHead>
                 <TableHead>Locations</TableHead>
@@ -331,7 +331,7 @@ export function BrandsList({ rows }: { rows: Row[] }) {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7"
-                        title="Duplicate brand"
+                        title="Duplicate store"
                         onClick={() => duplicate(brand)}
                       >
                         <Copy className="h-3.5 w-3.5" />
@@ -404,8 +404,8 @@ export function BrandsList({ rows }: { rows: Row[] }) {
       <ConfirmDialog
         open={confirmDelete}
         onOpenChange={setConfirmDelete}
-        title={`Delete ${sel.count} brand${sel.count === 1 ? '' : 's'}?`}
-        description="This permanently removes the selected brands plus their locations, menus, photos, and reviews."
+        title={`Delete ${sel.count} store${sel.count === 1 ? '' : 's'}?`}
+        description="This permanently removes the selected stores plus their locations, menus, photos, and reviews."
         confirmLabel="Delete"
         destructive
         onConfirm={bulkDelete}
@@ -414,7 +414,7 @@ export function BrandsList({ rows }: { rows: Row[] }) {
       <CsvImportDialog
         open={importOpen}
         onOpenChange={setImportOpen}
-        entity="brand"
+        entity="store"
         fields={IMPORT_FIELDS}
         onImport={runImport}
       />

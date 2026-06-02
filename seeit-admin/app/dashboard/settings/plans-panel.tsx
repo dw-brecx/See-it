@@ -98,7 +98,7 @@ export function PlansPanel({ plans }: { plans: Plan[] }) {
           <div>
             <CardTitle>Plans</CardTitle>
             <CardDescription>
-              Pricing tiers your restaurant brands can be assigned to.
+              Pricing tiers your restaurant stores can be assigned to.
             </CardDescription>
           </div>
           <Button onClick={() => setAddOpen(true)} className="gap-1.5">
@@ -108,7 +108,7 @@ export function PlansPanel({ plans }: { plans: Plan[] }) {
         <CardContent className="px-0">
           {plans.length === 0 ? (
             <p className="px-6 py-10 text-center text-sm text-muted-foreground">
-              No plans yet. Add your first plan to assign brands to it.
+              No plans yet. Add your first plan to assign stores to it.
             </p>
           ) : (
             <ul className="divide-y divide-border">
@@ -192,7 +192,7 @@ export function PlansPanel({ plans }: { plans: Plan[] }) {
         open={!!toDelete}
         onOpenChange={(o) => !o && setToDelete(null)}
         title={`Delete "${toDelete?.name}"?`}
-        description="Any brand assigned to this plan will be unassigned."
+        description="Any store assigned to this plan will be unassigned."
         confirmLabel="Delete"
         destructive
         onConfirm={deletePlan}
@@ -292,7 +292,7 @@ function PlanForm({
       open={open}
       onOpenChange={onOpenChange}
       title={isEdit ? `Edit ${plan?.name}` : 'Add plan'}
-      description="Plans define what each brand gets for what they pay."
+      description="Plans define what each store gets for what they pay."
     >
       <Form {...form}>
         <form
@@ -417,7 +417,7 @@ function PlanForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    Shown on the marketing site and the brand-assignment screen.
+                    Shown on the marketing site and the store-assignment screen.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -446,7 +446,7 @@ function PlanForm({
                     <div>
                       <FormLabel>Active</FormLabel>
                       <FormDescription>
-                        Inactive plans are hidden from new brand assignments.
+                        Inactive plans are hidden from new store assignments.
                       </FormDescription>
                     </div>
                     <FormControl>

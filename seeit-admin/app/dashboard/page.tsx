@@ -127,7 +127,7 @@ function greeting() {
 const QUICK_ACTIONS = [
   {
     href: '/dashboard/brands',
-    label: 'Add brand',
+    label: 'Add store',
     description: 'Onboard a new restaurant',
     icon: Building2,
     tone: 'terracotta',
@@ -135,7 +135,7 @@ const QUICK_ACTIONS = [
   {
     href: '/dashboard/locations/new',
     label: 'Add location',
-    description: 'New spot for an existing brand',
+    description: 'New spot for an existing store',
     icon: MapPin,
     tone: 'blue',
   },
@@ -258,7 +258,7 @@ export default async function DashboardHome() {
         {/* Primary stats — each metric gets its own color */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
-            label="Total brands"
+            label="Total stores"
             value={data.brands.toLocaleString()}
             icon={Building2}
             tone="terracotta"

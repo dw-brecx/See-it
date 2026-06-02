@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { usePathname } from 'next/navigation';
 import { Sidebar } from '@/components/Sidebar';
+import { CommandPalette } from '@/components/CommandPalette';
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -76,6 +77,7 @@ export function DashboardShell({ user, children }: Props) {
 
         <div className="flex min-w-0 flex-1 flex-col">{children}</div>
       </div>
+      <CommandPalette />
     </ShellCtx.Provider>
   );
 }

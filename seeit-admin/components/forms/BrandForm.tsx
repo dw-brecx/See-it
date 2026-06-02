@@ -195,9 +195,9 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
     <FormSheet
       open={open}
       onOpenChange={onOpenChange}
-      title={isEdit ? `Edit ${brand?.name ?? 'brand'}` : 'Add brand'}
+      title={isEdit ? `Edit ${brand?.name ?? 'store'}` : 'Add store'}
       description={
-        isEdit ? 'Update brand-level details.' : 'Create a new restaurant brand.'
+        isEdit ? 'Update store-level details.' : 'Create a new restaurant store.'
       }
     >
       <Form {...form}>
@@ -211,7 +211,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Brand name *</FormLabel>
+                  <FormLabel>Store name *</FormLabel>
                   <FormControl>
                     <Input placeholder="Bella's Italian Kitchen" {...field} />
                   </FormControl>
@@ -229,7 +229,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
                   <FormControl>
                     <Textarea
                       rows={3}
-                      placeholder="A short brand description shown across the customer app."
+                      placeholder="A short store description shown across the customer app."
                       {...field}
                     />
                   </FormControl>
@@ -287,7 +287,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
                     />
                   </FormControl>
                   <FormDescription>
-                    For brands that span multiple cuisines (e.g. Italian + Pizzeria).
+                    For stores that span multiple cuisines (e.g. Italian + Pizzeria).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -388,7 +388,7 @@ export function BrandForm({ open, onOpenChange, brand, ownerEmail, onSaved }: Pr
               ) : isEdit ? (
                 'Save changes'
               ) : (
-                'Create brand'
+                'Create store'
               )}
             </Button>
           </SheetFooter>

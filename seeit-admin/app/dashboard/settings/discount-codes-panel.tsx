@@ -115,7 +115,7 @@ export function DiscountCodesPanel({
           <div>
             <CardTitle>Discount codes</CardTitle>
             <CardDescription>
-              Promo codes brands can apply at checkout. Percent or fixed amount.
+              Promo codes stores can apply at checkout. Percent or fixed amount.
             </CardDescription>
           </div>
           <Button onClick={() => setAddOpen(true)} className="gap-1.5">

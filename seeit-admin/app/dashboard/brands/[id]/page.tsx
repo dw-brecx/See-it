@@ -22,6 +22,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { BrandActions } from './brand-actions';
 import { LocationsPanel } from './locations-panel';
 import { MenuPanel } from './menu-panel';
+import { StorefrontPanel } from './storefront-panel';
 import { formatDate, initials } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -32,7 +33,7 @@ async function fetchBrand(id: string) {
     supabase
       .from('brands')
       .select(
-        'id, name, logo_url, description, primary_cuisine, secondary_cuisines, is_suspended, subscription_status, created_at, owner_id, owner:users!brands_owner_id_fkey(id, email, name, avatar_url, phone)',
+        'id, name, logo_url, description, primary_cuisine, secondary_cuisines, is_suspended, subscription_status, created_at, owner_id, owner:users!brands_owner_id_fkey(id, email, name, avatar_url, phone), tagline, cover_photo_url, story, website_url, instagram_url, tiktok_url, facebook_url, x_url, theme_color, featured_menu_item_ids, storefront_published',
       )
       .eq('id', id)
       .maybeSingle(),
@@ -61,11 +62,32 @@ async function fetchBrand(id: string) {
 
   if (!brandRes.data) return null;
 
+  // Refetch menu items now that we know which locations belong to this brand.
+  // Two-step is cleaner than building a complex join with PostgREST.
+  let menuItems: { id: string; name: string; location_name?: string }[] = [];
+  if ((locationsRes.data ?? []).length > 0) {
+    const locIds = locationsRes.data!.map((l: any) => l.id);
+    const { data: items } = await supabase
+      .from('menu_items')
+      .select('id, name, location_id')
+      .in('location_id', locIds)
+      .order('name', { ascending: true });
+    const locById = new Map(
+      (locationsRes.data ?? []).map((l: any) => [l.id, l.name]),
+    );
+    menuItems = (items ?? []).map((m: any) => ({
+      id: m.id,
+      name: m.name,
+      location_name: locById.get(m.location_id) ?? undefined,
+    }));
+  }
+
   return {
     brand: brandRes.data as any,
     locations: (locationsRes.data ?? []) as any[],
     team: (teamRes.data ?? []) as any[],
     reviews: (reviewsRes.data ?? []) as any[],
+    menuItems,
   };
 }
 
@@ -77,7 +99,7 @@ export default async function BrandDetailPage({
   const data = await fetchBrand(params.id);
   if (!data) notFound();
 
-  const { brand, locations, team, reviews } = data;
+  const { brand, locations, team, reviews, menuItems } = data;
   const locationOptions = locations.map((l) => ({
     id: l.id,
     name: l.name,
@@ -86,13 +108,13 @@ export default async function BrandDetailPage({
 
   return (
     <>
-      <TopBar title={brand.name} subtitle="Brand details" />
+      <TopBar title={brand.name} subtitle="Store details" />
       <div className="flex-1 space-y-5 px-4 py-5 sm:space-y-6 sm:px-6 sm:py-6">
         <Link
           href="/dashboard/brands"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ChevronLeft className="h-3.5 w-3.5" /> All brands
+          <ChevronLeft className="h-3.5 w-3.5" /> All stores
         </Link>
 
         {/* Header card */}
@@ -153,6 +175,7 @@ export default async function BrandDetailPage({
         <Tabs defaultValue="overview">
           <TabsList className="flex w-full overflow-x-auto sm:inline-flex sm:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="storefront">Storefront</TabsTrigger>
             <TabsTrigger value="locations">
               Locations ({locations.length})
             </TabsTrigger>
@@ -221,6 +244,10 @@ export default async function BrandDetailPage({
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="storefront">
+            <StorefrontPanel brand={brand} menuItems={menuItems} />
           </TabsContent>
 
           <TabsContent value="locations">

@@ -309,7 +309,7 @@ export function LocationForm({
       onOpenChange={onOpenChange}
       title={isEdit ? `Edit ${location?.name ?? 'location'}` : 'Add location'}
       description={
-        isEdit ? 'Update location details.' : 'Add a new location to this brand.'
+        isEdit ? 'Update location details.' : 'Add a new location to this store.'
       }
       size="lg"
     >
@@ -334,7 +334,7 @@ export function LocationForm({
                       <Input placeholder="Brooklyn / Mission / Williamsburg" {...field} />
                     </FormControl>
                     <FormDescription>
-                      Shown to customers as "Brand — Location".
+                      Shown to customers as "Store — Location".
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -477,7 +477,7 @@ export function LocationForm({
                     <FormControl>
                       <Textarea
                         rows={3}
-                        placeholder="Location-specific blurb. Falls back to brand description if blank."
+                        placeholder="Location-specific blurb. Falls back to store description if blank."
                         {...field}
                       />
                     </FormControl>
