@@ -7,7 +7,9 @@ import {
   Camera,
   UserPlus,
   ArrowRight,
+  Sparkles,
   Star,
+  Plus,
 } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
@@ -80,7 +82,6 @@ async function fetchOverview() {
     supabase.auth.getUser(),
   ]);
 
-  // Resolve the signed-in admin's display name for the greeting
   let myName: string | null = null;
   const meId = me.data.user?.id;
   if (meId) {
@@ -123,6 +124,57 @@ function greeting() {
   return 'Good evening';
 }
 
+const QUICK_ACTIONS = [
+  {
+    href: '/dashboard/brands',
+    label: 'Add brand',
+    description: 'Onboard a new restaurant',
+    icon: Building2,
+    tone: 'terracotta',
+  },
+  {
+    href: '/dashboard/locations/new',
+    label: 'Add location',
+    description: 'New spot for an existing brand',
+    icon: MapPin,
+    tone: 'blue',
+  },
+  {
+    href: '/dashboard/users',
+    label: 'Invite user',
+    description: 'Owner, manager, or admin',
+    icon: UserPlus,
+    tone: 'emerald',
+  },
+  {
+    href: '/dashboard/settings?tab=plans',
+    label: 'Manage plans',
+    description: 'Tiers and discount codes',
+    icon: CreditCard,
+    tone: 'violet',
+  },
+] as const;
+
+const TONE_BG: Record<string, { iconBg: string; iconText: string; iconRing: string }> = {
+  terracotta: {
+    iconBg: 'bg-terracotta-50',
+    iconText: 'text-terracotta-600',
+    iconRing: 'ring-terracotta-100',
+  },
+  blue: { iconBg: 'bg-blue-50', iconText: 'text-blue-600', iconRing: 'ring-blue-100' },
+  emerald: {
+    iconBg: 'bg-emerald-50',
+    iconText: 'text-emerald-600',
+    iconRing: 'ring-emerald-100',
+  },
+  violet: {
+    iconBg: 'bg-violet-50',
+    iconText: 'text-violet-600',
+    iconRing: 'ring-violet-100',
+  },
+  amber: { iconBg: 'bg-amber-50', iconText: 'text-amber-700', iconRing: 'ring-amber-100' },
+};
+
 export default async function DashboardHome() {
   const data = await fetchOverview();
   const firstName = data.myName?.split(' ')[0] ?? null;
@@ -142,41 +194,92 @@ export default async function DashboardHome() {
           </div>
         )}
 
-        {/* Greeting hero */}
-        <div className="flex flex-col gap-1">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-            {today}
-          </p>
-          <h2 className="text-[26px] font-bold tracking-tight text-foreground sm:text-[28px]">
-            {greeting()}
-            {firstName ? `, ${firstName}` : ''}.
-          </h2>
-          <p className="text-[14px] text-muted-foreground">
-            Here's what's happening across the platform today.
-          </p>
-        </div>
+        {/* Hero card — warm gradient, welcome, quick actions */}
+        <section
+          className="relative overflow-hidden rounded-2xl border border-terracotta-100 bg-gradient-to-br from-terracotta-50 via-warm-25 to-card p-5 shadow-soft sm:p-7"
+        >
+          {/* Soft decorative blobs */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-20 -right-16 h-72 w-72 rounded-full bg-terracotta-200/40 blur-3xl"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-amber-100/50 blur-3xl"
+          />
 
-        {/* Primary stats */}
+          <div className="relative flex flex-col gap-5">
+            <div>
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-terracotta-200 bg-white/60 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-terracotta-700 backdrop-blur-sm">
+                <Sparkles className="h-3 w-3" />
+                {today}
+              </div>
+              <h2 className="mt-3 text-[28px] font-bold leading-[1.1] tracking-tight text-foreground sm:text-[32px]">
+                {greeting()}
+                {firstName ? `, ${firstName}` : ''}.
+              </h2>
+              <p className="mt-2 max-w-xl text-[14.5px] text-muted-foreground">
+                Here's what's happening across the SeeIt platform today. Pick up
+                where you left off or start something new.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+              {QUICK_ACTIONS.map((a) => {
+                const Icon = a.icon;
+                const t = TONE_BG[a.tone];
+                return (
+                  <Link
+                    key={a.href}
+                    href={a.href}
+                    className="group flex items-start gap-3 rounded-xl border border-border bg-card/90 p-3 shadow-xs backdrop-blur-sm transition-all hover:-translate-y-px hover:border-warm-200 hover:bg-card hover:shadow-soft"
+                  >
+                    <div
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ${t.iconBg} ${t.iconText} ${t.iconRing}`}
+                    >
+                      <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13.5px] font-semibold text-foreground">
+                        {a.label}
+                      </p>
+                      <p className="truncate text-[11.5px] text-muted-foreground">
+                        {a.description}
+                      </p>
+                    </div>
+                    <ArrowRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5 group-hover:text-terracotta-600" />
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Primary stats — each metric gets its own color */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             label="Total brands"
             value={data.brands.toLocaleString()}
             icon={Building2}
+            tone="terracotta"
           />
           <StatCard
             label="Active subscriptions"
             value={data.activeSubs.toLocaleString()}
             icon={CreditCard}
+            tone="emerald"
           />
           <StatCard
             label="Total locations"
             value={data.locations.toLocaleString()}
             icon={MapPin}
+            tone="blue"
           />
           <StatCard
             label="Total reviews"
             value={data.reviews.toLocaleString()}
             icon={MessageSquare}
+            tone="amber"
           />
         </div>
 
@@ -186,18 +289,21 @@ export default async function DashboardHome() {
             label="Total users"
             value={data.users.toLocaleString()}
             icon={Users}
+            tone="violet"
             hint={`${data.customers} customers · ${data.owners} owners · ${data.admins} admins`}
           />
           <StatCard
             label="Photos this week"
             value={data.photosWeek.toLocaleString()}
             icon={Camera}
+            tone="rose"
             hint="Customer and restaurant uploads in the last 7 days"
           />
           <StatCard
             label="Newest signups"
             value={data.recentSignups.length}
             icon={UserPlus}
+            tone="warm"
             hint={
               data.recentSignups[0]
                 ? `Latest: ${formatRelative(data.recentSignups[0].created_at)}`
@@ -249,9 +355,9 @@ export default async function DashboardHome() {
                           <span className="text-[13.5px] font-semibold text-foreground">
                             {r.user?.name ?? r.user?.email ?? 'Unknown'}
                           </span>
-                          <span className="inline-flex items-center gap-0.5 text-amber-600">
-                            <Star className="h-3.5 w-3.5 fill-current" />
-                            <span className="text-[12.5px] font-semibold tabular-nums">
+                          <span className="inline-flex items-center gap-0.5 rounded bg-amber-50 px-1.5 py-0.5 text-amber-700">
+                            <Star className="h-3 w-3 fill-current" />
+                            <span className="text-[11.5px] font-semibold tabular-nums">
                               {r.rating}
                             </span>
                           </span>
@@ -308,7 +414,7 @@ export default async function DashboardHome() {
                     >
                       <Avatar className="h-9 w-9">
                         <AvatarImage src={u.avatar_url ?? undefined} />
-                        <AvatarFallback className="bg-warm-100 text-warm-700 text-[11px] font-semibold">
+                        <AvatarFallback className="bg-violet-50 text-violet-700 text-[11px] font-semibold">
                           {initials(u.name ?? u.email)}
                         </AvatarFallback>
                       </Avatar>

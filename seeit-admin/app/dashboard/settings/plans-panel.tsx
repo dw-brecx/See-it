@@ -43,10 +43,14 @@ const schema = z.object({
     .min(1, 'Slug required')
     .max(60)
     .regex(/^[a-z0-9-]+$/, 'Lowercase letters, numbers, and hyphens only'),
-  price_cents: z
+  // Dollar amount the admin types (e.g. "9.99"). Stored as cents in DB.
+  price_dollars: z
     .union([z.number(), z.string()])
-    .transform((v) => (typeof v === 'string' ? parseInt(v || '0', 10) : v))
-    .pipe(z.number().int().min(0)),
+    .transform((v) => {
+      const n = typeof v === 'string' ? parseFloat(v || '0') : v;
+      return Number.isFinite(n) ? n : 0;
+    })
+    .pipe(z.number().min(0)),
   billing_interval: z.enum(['month', 'year']),
   location_limit: z
     .union([z.number(), z.string(), z.literal('')])
@@ -215,7 +219,7 @@ function PlanForm({
     defaultValues: {
       name: plan?.name ?? '',
       slug: plan?.slug ?? '',
-      price_cents: plan?.price_cents ?? 0,
+      price_dollars: (plan?.price_cents ?? 0) / 100,
       billing_interval: (plan?.billing_interval ?? 'month') as 'month' | 'year',
       location_limit: plan?.location_limit ?? null,
       features_text: Array.isArray(plan?.features) ? plan!.features.join('\n') : '',
@@ -229,7 +233,7 @@ function PlanForm({
       form.reset({
         name: plan?.name ?? '',
         slug: plan?.slug ?? '',
-        price_cents: plan?.price_cents ?? 0,
+        price_dollars: (plan?.price_cents ?? 0) / 100,
         billing_interval: (plan?.billing_interval ?? 'month') as 'month' | 'year',
         location_limit: plan?.location_limit ?? null,
         features_text: Array.isArray(plan?.features) ? plan!.features.join('\n') : '',
@@ -254,7 +258,7 @@ function PlanForm({
       const payload = {
         name: values.name.trim(),
         slug: values.slug.trim(),
-        price_cents: values.price_cents,
+        price_cents: Math.round(values.price_dollars * 100),
         billing_interval: values.billing_interval,
         location_limit: values.location_limit,
         features,
@@ -329,15 +333,27 @@ function PlanForm({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="price_cents"
+                name="price_dollars"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price (cents) *</FormLabel>
+                    <FormLabel>Price *</FormLabel>
                     <FormControl>
-                      <Input type="number" min={0} {...field} />
+                      <div className="relative">
+                        <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">
+                          $
+                        </span>
+                        <Input
+                          type="number"
+                          min={0}
+                          step="0.01"
+                          placeholder="49.00"
+                          className="pl-7"
+                          {...field}
+                        />
+                      </div>
                     </FormControl>
                     <FormDescription>
-                      {field.value ? `$${(Number(field.value) / 100).toFixed(2)}` : '$0.00'}
+                      Enter dollars and cents — e.g. 9.99 or 49 for $49.00.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
