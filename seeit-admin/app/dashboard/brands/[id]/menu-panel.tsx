@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { Copy, Eye, EyeOff, GripVertical, MapPin, Pencil, Plus, Trash2, Upload, UtensilsCrossed } from 'lucide-react';
+import { Copy, CopyPlus, Eye, EyeOff, GripVertical, Loader2, MapPin, Pencil, Plus, Trash2, Upload, UtensilsCrossed } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Select,
@@ -16,6 +16,15 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { EmptyState } from '@/components/EmptyState';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { MenuCategoryForm } from '@/components/forms/MenuCategoryForm';
 import { MenuItemForm } from '@/components/forms/MenuItemForm';
 import { CsvExportButton } from '@/components/CsvExportButton';
@@ -56,6 +65,9 @@ export function MenuPanel({ brandId, locations }: Props) {
   const [addItemOpen, setAddItemOpen] = React.useState(false);
   const [editItem, setEditItem] = React.useState<Item | null>(null);
   const [delItem, setDelItem] = React.useState<Item | null>(null);
+  const [copyItem, setCopyItem] = React.useState<Item | null>(null);
+  const [copyTargets, setCopyTargets] = React.useState<Set<string>>(new Set());
+  const [copyBusy, setCopyBusy] = React.useState(false);
   const [importOpen, setImportOpen] = React.useState(false);
 
   const IMPORT_FIELDS: ImportField[] = React.useMemo(
@@ -229,6 +241,107 @@ export function MenuPanel({ brandId, locations }: Props) {
     toast.success(`Duplicated "${item.name}"`);
     refresh();
     router.refresh();
+  }
+
+  /**
+   * Clone an item (plus its photos) into one or more OTHER locations of the
+   * same store. If the target location doesn't have a category with the same
+   * name as the source's, create one on the fly so the item lands somewhere
+   * sensible. Per-location rows stay independent — editing one won't update
+   * the others.
+   */
+  async function copyItemToLocations(item: Item, targetLocationIds: string[]) {
+    if (targetLocationIds.length === 0) return;
+    setCopyBusy(true);
+    const supabase = createClient();
+    try {
+      // Pull the source category name so we can resolve the equivalent in each target
+      const srcCategory = categories.find((c) => c.id === item.category_id);
+      const categoryName = srcCategory?.name ?? null;
+
+      let ok = 0;
+      let failed = 0;
+      let firstError: string | undefined;
+
+      for (const targetLoc of targetLocationIds) {
+        // Resolve target category — match by name in that location, or create it
+        let targetCategoryId: string | null = null;
+        if (categoryName) {
+          const { data: existing } = await supabase
+            .from('menu_categories')
+            .select('id')
+            .eq('location_id', targetLoc)
+            .ilike('name', categoryName)
+            .limit(1)
+            .maybeSingle();
+          if (existing?.id) {
+            targetCategoryId = existing.id;
+          } else {
+            const { data: newCat, error: catErr } = await supabase
+              .from('menu_categories')
+              .insert({
+                location_id: targetLoc,
+                name: categoryName,
+                display_order: (srcCategory?.display_order ?? 0) + 1,
+              })
+              .select('id')
+              .single();
+            if (catErr || !newCat) {
+              failed++;
+              if (!firstError) firstError = catErr?.message ?? 'category create failed';
+              continue;
+            }
+            targetCategoryId = newCat.id;
+          }
+        }
+
+        // Insert the menu item into the target location
+        const { data: newItem, error: itemErr } = await supabase
+          .from('menu_items')
+          .insert({
+            location_id: targetLoc,
+            category_id: targetCategoryId,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            dietary_tags: item.dietary_tags,
+            is_visible: item.is_visible,
+          })
+          .select('id')
+          .single();
+        if (itemErr || !newItem) {
+          failed++;
+          if (!firstError) firstError = itemErr?.message ?? 'item create failed';
+          continue;
+        }
+
+        // Clone photos
+        if (item.photos.length > 0) {
+          const photoRows = item.photos.map((p, i) => ({
+            menu_item_id: newItem.id,
+            photo_url: p.photo_url,
+            is_featured: i === 0,
+          }));
+          await supabase.from('menu_item_photos').insert(photoRows);
+        }
+        ok++;
+      }
+
+      if (ok > 0) {
+        toast.success(
+          `Copied "${item.name}" to ${ok} location${ok === 1 ? '' : 's'}` +
+            (failed > 0 ? ` · ${failed} failed` : ''),
+        );
+      }
+      if (ok === 0 && failed > 0) {
+        toast.error(`Copy failed${firstError ? `: ${firstError}` : ''}`);
+      }
+      setCopyItem(null);
+      setCopyTargets(new Set());
+      router.refresh();
+    } finally {
+      setCopyBusy(false);
+    }
   }
 
   async function deleteItem() {
@@ -475,10 +588,24 @@ export function MenuPanel({ brandId, locations }: Props) {
                               size="sm"
                               onClick={() => duplicateItem(item)}
                               aria-label="Duplicate"
-                              title="Duplicate"
+                              title="Duplicate within this location"
                             >
                               <Copy className="h-3.5 w-3.5" />
                             </Button>
+                            {locations.length > 1 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setCopyItem(item);
+                                  setCopyTargets(new Set());
+                                }}
+                                aria-label="Copy to other locations"
+                                title="Copy to other locations"
+                              >
+                                <CopyPlus className="h-3.5 w-3.5" />
+                              </Button>
+                            )}
                             <Button
                               variant="outline"
                               size="sm"
@@ -564,6 +691,102 @@ export function MenuPanel({ brandId, locations }: Props) {
         fields={IMPORT_FIELDS}
         onImport={runImport}
       />
+
+      {/* Copy to other locations dialog */}
+      <Dialog
+        open={!!copyItem}
+        onOpenChange={(o) => {
+          if (!o && !copyBusy) {
+            setCopyItem(null);
+            setCopyTargets(new Set());
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Copy "{copyItem?.name}" to other locations
+            </DialogTitle>
+            <DialogDescription>
+              Pick the locations to add this item to. Each copy is independent —
+              you can change the price or hide it per location after.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="max-h-[320px] space-y-1.5 overflow-y-auto">
+            {locations
+              .filter((l) => l.id !== locationId)
+              .map((l) => {
+                const checked = copyTargets.has(l.id);
+                return (
+                  <label
+                    key={l.id}
+                    className="flex cursor-pointer items-center gap-2.5 rounded-md border border-border bg-card px-3 py-2.5 hover:border-warm-300"
+                  >
+                    <Checkbox
+                      checked={checked}
+                      onCheckedChange={(c) => {
+                        const next = new Set(copyTargets);
+                        if (c) next.add(l.id);
+                        else next.delete(l.id);
+                        setCopyTargets(next);
+                      }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13.5px] font-medium">{l.name}</p>
+                      {l.city && (
+                        <p className="text-[11.5px] text-muted-foreground">
+                          {l.city}
+                        </p>
+                      )}
+                    </div>
+                  </label>
+                );
+              })}
+          </div>
+
+          {copyItem && categories.find((c) => c.id === copyItem.category_id) && (
+            <p className="text-[12px] text-muted-foreground">
+              Category{' '}
+              <span className="font-semibold">
+                "{categories.find((c) => c.id === copyItem.category_id)?.name}"
+              </span>{' '}
+              will be created in any target location that doesn't have one with
+              that name.
+            </p>
+          )}
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setCopyItem(null);
+                setCopyTargets(new Set());
+              }}
+              disabled={copyBusy}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={() =>
+                copyItem &&
+                copyItemToLocations(copyItem, Array.from(copyTargets))
+              }
+              disabled={copyBusy || copyTargets.size === 0}
+            >
+              {copyBusy ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Copying…
+                </>
+              ) : (
+                `Copy to ${copyTargets.size || ''} location${copyTargets.size === 1 ? '' : 's'}`
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
