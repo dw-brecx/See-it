@@ -41,6 +41,8 @@ import { FormSheet } from '@/components/FormSheet';
 import { SheetBody, SheetFooter } from '@/components/ui/sheet';
 import { MenuItemForm } from '@/components/forms/MenuItemForm';
 import { ALL_LOCATIONS, useBrand } from '@/components/BrandContext';
+import { UpgradeRequired } from '@/components/UpgradeRequired';
+import { getPlan, type PlanSlug } from '@/lib/plans';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 
@@ -59,8 +61,16 @@ type Item = {
 
 export function MenuManager() {
   const router = useRouter();
-  const { currentBrandId, currentLocationId, currentLocation, brandLocations } =
+  const { currentBrandId, currentLocationId: rawLocationId, currentLocation: rawLocation, brandLocations } =
     useBrand();
+  // If the brand has only one location, treat ALL_LOCATIONS as that one
+  // location so menu management works without forcing the user to pick.
+  const currentLocationId =
+    rawLocationId === ALL_LOCATIONS && brandLocations.length === 1
+      ? brandLocations[0].id
+      : rawLocationId;
+  const currentLocation =
+    rawLocation ?? (brandLocations.length === 1 ? brandLocations[0] : null);
   const isAll = currentLocationId === ALL_LOCATIONS;
   const locationId = isAll ? null : currentLocationId;
 
@@ -68,6 +78,19 @@ export function MenuManager() {
   const [items, setItems] = React.useState<Item[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState<Set<string>>(new Set());
+  const [upgradeOpen, setUpgradeOpen] = React.useState(false);
+
+  const { currentBrand: planBrand } = useBrand();
+  const plan = getPlan(planBrand?.plan);
+  const atItemLimit = items.length >= plan.maxMenuItemsPerLocation;
+
+  function handleAddItem() {
+    if (atItemLimit) {
+      setUpgradeOpen(true);
+      return;
+    }
+    setAddItemOpen(true);
+  }
 
   // Modals / form state
   const [addCatOpen, setAddCatOpen] = React.useState(false);
@@ -347,7 +370,7 @@ export function MenuManager() {
               <Plus className="h-4 w-4" /> Add category
             </Button>
             <Button
-              onClick={() => setAddItemOpen(true)}
+              onClick={handleAddItem}
               className="gap-1.5"
               disabled={categories.length === 0}
               title={
@@ -534,6 +557,14 @@ export function MenuManager() {
             : null
         }
         onSaved={refresh}
+      />
+
+      <UpgradeRequired
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        currentPlan={(planBrand?.plan ?? 'free') as PlanSlug}
+        feature="menuItems"
+        context={`You're at ${items.length} of ${plan.maxMenuItemsPerLocation} items on your ${plan.name} plan`}
       />
 
       <ConfirmDialog

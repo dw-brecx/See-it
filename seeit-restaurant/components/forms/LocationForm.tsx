@@ -42,6 +42,7 @@ import {
   type WeekHours,
 } from '@/lib/constants';
 import { useBrand } from '@/components/BrandContext';
+import { DeleteLocationDangerZone } from '@/components/DeleteLocationDangerZone';
 import { createClient } from '@/lib/supabase/client';
 
 const kosherSchema = z.object({
@@ -151,8 +152,11 @@ export function LocationForm({
   onSaved,
 }: Props) {
   const router = useRouter();
-  const { currentBrandId } = useBrand();
+  const { currentBrandId, brandLocations } = useBrand();
   const isEdit = !!location;
+  // Used by DeleteLocationDangerZone to gate the delete button. brandLocations
+  // is scoped to the current brand by BrandContext.
+  const siblingCount = brandLocations.length;
 
   const seed = location ?? null;
 
@@ -673,6 +677,19 @@ export function LocationForm({
                 value={{ ...EMPTY_KOSHER, ...kosherValues }}
                 onChange={(next) => form.setValue('kosher', next, { shouldDirty: true })}
                 uploadPrefix={`certs/${currentBrandId ?? 'unscoped'}`}
+              />
+            )}
+
+            {/* Danger zone — only visible in edit mode */}
+            {isEdit && location && (
+              <DeleteLocationDangerZone
+                locationId={location.id}
+                locationName={location.name}
+                isOnlyLocation={siblingCount <= 1}
+                onDeleted={() => {
+                  onOpenChange(false);
+                  onSaved?.(location.id);
+                }}
               />
             )}
           </SheetBody>

@@ -186,6 +186,11 @@ export function GooglePlaceSearch({ onPick, className }: Props) {
               );
             })
           )}
+          {results.length > 0 && (
+            <p className="px-1 pt-1 text-[10.5px] text-muted-foreground">
+              Powered by Google
+            </p>
+          )}
         </div>
       )}
     </div>

@@ -26,16 +26,16 @@ export default async function DashboardLayout({
   const [ownedRes, teamRes] = await Promise.all([
     supabase
       .from('brands')
-      .select('id, name, logo_url')
+      .select('id, name, logo_url, plan')
       .eq('owner_id', authUser.id)
       .order('name', { ascending: true }),
     supabase
       .from('team_members')
-      .select('brand:brands(id, name, logo_url)')
+      .select('brand:brands(id, name, logo_url, plan)')
       .eq('user_id', authUser.id),
   ]);
 
-  const owned = (ownedRes.data ?? []) as { id: string; name: string; logo_url: string | null }[];
+  const owned = (ownedRes.data ?? []) as { id: string; name: string; logo_url: string | null; plan: string | null }[];
   const teamBrands = ((teamRes.data ?? []) as any[])
     .map((r) => r.brand)
     .filter((b): b is { id: string; name: string; logo_url: string | null } => !!b);

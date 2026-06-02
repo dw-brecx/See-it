@@ -6,6 +6,8 @@ export type BrandRef = {
   id: string;
   name: string;
   logo_url: string | null;
+  /** Plan slug ('free' | 'pro' | 'premium'). Null defaults to 'free' in consumers. */
+  plan?: string | null;
 };
 
 export type LocationRef = {
@@ -81,13 +83,19 @@ export function BrandProvider({
     const stored = loadStored();
     const validBrand = brands.find((b) => b.id === stored.brandId)?.id ?? brands[0]?.id ?? null;
     setBrandIdState(validBrand);
-    // Validate location belongs to current brand
+    // Validate location belongs to current brand.
+    // If the brand only has one location, auto-select it instead of defaulting
+    // to ALL_LOCATIONS — otherwise per-location pages (menu, photos) bail out
+    // with a "pick a specific location" empty state on single-location stores.
+    const brandLocs = locations.filter((l) => l.brand_id === validBrand);
+    const fallback: string | typeof ALL_LOCATIONS =
+      brandLocs.length === 1 ? brandLocs[0].id : ALL_LOCATIONS;
     const validLoc =
       stored.locationId === ALL_LOCATIONS
-        ? ALL_LOCATIONS
+        ? fallback
         : locations.find(
             (l) => l.id === stored.locationId && l.brand_id === validBrand,
-          )?.id ?? ALL_LOCATIONS;
+          )?.id ?? fallback;
     setLocationIdState(validLoc);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -101,10 +109,12 @@ export function BrandProvider({
   const setCurrentBrandId = React.useCallback(
     (id: string) => {
       setBrandIdState(id);
-      // Reset location selector when brand changes
-      setLocationIdState(ALL_LOCATIONS);
+      // Auto-select the single location if the brand has exactly one;
+      // otherwise default to aggregated view.
+      const brandLocs = locations.filter((l) => l.brand_id === id);
+      setLocationIdState(brandLocs.length === 1 ? brandLocs[0].id : ALL_LOCATIONS);
     },
-    [],
+    [locations],
   );
 
   const setCurrentLocationId = React.useCallback(

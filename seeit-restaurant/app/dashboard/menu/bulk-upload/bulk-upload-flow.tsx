@@ -19,6 +19,8 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/EmptyState';
 import { ALL_LOCATIONS, useBrand } from '@/components/BrandContext';
+import { UpgradeRequired } from '@/components/UpgradeRequired';
+import { getPlan, type PlanSlug } from '@/lib/plans';
 import { downloadCsv, parseCsv, rowsToCsv } from '@/lib/csv';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
@@ -40,9 +42,19 @@ const HEADERS = ['Name', 'Description', 'Price', 'Category', 'Dietary tags', 'Vi
 
 export function BulkUploadFlow() {
   const router = useRouter();
-  const { currentLocationId, currentLocation, currentBrandId } = useBrand();
+  const { currentLocationId, currentLocation, currentBrandId, currentBrand } = useBrand();
   const isAll = currentLocationId === ALL_LOCATIONS;
   const locationId = isAll ? null : currentLocationId;
+  const plan = getPlan(currentBrand?.plan);
+
+  // Plan gate: bulk upload only on Pro / Premium
+  if (currentBrandId && !plan.bulkUpload) {
+    return (
+      <UpgradeBlockedCard
+        currentPlan={(currentBrand?.plan ?? 'free') as PlanSlug}
+      />
+    );
+  }
 
   const [step, setStep] = React.useState<'upload' | 'preview' | 'done'>('upload');
   const [parsed, setParsed] = React.useState<ParsedRow[]>([]);
@@ -562,6 +574,36 @@ function Stepper({ step }: { step: 'upload' | 'preview' | 'done' }) {
         </React.Fragment>
       ))}
     </ol>
+  );
+}
+
+function UpgradeBlockedCard({ currentPlan }: { currentPlan: PlanSlug }) {
+  const [open, setOpen] = React.useState(true);
+  return (
+    <>
+      <div className="rounded-xl border border-border bg-card">
+        <EmptyState
+          icon={FileSpreadsheet}
+          title="Bulk upload is a Pro feature"
+          description="Upgrade your plan to import an entire menu from CSV in one shot."
+          action={
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-terracotta-500 px-4 py-2 text-[14px] font-semibold text-white hover:bg-terracotta-600"
+            >
+              View plans
+            </button>
+          }
+        />
+      </div>
+      <UpgradeRequired
+        open={open}
+        onOpenChange={setOpen}
+        currentPlan={currentPlan}
+        feature="bulkUpload"
+      />
+    </>
   );
 }
 

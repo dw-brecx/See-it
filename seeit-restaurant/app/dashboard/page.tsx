@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { TopBar } from '@/components/TopBar';
+import { PlanUsageBanner } from '@/components/PlanUsageBanner';
 import { StatCard } from '@/components/StatCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -182,6 +183,7 @@ export default async function DashboardHome() {
     <>
       <TopBar title="Dashboard" subtitle="Your restaurant at a glance" />
       <div className="flex-1 space-y-6 px-4 py-6 sm:px-8 sm:py-8">
+        <PlanUsageBanner />
         {/* Hero */}
         <section className="relative overflow-hidden rounded-2xl border border-terracotta-100 bg-gradient-to-br from-terracotta-50 via-warm-25 to-card p-5 shadow-soft sm:p-7">
           <div
