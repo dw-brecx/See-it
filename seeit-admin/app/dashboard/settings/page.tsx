@@ -11,14 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { SettingsForm } from './settings-form';
 import { PlansPanel } from './plans-panel';
 import { DiscountCodesPanel } from './discount-codes-panel';
+import { IntegrationsPanel } from './integrations-panel';
 
 export const dynamic = 'force-dynamic';
 
 async function fetchData() {
   const supabase = createClient();
-  // Plans + codes might not exist yet if the user hasn't run the migration —
-  // tolerate the error and fall back to empty arrays so the page still loads.
-  const [plansRes, codesRes] = await Promise.all([
+  const [plansRes, codesRes, integrationsRes] = await Promise.all([
     supabase
       .from('plans')
       .select('*')
@@ -28,12 +27,15 @@ async function fetchData() {
       .from('discount_codes')
       .select('*, applies_to_plan:plans(name)')
       .order('created_at', { ascending: false }),
+    supabase.from('integrations').select('*').order('provider', { ascending: true }),
   ]);
   return {
     plans: (plansRes.data ?? []) as any[],
     plansMissing: plansRes.error?.code === '42P01',
     codes: (codesRes.data ?? []) as any[],
     codesMissing: codesRes.error?.code === '42P01',
+    integrations: (integrationsRes.data ?? []) as any[],
+    integrationsMissing: integrationsRes.error?.code === '42P01',
   };
 }
 
@@ -56,15 +58,27 @@ export default async function SettingsPage({
 
   if (!profile) redirect('/signin');
 
-  const { plans, plansMissing, codes, codesMissing } = await fetchData();
+  const {
+    plans,
+    plansMissing,
+    codes,
+    codesMissing,
+    integrations,
+    integrationsMissing,
+  } = await fetchData();
 
-  const initialTab = ['profile', 'plans', 'codes'].includes(searchParams.tab ?? '')
+  const initialTab = ['profile', 'plans', 'codes', 'integrations'].includes(
+    searchParams.tab ?? '',
+  )
     ? searchParams.tab!
     : 'profile';
 
   return (
     <>
-      <TopBar title="Settings" subtitle="Profile, plans, and discount codes" />
+      <TopBar
+        title="Settings"
+        subtitle="Profile, plans, discount codes, integrations"
+      />
       <div className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
         <div className="mx-auto w-full max-w-4xl">
           <Tabs defaultValue={initialTab} className="space-y-5">
@@ -72,6 +86,7 @@ export default async function SettingsPage({
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="plans">Plans</TabsTrigger>
               <TabsTrigger value="codes">Discount codes</TabsTrigger>
+              <TabsTrigger value="integrations">Integrations</TabsTrigger>
             </TabsList>
 
             <TabsContent value="profile" className="space-y-5">
@@ -98,7 +113,10 @@ export default async function SettingsPage({
 
             <TabsContent value="plans" className="space-y-5">
               {plansMissing ? (
-                <MigrationNeeded entity="plans" />
+                <MigrationNeeded
+                  entity="plans"
+                  file="001_plans_and_discount_codes.sql"
+                />
               ) : (
                 <PlansPanel plans={plans} />
               )}
@@ -106,10 +124,20 @@ export default async function SettingsPage({
 
             <TabsContent value="codes" className="space-y-5">
               {codesMissing ? (
-                <MigrationNeeded entity="discount_codes" />
+                <MigrationNeeded
+                  entity="discount_codes"
+                  file="001_plans_and_discount_codes.sql"
+                />
               ) : (
                 <DiscountCodesPanel codes={codes} plans={plans} />
               )}
+            </TabsContent>
+
+            <TabsContent value="integrations" className="space-y-5">
+              <IntegrationsPanel
+                integrations={integrations}
+                missing={integrationsMissing}
+              />
             </TabsContent>
           </Tabs>
         </div>
@@ -118,7 +146,13 @@ export default async function SettingsPage({
   );
 }
 
-function MigrationNeeded({ entity }: { entity: string }) {
+function MigrationNeeded({
+  entity,
+  file,
+}: {
+  entity: string;
+  file: string;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -127,7 +161,7 @@ function MigrationNeeded({ entity }: { entity: string }) {
           The <code className="rounded bg-warm-100 px-1.5 py-0.5 text-[12px]">{entity}</code>{' '}
           table doesn't exist yet. Run the SQL in{' '}
           <code className="rounded bg-warm-100 px-1.5 py-0.5 text-[12px]">
-            seeit-admin/migrations/001_plans_and_discount_codes.sql
+            seeit-admin/migrations/{file}
           </code>{' '}
           in your Supabase SQL editor, then refresh this page.
         </CardDescription>

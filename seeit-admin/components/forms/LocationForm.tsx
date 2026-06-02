@@ -156,9 +156,10 @@ export function LocationForm({
   // editing or the row we're duplicating from. `isEdit` still gates UPDATE vs INSERT.
   const seed: Partial<ExistingLocation> | null = location ?? initialValues ?? null;
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
+  // Recompute defaults whenever seed/kosherCert change so the form picks up
+  // the new record's values when the modal re-opens for a different location.
+  const computeDefaults = React.useCallback(
+    (): FormValues => ({
       name: seed?.name ?? '',
       address: seed?.address ?? '',
       city: seed?.city ?? '',
@@ -171,7 +172,6 @@ export function LocationForm({
       cover_photo_url: seed?.cover_photo_url ?? '',
       description: seed?.description ?? '',
       dietary_tags: seed?.dietary_tags ?? [],
-      // Split the stored style_tags array into the two UI buckets
       establishment_types: splitStyleTags(seed?.style_tags).establishment_types,
       style_tags: splitStyleTags(seed?.style_tags).style_tags,
       is_temporarily_closed: !!seed?.is_temporarily_closed,
@@ -190,13 +190,20 @@ export function LocationForm({
         certificate_image_url: kosherCert?.certificate_image_url ?? '',
         expiration_date: kosherCert?.expiration_date ?? '',
       },
-    },
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [location?.id, initialValues, kosherCert?.location_id],
+  );
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: computeDefaults(),
   });
 
   React.useEffect(() => {
-    if (open) form.reset(form.getValues());
+    if (open) form.reset(computeDefaults());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, location?.id, initialValues]);
+  }, [open, location?.id, initialValues, kosherCert?.location_id]);
 
   const dietary = form.watch('dietary_tags') ?? [];
   const isKosher = dietary.includes('Kosher');

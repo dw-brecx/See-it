@@ -822,6 +822,43 @@ export type Database = {
         Relationships: [];
       };
 
+      integrations: {
+        Row: {
+          id: string;
+          provider: string;
+          is_enabled: boolean;
+          config: Record<string, unknown>;
+          last_tested_at: string | null;
+          last_test_ok: boolean | null;
+          last_test_message: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          provider: string;
+          is_enabled?: boolean;
+          config?: Record<string, unknown>;
+          last_tested_at?: string | null;
+          last_test_ok?: boolean | null;
+          last_test_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          provider?: string;
+          is_enabled?: boolean;
+          config?: Record<string, unknown>;
+          last_tested_at?: string | null;
+          last_test_ok?: boolean | null;
+          last_test_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+
       admin_audit_log: {
         Row: {
           id: string;
@@ -897,3 +934,4 @@ export type UserPreferences = Tables<'user_preferences'>;
 export type Plan = Tables<'plans'>;
 export type DiscountCode = Tables<'discount_codes'>;
 export type AdminAuditLog = Tables<'admin_audit_log'>;
+export type Integration = Tables<'integrations'>;

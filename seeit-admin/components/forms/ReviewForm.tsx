@@ -77,9 +77,8 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
   const router = useRouter();
   const isEdit = !!review;
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
+  const computeDefaults = React.useCallback(
+    (): FormValues => ({
       user_email: review?.user_email ?? '',
       location_id: review?.location_id ?? '',
       menu_item_id: review?.menu_item_id ?? '',
@@ -94,12 +93,19 @@ export function ReviewForm({ open, onOpenChange, review, onSaved }: Props) {
           : 'skip',
       mood_tags: review?.mood_tags ?? [],
       photos: review?.photos ?? [],
-    },
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [review?.id],
+  );
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: computeDefaults(),
   });
 
   React.useEffect(() => {
     if (open) {
-      form.reset(form.getValues());
+      form.reset(computeDefaults());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, review?.id]);

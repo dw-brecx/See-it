@@ -55,6 +55,7 @@ const NAV_ITEMS: Nav[] = [
   { kind: 'nav', id: 'nav-settings', label: 'Settings', href: '/dashboard/settings', icon: Settings, group: 'Go to' },
   { kind: 'nav', id: 'nav-plans', label: 'Plans & pricing', href: '/dashboard/settings?tab=plans', icon: CreditCard, group: 'Manage' },
   { kind: 'nav', id: 'nav-codes', label: 'Discount codes', href: '/dashboard/settings?tab=codes', icon: Sparkles, group: 'Manage' },
+  { kind: 'nav', id: 'nav-integrations', label: 'Integrations', href: '/dashboard/settings?tab=integrations', icon: Settings, group: 'Manage' },
   { kind: 'nav', id: 'nav-add-store', label: 'Add new store', href: '/dashboard/brands', icon: Building2, group: 'Quick actions' },
   { kind: 'nav', id: 'nav-add-location', label: 'Add new location', href: '/dashboard/locations/new', icon: MapPin, group: 'Quick actions' },
   { kind: 'nav', id: 'nav-invite-user', label: 'Invite user', href: '/dashboard/users', icon: UserPlus, group: 'Quick actions' },

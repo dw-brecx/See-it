@@ -124,15 +124,20 @@ function SideField({
 }) {
   const noteField: 'open_note' | 'close_note' =
     field === 'open' ? 'open_note' : 'close_note';
-  const mode: 'time' | 'note' = note ? 'note' : 'time';
+  // Note mode is active whenever the note property is *defined* — even an
+  // empty string counts, otherwise toggling Note→type→delete would silently
+  // flip back to Time mode and surprise the user.
+  const mode: 'time' | 'note' = note !== undefined && note !== null ? 'note' : 'time';
 
   function pickTime() {
-    // Clear the note, ensure we have a default time
+    // Drop the note key entirely so mode flips to 'time' on next render.
     onChange({ [noteField]: undefined, [field]: time ?? '' } as any);
   }
   function pickNote() {
-    // Set note to empty string so the textbox renders
-    onChange({ [noteField]: note ?? '' } as any);
+    // If user already had a note, keep it; otherwise pre-fill with the first
+    // suggestion so they see something useful and the textbox isn't blank.
+    const next = note ?? suggestions[0] ?? '';
+    onChange({ [noteField]: next } as any);
   }
 
   return (
