@@ -28,6 +28,7 @@ type Review = {
   is_flagged: boolean;
   created_at: string;
   portion_size: string | null;
+  worth_the_price: boolean | null;
   mood_tags: string[] | null;
   user: { id: string; name: string | null; email: string; avatar_url: string | null } | null;
   location: { id: string; name: string } | null;
@@ -139,6 +140,11 @@ export function ReviewModal({ review, children }: Props) {
               {review.portion_size && (
                 <Badge variant="default">Portion: {review.portion_size}</Badge>
               )}
+              {review.worth_the_price != null && (
+                <Badge variant={review.worth_the_price ? 'success' : 'warning'}>
+                  {review.worth_the_price ? 'Worth it' : 'Overpriced'}
+                </Badge>
+              )}
               {review.mood_tags?.map((t) => (
                 <Badge key={t} variant="default">
                   {t}
@@ -208,6 +214,7 @@ export function ReviewModal({ review, children }: Props) {
           rating: review.rating,
           text: review.text,
           portion_size: review.portion_size,
+          worth_the_price: review.worth_the_price,
           mood_tags: review.mood_tags,
           photos: review.review_photos?.map((p) => p.photo_url) ?? [],
           user_email: review.user?.email,

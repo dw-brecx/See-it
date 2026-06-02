@@ -46,7 +46,7 @@ async function fetchBrand(id: string) {
     supabase
       .from('team_members')
       .select(
-        'id, role, invite_status, created_at, user:users(id, name, email, avatar_url)',
+        'id, role, location_ids, created_at, user:users(id, name, email, avatar_url, is_suspended)',
       )
       .eq('brand_id', id),
     supabase
@@ -267,17 +267,11 @@ export default async function BrandDetailPage({
                           <Badge variant="default" className="capitalize">
                             {m.role}
                           </Badge>
-                          <Badge
-                            variant={
-                              m.invite_status === 'active'
-                                ? 'success'
-                                : m.invite_status === 'pending'
-                                ? 'warning'
-                                : 'destructive'
-                            }
-                          >
-                            {m.invite_status}
-                          </Badge>
+                          {m.user?.is_suspended ? (
+                            <Badge variant="destructive">Suspended</Badge>
+                          ) : (
+                            <Badge variant="success">Active</Badge>
+                          )}
                         </div>
                       </li>
                     ))}

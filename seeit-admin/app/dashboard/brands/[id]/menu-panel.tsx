@@ -29,7 +29,7 @@ type Item = {
   category_id: string;
   dietary_tags: string[] | null;
   is_visible: boolean;
-  photos: { id: string; photo_url: string; is_cover: boolean }[];
+  photos: { id: string; photo_url: string; is_featured: boolean }[];
 };
 type Loc = { id: string; name: string; city: string };
 
@@ -69,7 +69,7 @@ export function MenuPanel({ brandId, locations }: Props) {
       supabase
         .from('menu_items')
         .select(
-          'id, name, description, price, category_id, dietary_tags, is_visible, menu_item_photos(id, photo_url, is_cover)',
+          'id, name, description, price, category_id, dietary_tags, is_visible, menu_item_photos(id, photo_url, is_featured)',
         )
         .eq('location_id', locationId)
         .order('name', { ascending: true }),
@@ -265,7 +265,7 @@ export function MenuPanel({ brandId, locations }: Props) {
                   <ul className="divide-y divide-border">
                     {catItems.map((item) => {
                       const cover =
-                        item.photos.find((p) => p.is_cover) ?? item.photos[0];
+                        item.photos.find((p) => p.is_featured) ?? item.photos[0];
                       return (
                         <li
                           key={item.id}

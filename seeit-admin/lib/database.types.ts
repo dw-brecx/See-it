@@ -1,61 +1,40 @@
 /**
- * Typed Supabase schema for the SeeIt platform — kept in the shape that
- * `supabase gen types typescript` outputs, so we can swap to real
- * generated types in the future just by running:
+ * Authoritative typed schema for the SeeIt admin app, hand-mirrored to the
+ * actual Supabase `public` schema dump. Keep this in sync whenever a
+ * migration runs — every `<Database>`-typed Supabase client query is checked
+ * against these definitions at compile time.
  *
- *   npx supabase gen types typescript \
- *     --project-id <your-project-id> --schema public \
- *     > lib/database.types.ts
- *
- * When you do that, leave the convenience aliases at the bottom of this
- * file alone (or re-add them) so existing imports keep working.
- *
- * Wiring this `Database` type into `createBrowserClient<Database>` and
- * `createServerClient<Database>` (see `lib/supabase/*`) means TypeScript
- * catches column-name typos at build time. PostgREST string column
- * lists in `.select('foo, bar')` still aren't type-checked exhaustively,
- * but `.from()`, `.eq()`, `.update()`, `.insert()` payloads are.
+ * Generated shape is compatible with `@supabase/postgrest-js` — every table
+ * needs `Row` / `Insert` / `Update` / `Relationships: []`.
  */
 
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
-
-// ===== Enums / unions =====
+// ──────────────────────────────────────────────────────────────────────────
+// Enum-like unions (DB columns are text, but values are constrained in app)
+// ──────────────────────────────────────────────────────────────────────────
 
 export type UserRole = 'customer' | 'restaurant_owner' | 'admin';
-
 export type SubscriptionStatus =
-  | 'inactive'
   | 'active'
+  | 'trialing'
   | 'past_due'
   | 'canceled'
-  | 'trialing'
   | 'incomplete'
-  | 'incomplete_expired'
-  | 'unpaid';
-
+  | 'unpaid'
+  | 'inactive';
 export type SubscriptionPlan = 'starter' | 'pro' | 'premium';
-
 export type TeamRole = 'owner' | 'manager' | 'staff';
-
-export type InviteStatus = 'active' | 'pending' | 'revoked';
-
-export type SavedItemType = 'restaurant' | 'dish' | 'want_to_try';
-
-export type PortionSize = 'small' | 'fair' | 'generous';
-
+export type SavedItemType = 'location' | 'menu_item';
+export type PortionSize = 'small' | 'right' | 'huge';
 export type KosherKind = 'meat' | 'dairy' | 'pareve' | 'mixed';
 
-// ===== Database shape =====
+// ──────────────────────────────────────────────────────────────────────────
+// Database
+// ──────────────────────────────────────────────────────────────────────────
 
 export type Database = {
   public: {
     Tables: {
+      // ──────────────────────────────────────────────────────────────────
       users: {
         Row: {
           id: string;
@@ -64,16 +43,20 @@ export type Database = {
           avatar_url: string | null;
           phone: string | null;
           role: UserRole;
-          created_at: string;
+          is_suspended: boolean | null;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
-          id?: string;
+          id: string;
           email: string;
           name?: string | null;
           avatar_url?: string | null;
           phone?: string | null;
           role?: UserRole;
-          created_at?: string;
+          is_suspended?: boolean | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -82,7 +65,9 @@ export type Database = {
           avatar_url?: string | null;
           phone?: string | null;
           role?: UserRole;
-          created_at?: string;
+          is_suspended?: boolean | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
@@ -92,29 +77,24 @@ export type Database = {
           user_id: string;
           allergies: string[] | null;
           dietary_preferences: string[] | null;
-          notification_email: boolean | null;
-          notification_push: boolean | null;
-          updated_at: string;
+          updated_at: string | null;
         };
         Insert: {
           user_id: string;
           allergies?: string[] | null;
           dietary_preferences?: string[] | null;
-          notification_email?: boolean | null;
-          notification_push?: boolean | null;
-          updated_at?: string;
+          updated_at?: string | null;
         };
         Update: {
           user_id?: string;
           allergies?: string[] | null;
           dietary_preferences?: string[] | null;
-          notification_email?: boolean | null;
-          notification_push?: boolean | null;
-          updated_at?: string;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       brands: {
         Row: {
           id: string;
@@ -125,8 +105,9 @@ export type Database = {
           secondary_cuisines: string[] | null;
           owner_id: string | null;
           subscription_status: SubscriptionStatus | null;
-          is_suspended: boolean;
-          created_at: string;
+          is_suspended: boolean | null;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -137,8 +118,9 @@ export type Database = {
           secondary_cuisines?: string[] | null;
           owner_id?: string | null;
           subscription_status?: SubscriptionStatus | null;
-          is_suspended?: boolean;
-          created_at?: string;
+          is_suspended?: boolean | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -149,28 +131,30 @@ export type Database = {
           secondary_cuisines?: string[] | null;
           owner_id?: string | null;
           subscription_status?: SubscriptionStatus | null;
-          is_suspended?: boolean;
-          created_at?: string;
+          is_suspended?: boolean | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       locations: {
         Row: {
           id: string;
           brand_id: string;
           name: string;
           address: string;
-          city: string;
-          state: string;
-          zip: string;
-          country: string;
+          city: string | null;
+          state: string | null;
+          zip: string | null;
+          country: string | null;
           latitude: number | null;
           longitude: number | null;
           phone: string | null;
-          hours: Json | null;
-          special_hours: Json | null;
-          is_temporarily_closed: boolean;
+          hours: Record<string, unknown> | null;
+          special_hours: Record<string, unknown>[] | null;
+          is_temporarily_closed: boolean | null;
           reopening_date: string | null;
           cover_photo_url: string | null;
           description: string | null;
@@ -178,23 +162,24 @@ export type Database = {
           style_tags: string[] | null;
           average_rating: number | null;
           review_count: number | null;
-          created_at: string;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
           brand_id: string;
           name: string;
           address: string;
-          city: string;
-          state: string;
-          zip: string;
-          country?: string;
+          city?: string | null;
+          state?: string | null;
+          zip?: string | null;
+          country?: string | null;
           latitude?: number | null;
           longitude?: number | null;
           phone?: string | null;
-          hours?: Json | null;
-          special_hours?: Json | null;
-          is_temporarily_closed?: boolean;
+          hours?: Record<string, unknown> | null;
+          special_hours?: Record<string, unknown>[] | null;
+          is_temporarily_closed?: boolean | null;
           reopening_date?: string | null;
           cover_photo_url?: string | null;
           description?: string | null;
@@ -202,23 +187,24 @@ export type Database = {
           style_tags?: string[] | null;
           average_rating?: number | null;
           review_count?: number | null;
-          created_at?: string;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
           brand_id?: string;
           name?: string;
           address?: string;
-          city?: string;
-          state?: string;
-          zip?: string;
-          country?: string;
+          city?: string | null;
+          state?: string | null;
+          zip?: string | null;
+          country?: string | null;
           latitude?: number | null;
           longitude?: number | null;
           phone?: string | null;
-          hours?: Json | null;
-          special_hours?: Json | null;
-          is_temporarily_closed?: boolean;
+          hours?: Record<string, unknown> | null;
+          special_hours?: Record<string, unknown>[] | null;
+          is_temporarily_closed?: boolean | null;
           reopening_date?: string | null;
           cover_photo_url?: string | null;
           description?: string | null;
@@ -226,16 +212,18 @@ export type Database = {
           style_tags?: string[] | null;
           average_rating?: number | null;
           review_count?: number | null;
-          created_at?: string;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       kosher_certifications: {
+        // PK is location_id (no surrogate id column in DB)
         Row: {
-          id: string;
           location_id: string;
-          agency: string | null;
+          agency: string;
           agency_other: string | null;
           kosher_type: KosherKind | null;
           is_glatt: boolean | null;
@@ -246,12 +234,11 @@ export type Database = {
           is_kosher_for_passover: boolean | null;
           certificate_image_url: string | null;
           expiration_date: string | null;
-          created_at: string;
+          updated_at: string | null;
         };
         Insert: {
-          id?: string;
           location_id: string;
-          agency?: string | null;
+          agency: string;
           agency_other?: string | null;
           kosher_type?: KosherKind | null;
           is_glatt?: boolean | null;
@@ -262,12 +249,11 @@ export type Database = {
           is_kosher_for_passover?: boolean | null;
           certificate_image_url?: string | null;
           expiration_date?: string | null;
-          created_at?: string;
+          updated_at?: string | null;
         };
         Update: {
-          id?: string;
           location_id?: string;
-          agency?: string | null;
+          agency?: string;
           agency_other?: string | null;
           kosher_type?: KosherKind | null;
           is_glatt?: boolean | null;
@@ -278,32 +264,33 @@ export type Database = {
           is_kosher_for_passover?: boolean | null;
           certificate_image_url?: string | null;
           expiration_date?: string | null;
-          created_at?: string;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       menu_categories: {
         Row: {
           id: string;
           location_id: string;
           name: string;
           display_order: number | null;
-          created_at: string;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
           location_id: string;
           name: string;
           display_order?: number | null;
-          created_at?: string;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
           location_id?: string;
           name?: string;
           display_order?: number | null;
-          created_at?: string;
+          created_at?: string | null;
         };
         Relationships: [];
       };
@@ -311,42 +298,48 @@ export type Database = {
       menu_items: {
         Row: {
           id: string;
-          category_id: string;
           location_id: string;
+          category_id: string | null;
           name: string;
           description: string | null;
           price: number | null;
           dietary_tags: string[] | null;
-          is_visible: boolean;
-          is_featured: boolean | null;
-          position: number | null;
-          created_at: string;
+          is_visible: boolean | null;
+          average_rating: number | null;
+          review_count: number | null;
+          photo_count: number | null;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
-          category_id: string;
           location_id: string;
+          category_id?: string | null;
           name: string;
           description?: string | null;
           price?: number | null;
           dietary_tags?: string[] | null;
-          is_visible?: boolean;
-          is_featured?: boolean | null;
-          position?: number | null;
-          created_at?: string;
+          is_visible?: boolean | null;
+          average_rating?: number | null;
+          review_count?: number | null;
+          photo_count?: number | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
-          category_id?: string;
           location_id?: string;
+          category_id?: string | null;
           name?: string;
           description?: string | null;
           price?: number | null;
           dietary_tags?: string[] | null;
-          is_visible?: boolean;
-          is_featured?: boolean | null;
-          position?: number | null;
-          created_at?: string;
+          is_visible?: boolean | null;
+          average_rating?: number | null;
+          review_count?: number | null;
+          photo_count?: number | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
@@ -355,30 +348,34 @@ export type Database = {
         Row: {
           id: string;
           menu_item_id: string;
+          user_id: string | null;
           photo_url: string;
-          is_cover: boolean;
-          uploaded_by: string | null;
-          created_at: string;
+          is_restaurant_uploaded: boolean | null;
+          is_featured: boolean | null;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
           menu_item_id: string;
+          user_id?: string | null;
           photo_url: string;
-          is_cover?: boolean;
-          uploaded_by?: string | null;
-          created_at?: string;
+          is_restaurant_uploaded?: boolean | null;
+          is_featured?: boolean | null;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
           menu_item_id?: string;
+          user_id?: string | null;
           photo_url?: string;
-          is_cover?: boolean;
-          uploaded_by?: string | null;
-          created_at?: string;
+          is_restaurant_uploaded?: boolean | null;
+          is_featured?: boolean | null;
+          created_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       reviews: {
         Row: {
           id: string;
@@ -388,9 +385,11 @@ export type Database = {
           rating: number;
           text: string | null;
           portion_size: PortionSize | null;
+          worth_the_price: boolean | null;
           mood_tags: string[] | null;
-          is_flagged: boolean;
-          created_at: string;
+          is_flagged: boolean | null;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -400,9 +399,11 @@ export type Database = {
           rating: number;
           text?: string | null;
           portion_size?: PortionSize | null;
+          worth_the_price?: boolean | null;
           mood_tags?: string[] | null;
-          is_flagged?: boolean;
-          created_at?: string;
+          is_flagged?: boolean | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -412,9 +413,11 @@ export type Database = {
           rating?: number;
           text?: string | null;
           portion_size?: PortionSize | null;
+          worth_the_price?: boolean | null;
           mood_tags?: string[] | null;
-          is_flagged?: boolean;
-          created_at?: string;
+          is_flagged?: boolean | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
@@ -424,19 +427,22 @@ export type Database = {
           id: string;
           review_id: string;
           photo_url: string;
-          created_at: string;
+          display_order: number | null;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
           review_id: string;
           photo_url: string;
-          created_at?: string;
+          display_order?: number | null;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
           review_id?: string;
           photo_url?: string;
-          created_at?: string;
+          display_order?: number | null;
+          created_at?: string | null;
         };
         Relationships: [];
       };
@@ -446,59 +452,60 @@ export type Database = {
           id: string;
           review_id: string;
           brand_id: string;
-          author_id: string;
+          replier_user_id: string;
           text: string;
-          created_at: string;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
           review_id: string;
           brand_id: string;
-          author_id: string;
+          replier_user_id: string;
           text: string;
-          created_at?: string;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
           review_id?: string;
           brand_id?: string;
-          author_id?: string;
+          replier_user_id?: string;
           text?: string;
-          created_at?: string;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       saved_items: {
         Row: {
           id: string;
           user_id: string;
-          type: SavedItemType;
-          brand_id: string | null;
+          item_type: SavedItemType;
           location_id: string | null;
           menu_item_id: string | null;
-          note: string | null;
-          created_at: string;
+          notes: string | null;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
           user_id: string;
-          type: SavedItemType;
-          brand_id?: string | null;
+          item_type: SavedItemType;
           location_id?: string | null;
           menu_item_id?: string | null;
-          note?: string | null;
-          created_at?: string;
+          notes?: string | null;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
           user_id?: string;
-          type?: SavedItemType;
-          brand_id?: string | null;
+          item_type?: SavedItemType;
           location_id?: string | null;
           menu_item_id?: string | null;
-          note?: string | null;
-          created_at?: string;
+          notes?: string | null;
+          created_at?: string | null;
         };
         Relationships: [];
       };
@@ -509,21 +516,21 @@ export type Database = {
           user_id: string;
           location_id: string;
           name: string | null;
-          created_at: string;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
           user_id: string;
           location_id: string;
           name?: string | null;
-          created_at?: string;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
           user_id?: string;
           location_id?: string;
           name?: string | null;
-          created_at?: string;
+          created_at?: string | null;
         };
         Relationships: [];
       };
@@ -533,32 +540,33 @@ export type Database = {
           id: string;
           order_list_id: string;
           menu_item_id: string;
-          quantity: number;
-          note: string | null;
-          person_tags: string[] | null;
-          created_at: string;
+          quantity: number | null;
+          notes: string | null;
+          assigned_to: string | null;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
           order_list_id: string;
           menu_item_id: string;
-          quantity?: number;
-          note?: string | null;
-          person_tags?: string[] | null;
-          created_at?: string;
+          quantity?: number | null;
+          notes?: string | null;
+          assigned_to?: string | null;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
           order_list_id?: string;
           menu_item_id?: string;
-          quantity?: number;
-          note?: string | null;
-          person_tags?: string[] | null;
-          created_at?: string;
+          quantity?: number | null;
+          notes?: string | null;
+          assigned_to?: string | null;
+          created_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       team_members: {
         Row: {
           id: string;
@@ -566,8 +574,7 @@ export type Database = {
           user_id: string;
           role: TeamRole;
           location_ids: string[] | null;
-          invite_status: InviteStatus;
-          created_at: string;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
@@ -575,8 +582,7 @@ export type Database = {
           user_id: string;
           role: TeamRole;
           location_ids?: string[] | null;
-          invite_status?: InviteStatus;
-          created_at?: string;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
@@ -584,46 +590,53 @@ export type Database = {
           user_id?: string;
           role?: TeamRole;
           location_ids?: string[] | null;
-          invite_status?: InviteStatus;
-          created_at?: string;
+          created_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       subscriptions: {
         Row: {
           id: string;
           brand_id: string;
-          plan: SubscriptionPlan;
-          status: SubscriptionStatus;
-          locations_count: number;
-          current_period_end: string | null;
+          stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
-          created_at: string;
+          plan: SubscriptionPlan | null;
+          status: SubscriptionStatus | null;
+          current_period_end: string | null;
+          locations_count: number | null;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
           brand_id: string;
-          plan: SubscriptionPlan;
-          status: SubscriptionStatus;
-          locations_count?: number;
-          current_period_end?: string | null;
+          stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
-          created_at?: string;
+          plan?: SubscriptionPlan | null;
+          status?: SubscriptionStatus | null;
+          current_period_end?: string | null;
+          locations_count?: number | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
           brand_id?: string;
-          plan?: SubscriptionPlan;
-          status?: SubscriptionStatus;
-          locations_count?: number;
-          current_period_end?: string | null;
+          stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
-          created_at?: string;
+          plan?: SubscriptionPlan | null;
+          status?: SubscriptionStatus | null;
+          current_period_end?: string | null;
+          locations_count?: number | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
 
+      // ──────────────────────────────────────────────────────────────────
       notifications: {
         Row: {
           id: string;
@@ -631,8 +644,9 @@ export type Database = {
           type: string;
           title: string;
           body: string | null;
-          is_read: boolean;
-          created_at: string;
+          related_id: string | null;
+          is_read: boolean | null;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
@@ -640,8 +654,9 @@ export type Database = {
           type: string;
           title: string;
           body?: string | null;
-          is_read?: boolean;
-          created_at?: string;
+          related_id?: string | null;
+          is_read?: boolean | null;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
@@ -649,8 +664,9 @@ export type Database = {
           type?: string;
           title?: string;
           body?: string | null;
-          is_read?: boolean;
-          created_at?: string;
+          related_id?: string | null;
+          is_read?: boolean | null;
+          created_at?: string | null;
         };
         Relationships: [];
       };
@@ -660,54 +676,44 @@ export type Database = {
           id: string;
           location_id: string;
           code: string;
-          table_label: string | null;
-          created_at: string;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
           location_id: string;
           code: string;
-          table_label?: string | null;
-          created_at?: string;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
           location_id?: string;
           code?: string;
-          table_label?: string | null;
-          created_at?: string;
+          created_at?: string | null;
         };
         Relationships: [];
       };
     };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
+    Views: { [_ in never]: never };
+    Functions: { [_ in never]: never };
+    Enums: { [_ in never]: never };
+    CompositeTypes: { [_ in never]: never };
   };
 };
 
-// ===========================================================================
-// Convenience aliases — kept so existing imports of `User`, `Brand`, etc.
-// don't need to be rewritten. New code should prefer `Tables<'users'>` etc.
-// ===========================================================================
+// ──────────────────────────────────────────────────────────────────────────
+// Convenience aliases used across the app
+// ──────────────────────────────────────────────────────────────────────────
 
-type Public = Database['public']['Tables'];
+export type Tables<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Row'];
 
-export type Tables<T extends keyof Public> = Public[T]['Row'];
-export type TablesInsert<T extends keyof Public> = Public[T]['Insert'];
-export type TablesUpdate<T extends keyof Public> = Public[T]['Update'];
+export type TablesInsert<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Insert'];
+
+export type TablesUpdate<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Update'];
 
 export type User = Tables<'users'>;
-export type UserPreferences = Tables<'user_preferences'>;
 export type Brand = Tables<'brands'>;
 export type Location = Tables<'locations'>;
 export type KosherCertification = Tables<'kosher_certifications'>;
@@ -717,38 +723,11 @@ export type MenuItemPhoto = Tables<'menu_item_photos'>;
 export type Review = Tables<'reviews'>;
 export type ReviewPhoto = Tables<'review_photos'>;
 export type ReviewReply = Tables<'review_replies'>;
+export type Subscription = Tables<'subscriptions'>;
+export type TeamMember = Tables<'team_members'>;
 export type SavedItem = Tables<'saved_items'>;
 export type OrderList = Tables<'order_lists'>;
 export type OrderListItem = Tables<'order_list_items'>;
-export type TeamMember = Tables<'team_members'>;
-export type Subscription = Tables<'subscriptions'>;
 export type Notification = Tables<'notifications'>;
 export type QrCode = Tables<'qr_codes'>;
-
-// ===========================================================================
-// Joined / derived shapes used by admin list pages
-// ===========================================================================
-
-export type BrandWithOwner = Brand & {
-  owner: Pick<User, 'id' | 'email' | 'name'> | null;
-  locations: { count: number }[];
-};
-
-export type LocationWithBrand = Location & {
-  brand: Pick<Brand, 'id' | 'name' | 'logo_url'> | null;
-};
-
-export type UserWithCounts = User & {
-  reviews?: { count: number }[];
-};
-
-export type ReviewWithRelations = Review & {
-  user: Pick<User, 'id' | 'name' | 'avatar_url' | 'email'> | null;
-  location: Pick<Location, 'id' | 'name' | 'brand_id'> | null;
-  menu_item: Pick<MenuItem, 'id' | 'name'> | null;
-  review_photos: Pick<ReviewPhoto, 'id' | 'photo_url'>[];
-};
-
-export type SubscriptionWithBrand = Subscription & {
-  brand: Pick<Brand, 'id' | 'name' | 'logo_url'> | null;
-};
+export type UserPreferences = Tables<'user_preferences'>;

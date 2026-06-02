@@ -113,16 +113,16 @@ type ExistingLocation = {
 };
 
 type KosherCert = {
-  id?: string;
+  location_id?: string;
   agency: string | null;
   agency_other?: string | null;
   kosher_type: string | null;
-  is_glatt?: boolean;
-  is_cholov_yisroel?: boolean;
-  is_pas_yisroel?: boolean;
-  is_bishul_yisroel?: boolean;
-  is_yoshon?: boolean;
-  is_kosher_for_passover?: boolean;
+  is_glatt?: boolean | null;
+  is_cholov_yisroel?: boolean | null;
+  is_pas_yisroel?: boolean | null;
+  is_bishul_yisroel?: boolean | null;
+  is_yoshon?: boolean | null;
+  is_kosher_for_passover?: boolean | null;
   certificate_image_url: string | null;
   expiration_date: string | null;
 };
@@ -262,29 +262,34 @@ export function LocationForm({
 
     // Sync kosher cert if Kosher dietary tag is set
     if (isKosher && kosher) {
-      const kosherPayload = {
-        location_id: locationId,
-        agency: kosher.agency || null,
-        agency_other:
-          kosher.agency === 'Other' ? kosher.agency_other || null : null,
-        kosher_type: (kosher.kosher_type || null) as KosherKind | null,
-        is_glatt: !!kosher.is_glatt,
-        is_cholov_yisroel: !!kosher.is_cholov_yisroel,
-        is_pas_yisroel: !!kosher.is_pas_yisroel,
-        is_bishul_yisroel: !!kosher.is_bishul_yisroel,
-        is_yoshon: !!kosher.is_yoshon,
-        is_kosher_for_passover: !!kosher.is_kosher_for_passover,
-        certificate_image_url: kosher.certificate_image_url || null,
-        expiration_date: kosher.expiration_date || null,
-      };
-      const { error: kErr } = await supabase
-        .from('kosher_certifications')
-        .upsert(kosherPayload, { onConflict: 'location_id' });
-      if (kErr) {
-        toast.error(`Kosher cert save failed: ${kErr.message}`);
-        return;
+      // agency is NOT NULL in DB — skip the cert save if the user hasn't picked one yet
+      if (!kosher.agency) {
+        toast.warning('Kosher tag added — pick a certifying agency to save the cert details.');
+      } else {
+        const kosherPayload = {
+          location_id: locationId,
+          agency: kosher.agency,
+          agency_other:
+            kosher.agency === 'Other' ? kosher.agency_other || null : null,
+          kosher_type: (kosher.kosher_type || null) as KosherKind | null,
+          is_glatt: !!kosher.is_glatt,
+          is_cholov_yisroel: !!kosher.is_cholov_yisroel,
+          is_pas_yisroel: !!kosher.is_pas_yisroel,
+          is_bishul_yisroel: !!kosher.is_bishul_yisroel,
+          is_yoshon: !!kosher.is_yoshon,
+          is_kosher_for_passover: !!kosher.is_kosher_for_passover,
+          certificate_image_url: kosher.certificate_image_url || null,
+          expiration_date: kosher.expiration_date || null,
+        };
+        const { error: kErr } = await supabase
+          .from('kosher_certifications')
+          .upsert(kosherPayload, { onConflict: 'location_id' });
+        if (kErr) {
+          toast.error(`Kosher cert save failed: ${kErr.message}`);
+          return;
+        }
       }
-    } else if (!isKosher && kosherCert?.id) {
+    } else if (!isKosher && kosherCert?.location_id) {
       // Removed Kosher tag — clean up cert row
       await supabase
         .from('kosher_certifications')

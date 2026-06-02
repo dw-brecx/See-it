@@ -164,7 +164,7 @@ export function MenuItemForm({
       const rows = photos.map((url, i) => ({
         menu_item_id: itemId,
         photo_url: url,
-        is_cover: i === 0,
+        is_featured: i === 0,
       }));
       const { error: photoErr } = await supabase
         .from('menu_item_photos')
