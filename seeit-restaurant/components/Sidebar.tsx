@@ -19,7 +19,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from '@/components/Logo';
 import { SignOutButton } from '@/components/SignOutButton';
-import { BrandSwitcher } from '@/components/BrandSwitcher';
+import { BrandBadge } from '@/components/BrandBadge';
 import { LocationSwitcher } from '@/components/LocationSwitcher';
 import { cn, initials } from '@/lib/utils';
 
@@ -137,9 +137,9 @@ export function Sidebar({ user, onLinkClick }: Props) {
         </button>
       </div>
 
-      {/* Brand + Location switchers */}
+      {/* Brand badge (one brand per account) + Location switcher */}
       <div className="space-y-2 px-3 pb-3">
-        <BrandSwitcher />
+        <BrandBadge />
         <LocationSwitcher />
       </div>
 

@@ -213,7 +213,18 @@ export function OnboardingWizard({ userId }: { userId: string }) {
       .select('id')
       .single();
     if (brandErr || !brand) {
-      toast.error(`Could not save brand: ${brandErr?.message ?? 'unknown'}`);
+      // Surface a clear message if the unique-owner constraint blocked us
+      // (e.g. user opened onboarding in two tabs and finished both).
+      const msg = brandErr?.message ?? 'unknown';
+      const dup =
+        brandErr?.code === '23505' || /duplicate key|unique/i.test(msg);
+      if (dup) {
+        toast.error(
+          'You already have a brand on SeeIt. Each account can only manage one brand.',
+        );
+      } else {
+        toast.error(`Could not save brand: ${msg}`);
+      }
       return null;
     }
 

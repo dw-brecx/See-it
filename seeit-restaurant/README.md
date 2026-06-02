@@ -70,9 +70,28 @@ Middleware (`middleware.ts`) gates `/dashboard/*` and `/onboarding/*` behind aut
 
 ## Brand + location context
 
-Restaurant owners can own multiple brands; each brand can have multiple locations. The dashboard tracks a "current brand" + "current location" selection in localStorage (key `seeit.brand-context.v1`). Use the `useBrand()` hook in any client component to read or change the selection.
+**SeeIt model: one brand per restaurant_owner.** Enforced at the database
+level via a unique index on `brands(owner_id) WHERE owner_id IS NOT NULL`.
 
-`currentLocationId === '__all__'` (exported as `ALL_LOCATIONS`) means "show me aggregate data across every location of the current brand."
+Each restaurant_owner user works under exactly one brand — their owned
+brand if they have one, otherwise the brand of the team they belong to
+(via `team_members`). Middleware redirects any owner without a brand to
+`/onboarding`, and redirects any owner *with* a brand away from
+`/onboarding` back to `/dashboard`. Admins are exempt.
+
+A user CANNOT create a second brand. If they need one, they must sign up
+with a different email. Admins can override this rule (for support
+reassignments) via a checkbox in the admin app's BrandForm.
+
+A brand can still have multiple locations. The `LocationSwitcher` in the
+sidebar is the only context picker. `currentLocationId === '__all__'`
+(exported as `ALL_LOCATIONS`) means "aggregate across every location of
+the brand". When a brand has exactly one location, the BrandContext
+auto-selects it so single-location stores don't need to use the switcher.
+
+`lib/auth.ts` exports `getUserBrand(supabase, userId)` — the canonical
+"which brand am I scoped to" resolver. Use it in any server route that
+needs to verify ownership.
 
 ## File map
 
