@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { Copy, Eye, EyeOff, GripVertical, MapPin, Pencil, Plus, Trash2, UtensilsCrossed } from 'lucide-react';
+import { Copy, Eye, EyeOff, GripVertical, MapPin, Pencil, Plus, Trash2, Upload, UtensilsCrossed } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Select,
@@ -18,6 +18,8 @@ import { EmptyState } from '@/components/EmptyState';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { MenuCategoryForm } from '@/components/forms/MenuCategoryForm';
 import { MenuItemForm } from '@/components/forms/MenuItemForm';
+import { CsvExportButton } from '@/components/CsvExportButton';
+import { CsvImportDialog, type ImportField } from '@/components/CsvImportDialog';
 import { createClient } from '@/lib/supabase/client';
 
 type Cat = { id: string; name: string; display_order: number | null };
@@ -54,6 +56,95 @@ export function MenuPanel({ brandId, locations }: Props) {
   const [addItemOpen, setAddItemOpen] = React.useState(false);
   const [editItem, setEditItem] = React.useState<Item | null>(null);
   const [delItem, setDelItem] = React.useState<Item | null>(null);
+  const [importOpen, setImportOpen] = React.useState(false);
+
+  const IMPORT_FIELDS: ImportField[] = React.useMemo(
+    () => [
+      { key: 'name', label: 'Name', required: true },
+      { key: 'description', label: 'Description' },
+      {
+        key: 'price',
+        label: 'Price',
+        transform: (v) => (v ? Number(v.replace(/[^0-9.]/g, '')) : null),
+      },
+      {
+        key: 'category_name',
+        label: 'Category name',
+        aliases: ['category'],
+      },
+      {
+        key: 'dietary_tags',
+        label: 'Dietary tags (semicolon-separated)',
+        transform: (v) => v.split(/[;,]/).map((s) => s.trim()).filter(Boolean),
+      },
+      {
+        key: 'is_visible',
+        label: 'Visible (yes/no)',
+        transform: (v) => /^(y|yes|true|1)$/i.test(v),
+      },
+    ],
+    [],
+  );
+
+  async function runImport(records: Record<string, unknown>[]) {
+    const supabase = createClient();
+    // Build a case-insensitive lookup from existing categories at this location
+    const catByName = new Map<string, string>();
+    for (const c of categories) catByName.set(c.name.toLowerCase().trim(), c.id);
+
+    let inserted = 0;
+    let failed = 0;
+    let firstError: string | undefined;
+    for (const rec of records) {
+      const catName = String(rec.category_name ?? '').toLowerCase().trim();
+      let categoryId: string | null = catName ? catByName.get(catName) ?? null : null;
+      // Auto-create missing categories so the import is one-pass-friendly
+      if (catName && !categoryId) {
+        const { data: newCat, error: catErr } = await supabase
+          .from('menu_categories')
+          .insert({
+            location_id: locationId,
+            name: rec.category_name as string,
+            display_order: categories.length + 1,
+          })
+          .select('id')
+          .single();
+        if (catErr || !newCat) {
+          failed++;
+          if (!firstError) firstError = catErr?.message ?? 'category create failed';
+          continue;
+        }
+        categoryId = newCat.id;
+        catByName.set(catName, categoryId);
+      }
+      const { category_name: _ignore, ...rest } = rec;
+      const { error } = await supabase
+        .from('menu_items')
+        .insert({ ...(rest as any), location_id: locationId, category_id: categoryId });
+      if (error) {
+        failed++;
+        if (!firstError) firstError = error.message;
+      } else {
+        inserted++;
+      }
+    }
+    refresh();
+    router.refresh();
+    return { inserted, failed, firstError };
+  }
+
+  async function exportItems() {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('menu_items')
+      .select(
+        'name, description, price, is_visible, dietary_tags, average_rating, review_count, category:menu_categories(name)',
+      )
+      .eq('location_id', locationId)
+      .order('name', { ascending: true });
+    if (error) throw new Error(error.message);
+    return (data ?? []) as any[];
+  }
 
   async function refresh() {
     if (!locationId) return;
@@ -198,7 +289,31 @@ export function MenuPanel({ brandId, locations }: Props) {
             ))}
           </SelectContent>
         </Select>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <CsvExportButton
+            fetchRows={exportItems}
+            filename="menu-items"
+            columns={[
+              { header: 'Name', accessor: (i: any) => i.name },
+              { header: 'Description', accessor: (i: any) => i.description },
+              { header: 'Price', accessor: (i: any) => i.price },
+              { header: 'Category', accessor: (i: any) => i.category?.name ?? '' },
+              { header: 'Dietary tags', accessor: (i: any) => i.dietary_tags },
+              { header: 'Visible', accessor: (i: any) => i.is_visible ? 'yes' : 'no' },
+              { header: 'Avg rating', accessor: (i: any) => i.average_rating },
+              { header: 'Reviews', accessor: (i: any) => i.review_count },
+            ]}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setImportOpen(true)}
+            className="h-9 gap-1.5"
+            disabled={!locationId}
+          >
+            <Upload className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Import CSV</span>
+          </Button>
           <Button
             variant="outline"
             onClick={() => setAddCatOpen(true)}
@@ -440,6 +555,14 @@ export function MenuPanel({ brandId, locations }: Props) {
         confirmLabel="Delete"
         destructive
         onConfirm={deleteItem}
+      />
+
+      <CsvImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        entity="menu item"
+        fields={IMPORT_FIELDS}
+        onImport={runImport}
       />
     </div>
   );
