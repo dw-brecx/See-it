@@ -10,7 +10,7 @@ import { cn, initials } from '@/lib/utils';
  * Static brand display for the sidebar. Each restaurant_owner account owns
  * exactly one brand on SeeIt, so this replaces the multi-brand switcher.
  *
- * Clickable — jumps to Settings → Brand profile for editing.
+ * Clickable — jumps to Settings → Store profile for editing.
  */
 export function BrandBadge() {
   const { currentBrand } = useBrand();
@@ -26,7 +26,7 @@ export function BrandBadge() {
         'flex items-center gap-2.5 rounded-lg border border-border bg-card px-2.5 py-2 transition-colors',
         'hover:border-warm-300 hover:bg-warm-50',
       )}
-      title="Edit brand settings"
+      title="Edit store settings"
     >
       <Avatar className="h-8 w-8 rounded-md">
         {currentBrand.logo_url ? (
@@ -40,7 +40,7 @@ export function BrandBadge() {
         <p className="truncate text-[13px] font-semibold leading-tight">
           {currentBrand.name}
         </p>
-        <p className="text-[10.5px] text-muted-foreground">Edit brand</p>
+        <p className="text-[10.5px] text-muted-foreground">Edit store</p>
       </div>
       <Settings className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
     </Link>

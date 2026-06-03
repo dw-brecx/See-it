@@ -125,7 +125,7 @@ export default async function PreviewPage({
   return (
     <>
       <TopBar
-        title="Storefront preview"
+        title="Storefront"
         subtitle="What customers see when they open your storefront"
       >
         <Button asChild variant="outline" size="sm" className="h-9 gap-1.5">

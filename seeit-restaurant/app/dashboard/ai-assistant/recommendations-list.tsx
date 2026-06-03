@@ -293,7 +293,7 @@ export function RecommendationsList() {
 
     // 1. Has logo (+10)
     items.push({
-      label: 'Brand logo uploaded',
+      label: 'Store logo uploaded',
       max: 10,
       points: brand.logo_url ? 10 : 0,
       met: !!brand.logo_url,

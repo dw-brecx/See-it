@@ -112,8 +112,8 @@ export function PhotosGallery() {
       <div className="rounded-xl border border-border bg-card">
         <EmptyState
           icon={Camera}
-          title="No brand selected"
-          description="Pick a brand from the sidebar to manage its photos."
+          title="Loading store…"
+          description="One moment while we load your store data."
         />
       </div>
     );

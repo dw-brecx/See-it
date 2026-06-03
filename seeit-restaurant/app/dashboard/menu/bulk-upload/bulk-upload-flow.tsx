@@ -47,15 +47,7 @@ export function BulkUploadFlow() {
   const locationId = isAll ? null : currentLocationId;
   const plan = getPlan(currentBrand?.plan);
 
-  // Plan gate: bulk upload only on Pro / Premium
-  if (currentBrandId && !plan.bulkUpload) {
-    return (
-      <UpgradeBlockedCard
-        currentPlan={(currentBrand?.plan ?? 'free') as PlanSlug}
-      />
-    );
-  }
-
+  // Hooks must all come before any conditional return.
   const [step, setStep] = React.useState<'upload' | 'preview' | 'done'>('upload');
   const [parsed, setParsed] = React.useState<ParsedRow[]>([]);
   const [filename, setFilename] = React.useState<string>('');
@@ -69,13 +61,22 @@ export function BulkUploadFlow() {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = React.useState(false);
 
+  // Plan gate: bulk upload only on Pro / Premium
+  if (currentBrandId && !plan.bulkUpload) {
+    return (
+      <UpgradeBlockedCard
+        currentPlan={(currentBrand?.plan ?? 'free') as PlanSlug}
+      />
+    );
+  }
+
   if (!currentBrandId) {
     return (
       <div className="rounded-xl border border-border bg-card">
         <EmptyState
           icon={FileSpreadsheet}
-          title="No brand selected"
-          description="Pick a brand from the sidebar first."
+          title="Loading store…"
+          description="One moment while we load your store data."
         />
       </div>
     );
