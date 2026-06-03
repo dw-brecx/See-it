@@ -242,7 +242,7 @@ export function UsersList({ rows: initialRows }: { rows: Row[] }) {
               </TableHead>
               <TableHead>User</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>Brand</TableHead>
+              <TableHead>Store</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Joined</TableHead>
               <TableHead>Reviews</TableHead>
@@ -294,7 +294,7 @@ export function UsersList({ rows: initialRows }: { rows: Row[] }) {
                         : (u as any).brands;
                       if (!brand) {
                         return (
-                          <span className="text-muted-foreground">No brand</span>
+                          <span className="text-muted-foreground">No store</span>
                         );
                       }
                       return (

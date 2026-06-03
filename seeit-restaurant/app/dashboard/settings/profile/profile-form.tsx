@@ -161,7 +161,7 @@ export function ProfileForm() {
     if (submittingRef.current) return;
     if (!form || !currentBrandId) return;
     if (!form.name.trim()) {
-      toast.error('Brand name is required');
+      toast.error('Store name is required');
       return;
     }
     if (form.theme_color && !HEX.test(form.theme_color)) {
@@ -197,7 +197,7 @@ export function ProfileForm() {
         toast.error(`Save failed: ${error.message}`);
         return;
       }
-      toast.success('Brand profile saved');
+      toast.success('Store profile saved');
       setBrand((prev) => (prev ? { ...prev, ...payload } : prev));
       router.refresh();
     } finally {
@@ -222,8 +222,8 @@ export function ProfileForm() {
         <CardContent className="p-0">
           <EmptyState
             icon={Building2}
-            title="No brand selected"
-            description="Pick a brand in the sidebar switcher to edit its profile."
+            title="Loading store…"
+            description="One moment while we load your store data."
           />
         </CardContent>
       </Card>
@@ -271,7 +271,7 @@ export function ProfileForm() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="name">Brand name *</Label>
+            <Label htmlFor="name">Store name *</Label>
             <Input
               id="name"
               value={form.name}
@@ -293,7 +293,7 @@ export function ProfileForm() {
               className="mt-1.5"
             />
             <p className="mt-1 text-[11.5px] text-muted-foreground">
-              {form.tagline.length} / 60 — shown under the brand name.
+              {form.tagline.length} / 60 — shown under the store name.
             </p>
           </div>
 

@@ -129,7 +129,7 @@ const INITIAL: WizardState = {
 const STEP_LABELS = [
   'Welcome',
   'Find on Google',
-  'Brand info',
+  'Store info',
   'First location',
   'Menu items',
   'Done',
@@ -220,7 +220,7 @@ export function OnboardingWizard({ userId }: { userId: string }) {
         brandErr?.code === '23505' || /duplicate key|unique/i.test(msg);
       if (dup) {
         toast.error(
-          'You already have a brand on SeeIt. Each account can only manage one brand.',
+          'You already have a store on SeeIt. Each account can only manage one store.',
         );
       } else {
         toast.error(`Could not save brand: ${msg}`);
@@ -518,7 +518,7 @@ function StepWelcome() {
       <ul className="mx-auto max-w-md space-y-2 text-left">
         {[
           'Connect Google to import your business info',
-          'Set up your brand and first location',
+          'Set up your store and first location',
           'Add a few menu items to get started',
         ].map((line) => (
           <li
@@ -580,7 +580,7 @@ function StepBrand({
     <div className="space-y-6">
       <div>
         <h2 className="text-[22px] font-bold tracking-tight">
-          Tell us about your brand
+          Tell us about your store
         </h2>
         <p className="mt-1 text-[14px] text-muted-foreground">
           This is the umbrella name customers will see. You can add more
@@ -589,7 +589,7 @@ function StepBrand({
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="brand-name">Brand name *</Label>
+        <Label htmlFor="brand-name">Store name *</Label>
         <Input
           id="brand-name"
           value={state.brandName}
@@ -689,7 +689,7 @@ function StepLocation({
           placeholder={state.brandName || 'Main location'}
         />
         <p className="text-[11.5px] text-muted-foreground">
-          E.g. "Brooklyn" or "Crown Heights". Defaults to your brand name.
+          E.g. "Brooklyn" or "Crown Heights". Defaults to your store name.
         </p>
       </div>
 

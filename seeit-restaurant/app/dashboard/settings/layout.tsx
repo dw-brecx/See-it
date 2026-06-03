@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils';
 type Tab = { href: string; label: string; icon: LucideIcon };
 
 const TABS: Tab[] = [
-  { href: '/dashboard/settings/profile', label: 'Brand profile', icon: Building2 },
+  { href: '/dashboard/settings/profile', label: 'Store profile', icon: Building2 },
   { href: '/dashboard/settings/account', label: 'Account', icon: UserIcon },
   { href: '/dashboard/settings/team', label: 'Team', icon: UsersIcon },
   { href: '/dashboard/settings/notifications', label: 'Notifications', icon: Bell },

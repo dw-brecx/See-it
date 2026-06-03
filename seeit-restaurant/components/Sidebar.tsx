@@ -83,7 +83,7 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
       },
       {
         href: '/dashboard/preview',
-        label: 'Preview storefront',
+        label: 'Storefront',
         icon: Eye,
         match: (p) => p.startsWith('/dashboard/preview'),
       },

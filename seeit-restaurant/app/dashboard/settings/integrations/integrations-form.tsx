@@ -168,8 +168,8 @@ export function IntegrationsForm() {
       <Card className="p-0">
         <EmptyState
           icon={LinkIcon}
-          title="No brand selected"
-          description="Pick a brand in the sidebar to manage its integrations."
+          title="Loading store…"
+          description="One moment while we load your store data."
         />
       </Card>
     );

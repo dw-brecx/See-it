@@ -226,7 +226,7 @@ export function LocationForm({
 
   async function doSubmit(values: FormValues) {
     if (!currentBrandId) {
-      toast.error('No brand selected.');
+      toast.error('No store selected.');
       return;
     }
 
@@ -503,7 +503,7 @@ export function LocationForm({
                     <FormControl>
                       <Textarea
                         rows={3}
-                        placeholder="Location-specific blurb. Falls back to brand description if blank."
+                        placeholder="Location-specific blurb. Falls back to store description if blank."
                         {...field}
                       />
                     </FormControl>

@@ -10,7 +10,7 @@ export default function SettingsProfilePage() {
   return (
     <>
       <TopBar
-        title="Brand profile"
+        title="Store profile"
         subtitle="Your storefront identity across the SeeIt app"
       >
         <Button asChild variant="outline" size="sm" className="h-9 gap-1.5">

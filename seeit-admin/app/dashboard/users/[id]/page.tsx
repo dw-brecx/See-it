@@ -157,13 +157,13 @@ export default async function UserDetailPage({
         {user.role === 'restaurant_owner' && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Brand</CardTitle>
+              <CardTitle className="text-base">Store</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {brands.length === 0 ? (
                 <EmptyState
                   icon={Building2}
-                  title="No brand"
+                  title="No store"
                   description="This user signed up as a restaurant owner but hasn't completed onboarding yet."
                 />
               ) : (

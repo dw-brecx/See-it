@@ -73,30 +73,37 @@ export function BrandProvider({
   locations: LocationRef[];
   children: React.ReactNode;
 }) {
-  const [currentBrandId, setBrandIdState] = React.useState<string | null>(null);
+  // Pre-seed from props so first render has the user's brand + the
+  // auto-selected single location. Without this, every page sees null
+  // currentBrandId on first render and bails into "no brand" empty states.
+  const initialBrandId = brands[0]?.id ?? null;
+  const initialLocationId: string | typeof ALL_LOCATIONS = (() => {
+    if (!initialBrandId) return ALL_LOCATIONS;
+    const brandLocs = locations.filter((l) => l.brand_id === initialBrandId);
+    return brandLocs.length === 1 ? brandLocs[0].id : ALL_LOCATIONS;
+  })();
+
+  const [currentBrandId, setBrandIdState] = React.useState<string | null>(
+    initialBrandId,
+  );
   const [currentLocationId, setLocationIdState] = React.useState<
     string | typeof ALL_LOCATIONS
-  >(ALL_LOCATIONS);
+  >(initialLocationId);
 
-  // Hydrate from localStorage once on mount.
+  // Optionally restore a previously-picked location from localStorage on mount,
+  // but ONLY if it still belongs to the brand we got from the server.
   React.useEffect(() => {
+    if (!initialBrandId) return;
     const stored = loadStored();
-    const validBrand = brands.find((b) => b.id === stored.brandId)?.id ?? brands[0]?.id ?? null;
-    setBrandIdState(validBrand);
-    // Validate location belongs to current brand.
-    // If the brand only has one location, auto-select it instead of defaulting
-    // to ALL_LOCATIONS — otherwise per-location pages (menu, photos) bail out
-    // with a "pick a specific location" empty state on single-location stores.
-    const brandLocs = locations.filter((l) => l.brand_id === validBrand);
-    const fallback: string | typeof ALL_LOCATIONS =
-      brandLocs.length === 1 ? brandLocs[0].id : ALL_LOCATIONS;
-    const validLoc =
-      stored.locationId === ALL_LOCATIONS
-        ? fallback
-        : locations.find(
-            (l) => l.id === stored.locationId && l.brand_id === validBrand,
-          )?.id ?? fallback;
-    setLocationIdState(validLoc);
+    if (
+      stored.locationId &&
+      stored.locationId !== ALL_LOCATIONS &&
+      locations.some(
+        (l) => l.id === stored.locationId && l.brand_id === initialBrandId,
+      )
+    ) {
+      setLocationIdState(stored.locationId);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
