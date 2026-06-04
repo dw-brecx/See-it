@@ -32,6 +32,11 @@ import {
   type KosherCertValues,
 } from '@/components/KosherCertForm';
 import {
+  HalalCertForm,
+  EMPTY_HALAL,
+  type HalalCertValues,
+} from '@/components/HalalCertForm';
+import {
   DIETARY_TAGS,
   STYLE_TAGS,
   ESTABLISHMENT_TYPES,
@@ -55,6 +60,13 @@ const kosherSchema = z.object({
   is_bishul_yisroel: z.boolean().default(false),
   is_yoshon: z.boolean().default(false),
   is_kosher_for_passover: z.boolean().default(false),
+  certificate_image_url: z.string().optional().nullable().or(z.literal('')),
+  expiration_date: z.string().optional().or(z.literal('')),
+});
+
+const halalSchema = z.object({
+  agency: z.string().optional().or(z.literal('')),
+  agency_other: z.string().optional().or(z.literal('')),
   certificate_image_url: z.string().optional().nullable().or(z.literal('')),
   expiration_date: z.string().optional().or(z.literal('')),
 });
@@ -84,6 +96,7 @@ const schema = z.object({
   reopening_date: z.string().optional().or(z.literal('')),
   hours: z.any(),
   kosher: kosherSchema,
+  halal: halalSchema,
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -124,6 +137,14 @@ export type KosherCert = {
   expiration_date: string | null;
 };
 
+export type HalalCert = {
+  location_id?: string;
+  agency: string | null;
+  agency_other?: string | null;
+  certificate_image_url: string | null;
+  expiration_date: string | null;
+};
+
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -134,6 +155,8 @@ type Props = {
   location?: ExistingLocation | null;
   /** Existing kosher cert row tied to the location being edited. */
   kosherCert?: KosherCert | null;
+  /** Existing halal cert row tied to the location being edited. */
+  halalCert?: HalalCert | null;
   onSaved?: (locationId: string) => void;
 };
 
@@ -149,6 +172,7 @@ export function LocationForm({
   onOpenChange,
   location,
   kosherCert,
+  halalCert,
   onSaved,
 }: Props) {
   const router = useRouter();
@@ -192,9 +216,15 @@ export function LocationForm({
         certificate_image_url: kosherCert?.certificate_image_url ?? '',
         expiration_date: kosherCert?.expiration_date ?? '',
       },
+      halal: {
+        agency: halalCert?.agency ?? '',
+        agency_other: halalCert?.agency_other ?? '',
+        certificate_image_url: halalCert?.certificate_image_url ?? '',
+        expiration_date: halalCert?.expiration_date ?? '',
+      },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [location?.id, kosherCert?.location_id],
+    [location?.id, kosherCert?.location_id, halalCert?.location_id],
   );
 
   const form = useForm<FormValues>({
@@ -209,8 +239,10 @@ export function LocationForm({
 
   const dietary = form.watch('dietary_tags') ?? [];
   const isKosher = dietary.includes('Kosher');
+  const isHalal = dietary.includes('Halal');
   const isTemporarilyClosed = form.watch('is_temporarily_closed');
   const kosherValues = form.watch('kosher') as KosherCertValues;
+  const halalValues = form.watch('halal') as HalalCertValues;
 
   const submittingRef = React.useRef(false);
 
@@ -231,7 +263,7 @@ export function LocationForm({
     }
 
     const supabase = createClient();
-    const { kosher, establishment_types, style_tags, ...locPayloadRaw } = values;
+    const { kosher, halal, establishment_types, style_tags, ...locPayloadRaw } = values;
 
     // Preserve any tags that aren't in either constant list — set via SQL
     // or future expansion. We never want to silently drop them.
@@ -308,6 +340,43 @@ export function LocationForm({
       // Removed Kosher tag — clean up the cert row
       await supabase
         .from('kosher_certifications')
+        .delete()
+        .eq('location_id', locationId);
+    }
+
+    // Sync halal cert if "Halal" dietary tag is set — mirrors the kosher block.
+    if (isHalal) {
+      if (!halal.agency) {
+        toast.warning(
+          'Halal tag added — pick a certifying agency to save the cert details.',
+        );
+      } else {
+        const halalPayload = {
+          location_id: locationId,
+          agency: halal.agency,
+          agency_other:
+            halal.agency === 'Other' ? halal.agency_other || null : null,
+          certificate_image_url: halal.certificate_image_url || null,
+          expiration_date: halal.expiration_date || null,
+        };
+        const { error: hErr } = await supabase
+          .from('halal_certifications')
+          .upsert(halalPayload, { onConflict: 'location_id' });
+        if (hErr && hErr.code !== '42P01') {
+          // 42P01 = table doesn't exist; user hasn't run the migration yet.
+          // Treat as warning so the rest of the save still succeeds.
+          toast.error(`Halal cert save failed: ${hErr.message}`);
+          return;
+        }
+        if (hErr?.code === '42P01') {
+          toast.warning(
+            'Halal cert table not set up yet — ask admin to run migration.',
+          );
+        }
+      }
+    } else if (!isHalal && halalCert?.location_id) {
+      await supabase
+        .from('halal_certifications')
         .delete()
         .eq('location_id', locationId);
     }
@@ -677,6 +746,15 @@ export function LocationForm({
                 value={{ ...EMPTY_KOSHER, ...kosherValues }}
                 onChange={(next) => form.setValue('kosher', next, { shouldDirty: true })}
                 uploadPrefix={`certs/${currentBrandId ?? 'unscoped'}`}
+              />
+            )}
+
+            {/* Halal cert (only when Halal dietary tag selected) */}
+            {isHalal && (
+              <HalalCertForm
+                value={{ ...EMPTY_HALAL, ...halalValues }}
+                onChange={(next) => form.setValue('halal', next, { shouldDirty: true })}
+                uploadPrefix={`halal-certs/${currentBrandId ?? 'unscoped'}`}
               />
             )}
 

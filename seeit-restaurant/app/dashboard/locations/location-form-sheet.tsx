@@ -5,6 +5,7 @@ import {
   LocationForm,
   type ExistingLocation,
   type KosherCert,
+  type HalalCert,
 } from '@/components/forms/LocationForm';
 import { createClient } from '@/lib/supabase/client';
 
@@ -13,7 +14,8 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   /**
    * When provided, the sheet fetches that location's full row + kosher cert
-   * before rendering LocationForm. When null, opens in create mode.
+   * + halal cert before rendering LocationForm. When null, opens in create
+   * mode.
    */
   locationId?: string | null;
   onSaved?: (locationId: string) => void;
@@ -21,8 +23,7 @@ type Props = {
 
 /**
  * Thin wrapper around LocationForm that handles the "click a card → fetch
- * its full row + kosher cert" data-loading step. Keeps the underlying form
- * reusable for onboarding (which already has the row in hand).
+ * its full row + kosher cert + halal cert" data-loading step.
  */
 export function LocationFormSheet({
   open,
@@ -33,19 +34,23 @@ export function LocationFormSheet({
   const [loading, setLoading] = React.useState(false);
   const [location, setLocation] = React.useState<ExistingLocation | null>(null);
   const [kosherCert, setKosherCert] = React.useState<KosherCert | null>(null);
+  const [halalCert, setHalalCert] = React.useState<HalalCert | null>(null);
 
   React.useEffect(() => {
     if (!open) return;
     if (!locationId) {
       setLocation(null);
       setKosherCert(null);
+      setHalalCert(null);
       return;
     }
     let cancelled = false;
     (async () => {
       setLoading(true);
       const supabase = createClient();
-      const [locRes, certRes] = await Promise.all([
+      // Halal table might not exist yet (migration unrun) — wrap that one
+      // so a missing-table error doesn't break the whole load.
+      const [locRes, kosherRes, halalRes] = await Promise.all([
         supabase
           .from('locations')
           .select(
@@ -55,15 +60,21 @@ export function LocationFormSheet({
           .maybeSingle(),
         supabase
           .from('kosher_certifications')
-          .select(
-            'location_id, agency, agency_other, kosher_type, is_glatt, is_cholov_yisroel, is_pas_yisroel, is_bishul_yisroel, is_yoshon, is_kosher_for_passover, certificate_image_url, expiration_date',
-          )
+          .select('*')
           .eq('location_id', locationId)
           .maybeSingle(),
+        Promise.resolve(
+          supabase
+            .from('halal_certifications')
+            .select('*')
+            .eq('location_id', locationId)
+            .maybeSingle(),
+        ).catch(() => ({ data: null, error: null })),
       ]);
       if (cancelled) return;
       setLocation((locRes.data ?? null) as ExistingLocation | null);
-      setKosherCert((certRes.data ?? null) as KosherCert | null);
+      setKosherCert((kosherRes.data ?? null) as KosherCert | null);
+      setHalalCert((halalRes.data ?? null) as HalalCert | null);
       setLoading(false);
     })();
     return () => {
@@ -71,8 +82,6 @@ export function LocationFormSheet({
     };
   }, [open, locationId]);
 
-  // Render nothing until data is loaded when editing — avoids defaultValues
-  // capturing a stale empty row before the fetch lands.
   if (open && locationId && (loading || !location)) {
     return null;
   }
@@ -83,6 +92,7 @@ export function LocationFormSheet({
       onOpenChange={onOpenChange}
       location={locationId ? location : null}
       kosherCert={locationId ? kosherCert : null}
+      halalCert={locationId ? halalCert : null}
       onSaved={onSaved}
     />
   );

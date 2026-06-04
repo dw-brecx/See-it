@@ -24,6 +24,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SubscriptionStatusBadge, SuspendedBadge } from '@/components/StatusBadge';
+import { VerificationBadge } from '@/components/VerificationBadge';
+import { Badge } from '@/components/ui/badge';
 import { BulkActionBar } from '@/components/BulkActionBar';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CsvExportButton } from '@/components/CsvExportButton';
@@ -41,6 +43,8 @@ type Row = {
   primary_cuisine: string | null;
   subscription_status: SubscriptionStatus | null;
   is_suspended: boolean | null;
+  is_verified?: boolean | null;
+  verification_status?: 'pending' | 'approved' | 'rejected' | null;
   created_at: string | null;
   owner: { id: string; email: string; name: string | null } | null;
   locations: { count: number }[];
@@ -324,7 +328,15 @@ export function BrandsList({ rows }: { rows: Row[] }) {
                             {initials(brand.name)}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="truncate font-medium">{brand.name}</span>
+                        <span className="flex min-w-0 items-center gap-1.5 truncate font-medium">
+                          <span className="truncate">{brand.name}</span>
+                          <VerificationBadge verified={!!brand.is_verified} size="sm" />
+                          {!brand.is_verified && brand.verification_status === 'pending' && (
+                            <Badge variant="warning" className="shrink-0">
+                              Pending
+                            </Badge>
+                          )}
+                        </span>
                       </Link>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
@@ -391,7 +403,10 @@ export function BrandsList({ rows }: { rows: Row[] }) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">{brand.name}</p>
+                    <p className="flex items-center gap-1.5 truncate font-semibold">
+                      <span className="truncate">{brand.name}</span>
+                      <VerificationBadge verified={!!brand.is_verified} size="sm" />
+                    </p>
                     <p className="truncate text-xs text-muted-foreground">
                       {brand.primary_cuisine ?? '—'} · {locCount} location
                       {locCount === 1 ? '' : 's'}
@@ -402,6 +417,9 @@ export function BrandsList({ rows }: { rows: Row[] }) {
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
                       <SubscriptionStatusBadge status={brand.subscription_status} />
                       <SuspendedBadge suspended={!!brand.is_suspended} />
+                      {!brand.is_verified && brand.verification_status === 'pending' && (
+                        <Badge variant="warning">Verification pending</Badge>
+                      )}
                     </div>
                   </div>
                 </Link>

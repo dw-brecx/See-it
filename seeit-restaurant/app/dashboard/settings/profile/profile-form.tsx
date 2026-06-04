@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useBrand } from '@/components/BrandContext';
+import { VerificationStatusCard } from '@/components/VerificationStatusCard';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -271,6 +272,15 @@ export function ProfileForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <VerificationStatusCard
+        brandId={brand.id}
+        isVerified={!!(brand as any).is_verified}
+        status={(brand as any).verification_status ?? null}
+        requestedAt={(brand as any).verification_requested_at ?? null}
+        verifiedAt={(brand as any).verified_at ?? null}
+        notes={(brand as any).verification_notes ?? null}
+      />
+
       {/* Visibility */}
       <Card>
         <CardHeader>

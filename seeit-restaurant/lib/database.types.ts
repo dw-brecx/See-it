@@ -120,6 +120,13 @@ export type Database = {
           theme_color: string | null;
           featured_menu_item_ids: string[] | null;
           storefront_published: boolean | null;
+          // Verification (migration: brand_verification)
+          is_verified: boolean | null;
+          verification_status: 'pending' | 'approved' | 'rejected' | null;
+          verification_requested_at: string | null;
+          verified_at: string | null;
+          verified_by: string | null;
+          verification_notes: string | null;
           created_at: string | null;
           updated_at: string | null;
         };
@@ -146,6 +153,12 @@ export type Database = {
           theme_color?: string | null;
           featured_menu_item_ids?: string[] | null;
           storefront_published?: boolean | null;
+          is_verified?: boolean | null;
+          verification_status?: 'pending' | 'approved' | 'rejected' | null;
+          verification_requested_at?: string | null;
+          verified_at?: string | null;
+          verified_by?: string | null;
+          verification_notes?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
         };
@@ -172,6 +185,12 @@ export type Database = {
           theme_color?: string | null;
           featured_menu_item_ids?: string[] | null;
           storefront_published?: boolean | null;
+          is_verified?: boolean | null;
+          verification_status?: 'pending' | 'approved' | 'rejected' | null;
+          verification_requested_at?: string | null;
+          verified_at?: string | null;
+          verified_by?: string | null;
+          verification_notes?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
         };
@@ -253,6 +272,36 @@ export type Database = {
           average_rating?: number | null;
           review_count?: number | null;
           created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+
+      // ──────────────────────────────────────────────────────────────────
+      halal_certifications: {
+        // PK is location_id (no surrogate id column in DB)
+        Row: {
+          location_id: string;
+          agency: string;
+          agency_other: string | null;
+          certificate_image_url: string | null;
+          expiration_date: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          location_id: string;
+          agency: string;
+          agency_other?: string | null;
+          certificate_image_url?: string | null;
+          expiration_date?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          location_id?: string;
+          agency?: string;
+          agency_other?: string | null;
+          certificate_image_url?: string | null;
+          expiration_date?: string | null;
           updated_at?: string | null;
         };
         Relationships: [];
