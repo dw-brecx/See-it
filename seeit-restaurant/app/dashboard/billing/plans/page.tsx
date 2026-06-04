@@ -26,7 +26,8 @@ export default async function PlansPage() {
       .order('display_order', { ascending: true }),
     supabase
       .from('brands')
-      .select('id, name, plan_id, logo_url')
+      // `*` so missing plan_id column (mig 001 unrun) doesn't 500 the page
+      .select('*')
       .eq('owner_id', user.id)
       .order('name'),
   ]);

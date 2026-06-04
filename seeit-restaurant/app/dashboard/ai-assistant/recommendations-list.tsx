@@ -144,9 +144,8 @@ export function RecommendationsList() {
       // Brand
       const { data: b } = await supabase
         .from('brands')
-        .select(
-          'id, logo_url, tagline, cover_photo_url, story, storefront_published',
-        )
+        // `*` so AI signals don't break when storefront columns (mig 003) are missing
+        .select('*')
         .eq('id', currentBrandId)
         .maybeSingle();
 
