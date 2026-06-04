@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { VerificationBadge } from '@/components/VerificationBadge';
 import { cn, initials, formatRelative } from '@/lib/utils';
 import { WEEKDAYS, type WeekHours } from '@/lib/constants';
 
@@ -43,6 +44,8 @@ export type StorefrontBrand = {
   theme_color: string | null;
   featured_menu_item_ids: string[] | null;
   storefront_published: boolean | null;
+  /** Optional — when true, render a blue check next to the store name. */
+  is_verified?: boolean | null;
 };
 
 export type StorefrontLocation = {
@@ -152,8 +155,9 @@ export function StorefrontPreview({
         </Avatar>
 
         <div className="mt-4 space-y-2">
-          <h1 className="text-[26px] font-bold tracking-tight text-foreground sm:text-[30px]">
-            {brand.name}
+          <h1 className="flex flex-wrap items-center gap-2 text-[26px] font-bold tracking-tight text-foreground sm:text-[30px]">
+            <span>{brand.name}</span>
+            <VerificationBadge verified={!!brand.is_verified} size="lg" />
           </h1>
           {brand.tagline && (
             <p

@@ -18,6 +18,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { SubscriptionStatusBadge, SuspendedBadge } from '@/components/StatusBadge';
+import { VerificationBadge } from '@/components/VerificationBadge';
 import { EmptyState } from '@/components/EmptyState';
 import { BrandActions } from './brand-actions';
 import { LocationsPanel } from './locations-panel';
@@ -34,9 +35,7 @@ async function fetchBrand(id: string) {
   const [brandRes, locationsRes, teamRes, reviewsRes] = await Promise.all([
     supabase
       .from('brands')
-      .select(
-        'id, name, logo_url, description, primary_cuisine, secondary_cuisines, is_suspended, subscription_status, created_at, owner_id, owner:users!brands_owner_id_fkey(id, email, name, avatar_url, phone), tagline, cover_photo_url, story, website_url, instagram_url, tiktok_url, facebook_url, x_url, theme_color, featured_menu_item_ids, storefront_published',
-      )
+      .select('*, owner:users!brands_owner_id_fkey(id, email, name, avatar_url, phone)')
       .eq('id', id)
       .maybeSingle(),
     supabase
@@ -193,8 +192,9 @@ export default async function BrandDetailPage({
               </Avatar>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
+                  <h2 className="flex items-center gap-1.5 text-xl font-bold tracking-tight sm:text-2xl">
                     {brand.name}
+                    <VerificationBadge verified={!!brand.is_verified} size="md" />
                   </h2>
                   <SuspendedBadge suspended={!!brand.is_suspended} />
                   <SubscriptionStatusBadge status={brand.subscription_status} />
@@ -228,6 +228,11 @@ export default async function BrandDetailPage({
                 owner_id: brand.owner_id,
                 subscription_status: brand.subscription_status,
                 is_suspended: !!brand.is_suspended,
+                is_verified: !!brand.is_verified,
+                verification_status: brand.verification_status ?? null,
+                verification_requested_at: brand.verification_requested_at ?? null,
+                verified_at: brand.verified_at ?? null,
+                verification_notes: brand.verification_notes ?? null,
               }}
               ownerEmail={brand.owner?.email ?? null}
             />

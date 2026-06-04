@@ -39,6 +39,7 @@ import {
   ESTABLISHMENT_TYPES,
   KOSHER_AGENCIES,
   KOSHER_TYPES,
+  HALAL_AGENCIES,
   DEFAULT_HOURS,
   STORAGE,
   splitStyleTags,
@@ -59,6 +60,13 @@ const kosherSchema = z.object({
   is_bishul_yisroel: z.boolean().default(false),
   is_yoshon: z.boolean().default(false),
   is_kosher_for_passover: z.boolean().default(false),
+  certificate_image_url: z.string().optional().nullable().or(z.literal('')),
+  expiration_date: z.string().optional().or(z.literal('')),
+});
+
+const halalSchema = z.object({
+  agency: z.string().optional().or(z.literal('')),
+  agency_other: z.string().optional().or(z.literal('')),
   certificate_image_url: z.string().optional().nullable().or(z.literal('')),
   expiration_date: z.string().optional().or(z.literal('')),
 });
@@ -88,6 +96,7 @@ const schema = z.object({
   reopening_date: z.string().optional().or(z.literal('')),
   hours: z.any(),
   kosher: kosherSchema.optional(),
+  halal: halalSchema.optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -128,6 +137,14 @@ type KosherCert = {
   expiration_date: string | null;
 };
 
+export type HalalCert = {
+  location_id?: string;
+  agency: string | null;
+  agency_other?: string | null;
+  certificate_image_url: string | null;
+  expiration_date: string | null;
+};
+
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -139,6 +156,7 @@ type Props = {
    */
   initialValues?: Partial<ExistingLocation> | null;
   kosherCert?: KosherCert | null;
+  halalCert?: HalalCert | null;
   onSaved?: (locationId: string) => void;
 };
 
@@ -149,6 +167,7 @@ export function LocationForm({
   location,
   initialValues,
   kosherCert,
+  halalCert,
   onSaved,
 }: Props) {
   const router = useRouter();
@@ -191,9 +210,15 @@ export function LocationForm({
         certificate_image_url: kosherCert?.certificate_image_url ?? '',
         expiration_date: kosherCert?.expiration_date ?? '',
       },
+      halal: {
+        agency: halalCert?.agency ?? '',
+        agency_other: halalCert?.agency_other ?? '',
+        certificate_image_url: halalCert?.certificate_image_url ?? '',
+        expiration_date: halalCert?.expiration_date ?? '',
+      },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [location?.id, initialValues, kosherCert?.location_id],
+    [location?.id, initialValues, kosherCert?.location_id, halalCert?.location_id],
   );
 
   const form = useForm<FormValues>({
@@ -204,12 +229,14 @@ export function LocationForm({
   React.useEffect(() => {
     if (open) form.reset(computeDefaults());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, location?.id, initialValues, kosherCert?.location_id]);
+  }, [open, location?.id, initialValues, kosherCert?.location_id, halalCert?.location_id]);
 
   const dietary = form.watch('dietary_tags') ?? [];
   const isKosher = dietary.includes('Kosher');
+  const isHalal = dietary.includes('Halal');
   const isTemporarilyClosed = form.watch('is_temporarily_closed');
   const kosherAgency = form.watch('kosher.agency');
+  const halalAgency = form.watch('halal.agency');
 
   const submittingRef = React.useRef(false);
 
@@ -225,7 +252,7 @@ export function LocationForm({
 
   async function doSubmit(values: FormValues) {
     const supabase = createClient();
-    const { kosher, establishment_types, style_tags, ...locPayloadRaw } = values;
+    const { kosher, halal, establishment_types, style_tags, ...locPayloadRaw } = values;
 
     // Preserve any tags that aren't in either constant list (set via SQL etc.)
     const other = splitStyleTags(seed?.style_tags).other;
@@ -303,6 +330,43 @@ export function LocationForm({
         .from('kosher_certifications')
         .delete()
         .eq('location_id', locationId);
+    }
+
+    // Sync halal cert if Halal dietary tag is set. Wrap in try/catch so a
+    // missing halal_certifications table (migration unrun) doesn't break save.
+    if (isHalal && halal) {
+      if (!halal.agency) {
+        toast.warning('Halal tag added — pick a certifying agency to save the cert details.');
+      } else {
+        try {
+          const halalPayload = {
+            location_id: locationId,
+            agency: halal.agency,
+            agency_other:
+              halal.agency === 'Other' ? halal.agency_other || null : null,
+            certificate_image_url: halal.certificate_image_url || null,
+            expiration_date: halal.expiration_date || null,
+          };
+          const { error: hErr } = await supabase
+            .from('halal_certifications')
+            .upsert(halalPayload, { onConflict: 'location_id' });
+          if (hErr && hErr.code !== '42P01') {
+            toast.error(`Halal cert save failed: ${hErr.message}`);
+            return;
+          }
+        } catch {
+          /* table missing — ignore */
+        }
+      }
+    } else if (!isHalal && halalCert?.location_id) {
+      try {
+        await supabase
+          .from('halal_certifications')
+          .delete()
+          .eq('location_id', locationId);
+      } catch {
+        /* table missing — ignore */
+      }
     }
 
     toast.success(isEdit ? `Updated ${locPayload.name}` : `Created ${locPayload.name}`);
@@ -599,7 +663,7 @@ export function LocationForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Selecting "Kosher" unlocks the certification section below.
+                      Selecting "Kosher" or "Halal" unlocks the certification section below.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -779,6 +843,93 @@ export function LocationForm({
                 <FormField
                   control={form.control}
                   name="kosher.expiration_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expiration date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+
+            {/* Halal cert (only when Halal dietary tag selected) */}
+            {isHalal && (
+              <div className="space-y-4 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
+                <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-emerald-700">
+                  <ShieldCheck className="h-4 w-4" />
+                  Halal certification
+                </h3>
+
+                <FormField
+                  control={form.control}
+                  name="halal.agency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Certifying agency</FormLabel>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Pick an agency" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {HALAL_AGENCIES.map((a) => (
+                            <SelectItem key={a.value} value={a.value}>
+                              {a.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {halalAgency === 'Other' && (
+                  <FormField
+                    control={form.control}
+                    name="halal.agency_other"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Specify agency</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Name of the certifying body"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                <FormField
+                  control={form.control}
+                  name="halal.certificate_image_url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Certificate image / PDF</FormLabel>
+                      <FormControl>
+                        <PhotoUpload
+                          bucket={STORAGE.KOSHER_CERTS}
+                          prefix={`halal-certs/${brandId}`}
+                          value={field.value || null}
+                          onChange={(url) => field.onChange(url ?? '')}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="halal.expiration_date"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Expiration date</FormLabel>

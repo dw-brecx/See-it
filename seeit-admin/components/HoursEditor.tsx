@@ -13,18 +13,24 @@ type Props = {
 
 /** Suggestions for the open-time note field. */
 const OPEN_NOTE_SUGGESTIONS = [
+  'After Maghrib',
   'After Shabbos',
-  'After candle lighting',
-  '1 hour after sunset',
+  'After sunrise',
+  'After sunset',
+  'At noon',
   'By appointment',
+  'Call ahead',
 ];
 
 /** Suggestions for the close-time note field. */
 const CLOSE_NOTE_SUGGESTIONS = [
-  'Until sunset',
+  '1 hour before Maghrib',
   '1 hour before Shabbos',
-  'Until candle lighting',
+  'At dusk',
+  'At sunset',
+  'Until last call',
   'Until last customer',
+  'Until sold out',
 ];
 
 export function HoursEditor({ value, onChange }: Props) {
@@ -68,7 +74,7 @@ export function HoursEditor({ value, onChange }: Props) {
                   note={day.open_note}
                   suggestions={OPEN_NOTE_SUGGESTIONS}
                   timePlaceholder="17:00"
-                  notePlaceholder="e.g. After Shabbos"
+                  notePlaceholder="e.g. After sunset"
                   onChange={(patch) => update(key, patch)}
                   field="open"
                 />

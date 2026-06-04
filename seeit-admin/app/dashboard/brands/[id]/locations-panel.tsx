@@ -47,35 +47,48 @@ export function LocationsPanel({ brandId, locations }: Props) {
   const [addOpen, setAddOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<Location | null>(null);
   const [editKosher, setEditKosher] = React.useState<any>(null);
+  const [editHalal, setEditHalal] = React.useState<any>(null);
   const [duplicateOf, setDuplicateOf] = React.useState<Location | null>(null);
   const [duplicateKosher, setDuplicateKosher] = React.useState<any>(null);
+  const [duplicateHalal, setDuplicateHalal] = React.useState<any>(null);
   const [confirmDelete, setConfirmDelete] = React.useState<Location | null>(null);
 
+  /** Safely fetch a cert row; returns null if the table doesn't exist yet. */
+  async function fetchCert(table: 'kosher_certifications' | 'halal_certifications', locId: string) {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .eq('location_id', locId)
+        .maybeSingle();
+      if (error && error.code !== '42P01') return null;
+      return data ?? null;
+    } catch {
+      return null;
+    }
+  }
+
   async function openDuplicate(loc: Location) {
-    const supabase = createClient();
-    const { data: cert } = await supabase
-      .from('kosher_certifications')
-      .select('*')
-      .eq('location_id', loc.id)
-      .maybeSingle();
-    // Strip id & cert id so the form treats it as a brand-new create
-    setDuplicateKosher(cert ? { ...cert, id: undefined, location_id: undefined } : null);
+    const [kosher, halal] = await Promise.all([
+      fetchCert('kosher_certifications', loc.id),
+      fetchCert('halal_certifications', loc.id),
+    ]);
+    setDuplicateKosher(kosher ? { ...kosher, id: undefined, location_id: undefined } : null);
+    setDuplicateHalal(halal ? { ...halal, location_id: undefined } : null);
     setDuplicateOf({
       ...loc,
-      // Append "(copy)" so the user sees a clear distinguisher and edits if needed
       name: `${loc.name} (copy)`,
     });
   }
 
   async function openEdit(loc: Location) {
-    const supabase = createClient();
-    // Fetch existing kosher cert (if any) to pre-fill
-    const { data: cert } = await supabase
-      .from('kosher_certifications')
-      .select('*')
-      .eq('location_id', loc.id)
-      .maybeSingle();
-    setEditKosher(cert ?? null);
+    const [kosher, halal] = await Promise.all([
+      fetchCert('kosher_certifications', loc.id),
+      fetchCert('halal_certifications', loc.id),
+    ]);
+    setEditKosher(kosher);
+    setEditHalal(halal);
     setEditing(loc);
   }
 
@@ -200,11 +213,13 @@ export function LocationsPanel({ brandId, locations }: Props) {
           if (!o) {
             setEditing(null);
             setEditKosher(null);
+            setEditHalal(null);
           }
         }}
         brandId={brandId}
         location={editing}
         kosherCert={editKosher}
+        halalCert={editHalal}
       />
 
       {/* Duplicate — opens the same form pre-filled as a create (no `location` prop) */}
@@ -214,11 +229,13 @@ export function LocationsPanel({ brandId, locations }: Props) {
           if (!o) {
             setDuplicateOf(null);
             setDuplicateKosher(null);
+            setDuplicateHalal(null);
           }
         }}
         brandId={brandId}
         initialValues={duplicateOf ?? undefined}
         kosherCert={duplicateKosher}
+        halalCert={duplicateHalal}
       />
 
       {/* Confirm delete */}

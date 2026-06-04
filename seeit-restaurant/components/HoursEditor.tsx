@@ -11,20 +11,30 @@ type Props = {
   onChange: (next: WeekHours) => void;
 };
 
-/** Suggestions for the open-time note field. */
+/**
+ * Suggestions for the open-time note field. Universal options first;
+ * faith-based options mixed in alphabetically so the editor reads as
+ * neutral regardless of who's setting up the store.
+ */
 const OPEN_NOTE_SUGGESTIONS = [
+  'After Maghrib',
   'After Shabbos',
-  'After candle lighting',
-  '1 hour after sunset',
+  'After sunrise',
+  'After sunset',
+  'At noon',
   'By appointment',
+  'Call ahead',
 ];
 
 /** Suggestions for the close-time note field. */
 const CLOSE_NOTE_SUGGESTIONS = [
-  'Until sunset',
+  '1 hour before Maghrib',
   '1 hour before Shabbos',
-  'Until candle lighting',
+  'At dusk',
+  'At sunset',
+  'Until last call',
   'Until last customer',
+  'Until sold out',
 ];
 
 export function HoursEditor({ value, onChange }: Props) {

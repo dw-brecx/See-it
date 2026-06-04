@@ -28,10 +28,12 @@ async function fetchBrands(params: SearchParams) {
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
+  // Use `*` so missing optional columns (is_verified, verification_status)
+  // don't break the page before the brand-verification migration is run.
   let query = supabase
     .from('brands')
     .select(
-      'id, name, logo_url, primary_cuisine, subscription_status, is_suspended, created_at, owner:users!brands_owner_id_fkey(id, email, name), locations(count)',
+      '*, owner:users!brands_owner_id_fkey(id, email, name), locations(count)',
       { count: 'exact' },
     )
     .order('created_at', { ascending: false })
