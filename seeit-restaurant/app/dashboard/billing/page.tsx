@@ -20,9 +20,8 @@ async function loadBilling() {
   const [ownedRes, teamRes] = await Promise.all([
     supabase
       .from('brands')
-      .select(
-        'id, name, plan_id, subscription_status, logo_url',
-      )
+      // `*` tolerates missing optional columns (plan_id from mig 001 etc.)
+      .select('*')
       .eq('owner_id', user.id)
       .order('name'),
     supabase.from('team_members').select('brand_id, role').eq('user_id', user.id),

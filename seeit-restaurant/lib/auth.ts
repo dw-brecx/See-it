@@ -24,20 +24,28 @@ export type ResolvedBrand = {
  *   2. team_members.user_id = userId — the user is on this brand's team
  *   3. null — user has no brand (restaurant_owner should be sent to onboarding)
  *
- * If a user accidentally owns multiple brands (legacy data before the
- * unique index), the most recently created one wins and the others are
- * invisible to them. Admin can investigate.
+ * IMPORTANT: this query uses `*` so newer optional columns (e.g. `plan` from
+ * migration 005, storefront fields from 003) being absent doesn't break the
+ * fetch. Missing columns just come back as undefined. Without this, an
+ * unrun migration would 404-redirect store owners to onboarding even though
+ * they have a brand.
  */
 export async function getUserBrand(
   supabase: SupabaseClient<any, any, any>,
   userId: string,
 ): Promise<ResolvedBrand | null> {
-  const { data: owned } = await supabase
+  const { data: owned, error: ownedErr } = await supabase
     .from('brands')
-    .select('id, name, logo_url, plan, created_at')
+    .select('*')
     .eq('owner_id', userId)
     .order('created_at', { ascending: false })
     .limit(1);
+
+  if (ownedErr) {
+    // Hard error reading brands — log so server-side traces show it.
+    // eslint-disable-next-line no-console
+    console.error('getUserBrand: brands fetch failed', ownedErr);
+  }
 
   if (owned && owned.length > 0) {
     const b = owned[0] as any;
@@ -45,14 +53,14 @@ export async function getUserBrand(
       id: b.id,
       name: b.name,
       logo_url: b.logo_url ?? null,
-      plan: b.plan ?? null,
+      plan: (b.plan as string | undefined) ?? null,
       source: 'owner',
     };
   }
 
   const { data: team } = await supabase
     .from('team_members')
-    .select('brand:brands(id, name, logo_url, plan, created_at)')
+    .select('brand:brands(*)')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(1);
@@ -64,7 +72,7 @@ export async function getUserBrand(
         id: t.brand.id,
         name: t.brand.name,
         logo_url: t.brand.logo_url ?? null,
-        plan: t.brand.plan ?? null,
+        plan: (t.brand.plan as string | undefined) ?? null,
         source: 'team_member',
       };
     }
