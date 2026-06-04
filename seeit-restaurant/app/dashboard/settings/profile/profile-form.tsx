@@ -129,21 +129,28 @@ export function ProfileForm() {
     setLoading(true);
     (async () => {
       const supabase = createClient();
+      // Use `*` so the fetch tolerates schemas missing newer storefront columns
+      // (e.g. when migration 003 hasn't been run). Missing columns just come
+      // back as undefined and brandToForm coalesces to empty strings.
       const { data, error } = await supabase
         .from('brands')
-        .select(
-          'id, name, description, tagline, story, primary_cuisine, secondary_cuisines, logo_url, cover_photo_url, theme_color, website_url, instagram_url, tiktok_url, facebook_url, x_url, storefront_published',
-        )
+        .select('*')
         .eq('id', currentBrandId)
         .maybeSingle();
       if (cancelled) return;
       if (error) {
-        toast.error(`Failed to load brand: ${error.message}`);
+        toast.error(`Failed to load store: ${error.message}`);
         setBrand(null);
         setForm(null);
       } else if (data) {
-        setBrand(data as BrandRow);
-        setForm(brandToForm(data as BrandRow));
+        setBrand(data as any);
+        setForm(brandToForm(data as any));
+      } else {
+        // Brand row not visible — likely RLS or stale brand id. Surface it
+        // instead of silently dropping into a "Loading store…" forever state.
+        toast.error(
+          'Could not load your store. Sign out and back in, or contact support.',
+        );
       }
       setLoading(false);
     })();
@@ -216,15 +223,45 @@ export function ProfileForm() {
     );
   }
 
-  if (!currentBrandId || !brand || !form) {
+  // No brand context at all — middleware should have redirected to /onboarding,
+  // but if we somehow render here (e.g. signed-in admin browsing), show a quiet
+  // placeholder instead of a deceptive "Loading…" spinner.
+  if (!currentBrandId) {
     return (
       <Card>
         <CardContent className="p-0">
           <EmptyState
             icon={Building2}
-            title="Loading store…"
-            description="One moment while we load your store data."
+            title="No store on this account"
+            description="Finish onboarding to create your store, or sign in with the account that owns the store."
           />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Fetch finished but no row came back — surface a real error with a retry,
+  // not a perpetual loading state.
+  if (!brand || !form) {
+    return (
+      <Card>
+        <CardContent className="space-y-3 p-6 text-center">
+          <Building2 className="mx-auto h-8 w-8 text-muted-foreground" />
+          <p className="text-[14px] font-semibold">
+            We couldn't load your store
+          </p>
+          <p className="text-[12.5px] text-muted-foreground">
+            This usually means a database migration hasn't been run, or your
+            session is stale. Try refreshing — if that doesn't work, sign out
+            and back in.
+          </p>
+          <button
+            type="button"
+            onClick={() => router.refresh()}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-terracotta-500 px-3 py-2 text-[13px] font-semibold text-white hover:bg-terracotta-600"
+          >
+            Try again
+          </button>
         </CardContent>
       </Card>
     );
