@@ -5,6 +5,8 @@ module.exports = function (api) {
       ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
       'nativewind/babel',
     ],
-    plugins: ['react-native-reanimated/plugin'],
+    // Reanimated 4 ships its babel plugin from react-native-worklets.
+    // nativewind/babel (via react-native-css-interop) already includes it,
+    // so we don't add it again here — keeps the plugin chain de-duped.
   };
 };

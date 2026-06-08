@@ -4,9 +4,12 @@ Real photos, real reviews, real food. SeeIt is the customer-facing companion to 
 
 ## What's in here
 
-- **Expo SDK 51, React Native 0.74, Expo Router** for file-based navigation
+- **Expo SDK 54** (React Native 0.81.5, React 19.1, **new architecture on**)
+- **Expo Router 6** for file-based navigation
 - **TypeScript strict**, **NativeWind v4** (Tailwind for RN), **Supabase JS** for data, **React Query** for fetch/cache, **Zustand** for local UI state, **React Hook Form + Zod** for forms
-- **Lucide React Native** icons (single consistent set), **Reanimated 3** for animations, **expo-haptics** on every meaningful tap
+- **Lucide React Native v1** icons (single consistent set — brand icons replaced with text pills since v1 dropped trademarks)
+- **Reanimated 4** (with `react-native-worklets` as the actual runtime) for animations
+- **expo-haptics** on every meaningful tap
 
 ## Run it locally
 
@@ -17,11 +20,7 @@ cp .env.example .env   # fill in your Supabase keys
 npx expo start
 ```
 
-Then scan the QR with the Expo Go app on your phone (or press `i` for iOS sim, `a` for Android emulator). `npx expo start --tunnel` also works if your phone is on a different network.
-
-### About the `react-native-worklets` dep
-
-You'll see `react-native-worklets@^0.5.1` pinned in `package.json`. This is **not** for Reanimated 4 — Reanimated 3.10.x (the Expo SDK 51 compat version) doesn't need it. The package is here purely to satisfy a hardcoded `require('react-native-worklets/plugin')` in `react-native-css-interop`'s babel preset (a transitive dep of NativeWind v4). Pre-0.9 worklets versions have `"react-native": "*"` peer deps, so they install cleanly on RN 0.74 without conflict. When this repo upgrades to Expo SDK 52+/Reanimated 4+, this dep becomes the real worklets runtime; for now it's just a babel-resolution stub.
+Then scan the QR with the **Expo Go app SDK 54** on your phone (or press `i` for iOS sim, `a` for Android emulator). `npx expo start --tunnel` also works if your phone is on a different network.
 
 ### Required env vars (in `.env`)
 

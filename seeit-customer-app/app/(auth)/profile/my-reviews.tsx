@@ -75,7 +75,6 @@ export default function MyReviewsScreen() {
       ) : data && data.length > 0 ? (
         <FlashList
           data={data}
-          estimatedItemSize={180}
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
           ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
           renderItem={({ item }) => <ReviewCard review={item as any} />}
