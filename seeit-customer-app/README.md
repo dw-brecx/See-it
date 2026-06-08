@@ -17,7 +17,11 @@ cp .env.example .env   # fill in your Supabase keys
 npx expo start
 ```
 
-Then scan the QR with the Expo Go app on your phone (or press `i` for iOS sim, `a` for Android emulator).
+Then scan the QR with the Expo Go app on your phone (or press `i` for iOS sim, `a` for Android emulator). `npx expo start --tunnel` also works if your phone is on a different network.
+
+### About the `react-native-worklets` dep
+
+You'll see `react-native-worklets@^0.5.1` pinned in `package.json`. This is **not** for Reanimated 4 — Reanimated 3.10.x (the Expo SDK 51 compat version) doesn't need it. The package is here purely to satisfy a hardcoded `require('react-native-worklets/plugin')` in `react-native-css-interop`'s babel preset (a transitive dep of NativeWind v4). Pre-0.9 worklets versions have `"react-native": "*"` peer deps, so they install cleanly on RN 0.74 without conflict. When this repo upgrades to Expo SDK 52+/Reanimated 4+, this dep becomes the real worklets runtime; for now it's just a babel-resolution stub.
 
 ### Required env vars (in `.env`)
 
