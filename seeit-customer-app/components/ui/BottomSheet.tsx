@@ -42,7 +42,7 @@ export function BottomSheet({ open, onClose, title, children, heightFraction = 0
               }}
             />
           </View>
-          {(title || onClose) && (
+          {title && (
             <View
               style={{
                 flexDirection: 'row',

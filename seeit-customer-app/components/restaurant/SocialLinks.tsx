@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, Pressable, Linking } from 'react-native';
-import { Instagram, Facebook, Globe } from 'lucide-react-native';
+import { View, Pressable, Text, Linking } from 'react-native';
+import { Globe, Link2 } from 'lucide-react-native';
 import { tapLight } from '@/lib/utils/haptics';
 
 type Brand = {
@@ -11,39 +11,47 @@ type Brand = {
   x_url: string | null;
 };
 
-export function SocialLinks({ brand }: { brand: Brand }) {
-  const links: { url: string; icon: React.ReactNode; key: string }[] = [];
-  if (brand.website_url)
-    links.push({ url: brand.website_url, key: 'web', icon: <Globe size={20} color="#1A1A1A" /> });
-  if (brand.instagram_url)
-    links.push({ url: brand.instagram_url, key: 'ig', icon: <Instagram size={20} color="#1A1A1A" /> });
-  if (brand.facebook_url)
-    links.push({ url: brand.facebook_url, key: 'fb', icon: <Facebook size={20} color="#1A1A1A" /> });
-  // TikTok / X don't have first-class Lucide icons — use text glyphs
-  // (or swap to @expo/vector-icons later if you want brand-accurate marks).
+// Lucide v1 removed brand icons (Instagram/Facebook/etc.) for trademark
+// reasons. We render labelled pills instead — clearer anyway since users
+// don't always recognise mono icons.
+const NETWORKS: { key: keyof Brand; label: string }[] = [
+  { key: 'website_url', label: 'Website' },
+  { key: 'instagram_url', label: 'Instagram' },
+  { key: 'tiktok_url', label: 'TikTok' },
+  { key: 'facebook_url', label: 'Facebook' },
+  { key: 'x_url', label: 'X' },
+];
 
+export function SocialLinks({ brand }: { brand: Brand }) {
+  const links = NETWORKS.filter((n) => brand[n.key]);
   if (links.length === 0) return null;
 
   return (
-    <View style={{ flexDirection: 'row', gap: 10, flexWrap: 'wrap' }}>
-      {links.map((l) => (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+      {links.map((n) => (
         <Pressable
-          key={l.key}
+          key={n.key}
           onPress={() => {
             tapLight();
-            Linking.openURL(l.url).catch(() => {});
+            Linking.openURL(brand[n.key]!).catch(() => {});
           }}
           style={({ pressed }) => ({
-            width: 44,
-            height: 44,
-            borderRadius: 22,
-            backgroundColor: '#F3F3EE',
+            flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'center',
+            gap: 8,
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+            backgroundColor: '#F3F3EE',
+            borderRadius: 999,
             opacity: pressed ? 0.85 : 1,
           })}
         >
-          {l.icon}
+          {n.key === 'website_url' ? (
+            <Globe size={16} color="#1A1A1A" />
+          ) : (
+            <Link2 size={16} color="#1A1A1A" />
+          )}
+          <Text style={{ fontSize: 13, fontWeight: '600', color: '#1A1A1A' }}>{n.label}</Text>
         </Pressable>
       ))}
     </View>
