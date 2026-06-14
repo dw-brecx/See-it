@@ -293,6 +293,16 @@ function InnerScreen() {
           averageRating={liveAverage}
           reviewCount={brandReviews.length}
           distanceMiles={distance}
+          kosherAgency={
+            certs.data?.kosher
+              ? certs.data.kosher.agency_other ?? certs.data.kosher.agency
+              : null
+          }
+          halalAgency={
+            certs.data?.halal
+              ? certs.data.halal.agency_other ?? certs.data.halal.agency
+              : null
+          }
         />
 
         <Pressable

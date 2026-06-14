@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text, Image } from 'react-native';
 import { Brand } from '@/lib/types';
 import { VerifiedBadge } from '../brand/VerifiedBadge';
+import { CertPill } from './CertPill';
 import { CuisineChip } from '../shared/CuisineChip';
 import { DistanceChip } from '../shared/DistanceChip';
 import { StarRating } from '../ui/StarRating';
@@ -14,11 +15,15 @@ export function StorefrontHeader({
   averageRating,
   reviewCount,
   distanceMiles,
+  kosherAgency,
+  halalAgency,
 }: {
   brand: Brand;
   averageRating?: number | null;
   reviewCount?: number;
   distanceMiles?: number | null;
+  kosherAgency?: string | null;
+  halalAgency?: string | null;
 }) {
   const cover = brand.cover_photo_url;
   return (
@@ -59,7 +64,7 @@ export function StorefrontHeader({
           </View>
         ) : null}
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <Text
             style={{
               fontSize: 28,
@@ -72,6 +77,20 @@ export function StorefrontHeader({
           </Text>
           {brand.is_verified ? <VerifiedBadge variant="pill" size="md" /> : null}
         </View>
+        {(kosherAgency || halalAgency) ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 6,
+              marginTop: 8,
+              flexWrap: 'wrap',
+            }}
+          >
+            {kosherAgency ? <CertPill kind="kosher" agency={kosherAgency} /> : null}
+            {halalAgency ? <CertPill kind="halal" agency={halalAgency} /> : null}
+          </View>
+        ) : null}
 
         {brand.tagline ? (
           <Text
