@@ -7,7 +7,19 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { error as errorHaptic } from '@/lib/utils/haptics';
+import { error as errorHaptic, success } from '@/lib/utils/haptics';
+import { toast } from '@/components/ui/Toast';
+import { colors } from '@/lib/utils/colors';
+import { debugLog } from '@/lib/utils/debugLog';
+
+function friendlyError(message: string): string {
+  const m = message.toLowerCase();
+  if (m.includes('invalid login')) return "Email or password isn't right";
+  if (m.includes('email not confirmed'))
+    return 'Check your email to confirm your account first';
+  if (m.includes('network')) return "We couldn't reach our servers — check your connection";
+  return message;
+}
 
 export default function SignInScreen() {
   const insets = useSafeAreaInsets();
@@ -20,14 +32,19 @@ export default function SignInScreen() {
   async function onSubmit() {
     setLoading(true);
     setErr(null);
+    debugLog('auth.signin', 'signing in', { email });
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    debugLog('auth.signin', 'response', {
+      hasSession: !!data?.session,
+      error: error?.message,
+    });
     if (error || !data.session) {
       errorHaptic();
-      setErr(error?.message ?? 'Could not sign in');
+      setErr(friendlyError(error?.message ?? 'Could not sign in'));
       setLoading(false);
       return;
     }
-    // Block non-customer roles
+    // Block non-customer roles with a friendly redirect message.
     const { data: profile } = await supabase
       .from('users')
       .select('role')
@@ -35,22 +52,24 @@ export default function SignInScreen() {
       .maybeSingle();
     if (profile && profile.role !== 'customer') {
       await supabase.auth.signOut();
+      const which =
+        profile.role === 'admin' ? 'admin' : 'restaurant';
       setErr(
-        `Your account is a ${profile.role.replace('_', ' ')} account. Please use the ${
-          profile.role === 'admin' ? 'admin' : 'restaurant'
-        } dashboard.`,
+        `That's a ${which} account. Please use the ${which} dashboard.`,
       );
       setLoading(false);
       return;
     }
+    success();
     await refresh();
+    toast.success('Welcome back');
     router.dismissAll();
-    router.replace('/(public)/(tabs)/profile');
+    router.replace('/(public)/(tabs)/home');
   }
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#FAFAF7' }}
+      style={{ flex: 1, backgroundColor: colors.bg }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 20 }}>
@@ -61,20 +80,27 @@ export default function SignInScreen() {
             width: 38,
             height: 38,
             borderRadius: 19,
-            backgroundColor: '#F3F3EE',
+            backgroundColor: colors.surfaceMuted,
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <ArrowLeft size={18} color="#1A1A1A" />
+          <ArrowLeft size={18} color={colors.text} />
         </Pressable>
       </View>
 
       <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24, gap: 16 }}>
-        <Text style={{ fontSize: 32, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.6 }}>
+        <Text
+          style={{
+            fontSize: 32,
+            fontWeight: '800',
+            color: colors.text,
+            letterSpacing: -0.6,
+          }}
+        >
           Welcome back.
         </Text>
-        <Text style={{ fontSize: 15, color: '#6B7280', marginTop: -8 }}>
+        <Text style={{ fontSize: 15, color: colors.textSecondary, marginTop: -8 }}>
           Sign in to keep your saved spots and reviews.
         </Text>
 
@@ -86,7 +112,7 @@ export default function SignInScreen() {
             autoCapitalize="none"
             autoComplete="email"
             keyboardType="email-address"
-            leadingIcon={<Mail size={18} color="#6B7280" />}
+            leadingIcon={<Mail size={18} color={colors.textSecondary} />}
             placeholder="you@example.com"
           />
           <Input
@@ -95,15 +121,16 @@ export default function SignInScreen() {
             onChangeText={setPassword}
             secureTextEntry
             autoComplete="password"
-            leadingIcon={<Lock size={18} color="#6B7280" />}
+            leadingIcon={<Lock size={18} color={colors.textSecondary} />}
             placeholder="••••••••"
           />
-          {err ? <Text style={{ color: '#EF4444', fontSize: 13 }}>{err}</Text> : null}
+          {err ? <Text style={{ color: colors.danger, fontSize: 13 }}>{err}</Text> : null}
         </View>
 
         <Button
           label={loading ? 'Signing in…' : 'Sign in'}
           fullWidth
+          size="lg"
           loading={loading}
           onPress={onSubmit}
         />
@@ -113,9 +140,9 @@ export default function SignInScreen() {
           hitSlop={8}
           style={{ alignItems: 'center', marginTop: 4 }}
         >
-          <Text style={{ color: '#6B7280', fontSize: 14 }}>
+          <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
             Don't have an account?{' '}
-            <Text style={{ color: '#E85D3A', fontWeight: '700' }}>Sign up</Text>
+            <Text style={{ color: colors.primary, fontWeight: '700' }}>Sign up</Text>
           </Text>
         </Pressable>
       </View>

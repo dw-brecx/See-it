@@ -15,7 +15,17 @@ import { Button } from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { error as errorHaptic, success } from '@/lib/utils/haptics';
+import { toast } from '@/components/ui/Toast';
+import { colors } from '@/lib/utils/colors';
 import { debugLog } from '@/lib/utils/debugLog';
+
+function friendlyError(message: string): string {
+  const m = message.toLowerCase();
+  if (m.includes('already registered')) return 'That email already has an account — sign in instead';
+  if (m.includes('password')) return 'Password needs to be at least 8 characters';
+  if (m.includes('email')) return "That email doesn't look right";
+  return message;
+}
 
 export default function SignUpScreen() {
   const insets = useSafeAreaInsets();
@@ -29,36 +39,40 @@ export default function SignUpScreen() {
   async function onSubmit() {
     setLoading(true);
     setErr(null);
-    debugLog('signup', 'submitting', { email, hasName: !!name });
+    debugLog('auth.signup', 'submitting', { email, hasName: !!name });
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { name, intended_role: 'customer' } },
     });
-    debugLog('signup', 'response', {
+    debugLog('auth.signup', 'response', {
       hasSession: !!data?.session,
       userId: data?.user?.id,
       error: error?.message,
     });
     if (error) {
       errorHaptic();
-      setErr(error.message);
+      setErr(friendlyError(error.message));
       setLoading(false);
       return;
     }
     success();
-    await refresh();
-    // Always send the user to allergy-setup next, regardless of whether
-    // a session exists yet. If email confirmation is required, the screen
-    // still asks for their preferences (cached in zustand) so we can
-    // upsert them when the session lands later.
-    router.dismissAll();
-    router.replace('/(auth)/allergy-setup');
+    if (data.session) {
+      // Auto-signed-in — straight into the personalization flow.
+      await refresh();
+      toast.success("You're in! Let's personalize");
+      router.dismissAll();
+      router.replace('/(auth)/allergy-setup');
+    } else {
+      // Email confirmation is required — send them to signin with a toast.
+      toast.info('Check your email to confirm your account');
+      router.replace('/(auth)/signin');
+    }
   }
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#FAFAF7' }}
+      style={{ flex: 1, backgroundColor: colors.bg }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 20 }}>
@@ -69,12 +83,12 @@ export default function SignUpScreen() {
             width: 38,
             height: 38,
             borderRadius: 19,
-            backgroundColor: '#F3F3EE',
+            backgroundColor: colors.surfaceMuted,
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <ArrowLeft size={18} color="#1A1A1A" />
+          <ArrowLeft size={18} color={colors.text} />
         </Pressable>
       </View>
 
@@ -91,13 +105,13 @@ export default function SignUpScreen() {
           style={{
             fontSize: 32,
             fontWeight: '800',
-            color: '#1A1A1A',
+            color: colors.text,
             letterSpacing: -0.6,
           }}
         >
           Create your account
         </Text>
-        <Text style={{ fontSize: 15, color: '#6B7280', marginTop: -8 }}>
+        <Text style={{ fontSize: 15, color: colors.textSecondary, marginTop: -8 }}>
           Save spots, review dishes, build order lists with friends.
         </Text>
 
@@ -106,7 +120,7 @@ export default function SignUpScreen() {
             label="Name"
             value={name}
             onChangeText={setName}
-            leadingIcon={<User size={18} color="#6B7280" />}
+            leadingIcon={<User size={18} color={colors.textSecondary} />}
             placeholder="Your name"
             autoCapitalize="words"
           />
@@ -117,7 +131,7 @@ export default function SignUpScreen() {
             autoCapitalize="none"
             autoComplete="email"
             keyboardType="email-address"
-            leadingIcon={<Mail size={18} color="#6B7280" />}
+            leadingIcon={<Mail size={18} color={colors.textSecondary} />}
             placeholder="you@example.com"
           />
           <Input
@@ -125,10 +139,10 @@ export default function SignUpScreen() {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            leadingIcon={<Lock size={18} color="#6B7280" />}
+            leadingIcon={<Lock size={18} color={colors.textSecondary} />}
             placeholder="At least 8 characters"
           />
-          {err ? <Text style={{ color: '#EF4444', fontSize: 13 }}>{err}</Text> : null}
+          {err ? <Text style={{ color: colors.danger, fontSize: 13 }}>{err}</Text> : null}
         </View>
 
         <View style={{ marginTop: 4 }}>
@@ -146,9 +160,9 @@ export default function SignUpScreen() {
           hitSlop={8}
           style={{ alignItems: 'center', marginTop: 4 }}
         >
-          <Text style={{ color: '#6B7280', fontSize: 14 }}>
+          <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
             Already have an account?{' '}
-            <Text style={{ color: '#E85D3A', fontWeight: '700' }}>Sign in</Text>
+            <Text style={{ color: colors.primary, fontWeight: '700' }}>Sign in</Text>
           </Text>
         </Pressable>
       </ScrollView>

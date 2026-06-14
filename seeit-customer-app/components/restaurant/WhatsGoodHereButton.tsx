@@ -1,11 +1,16 @@
 import * as React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import { Sparkles } from 'lucide-react-native';
-import { useTheme } from '../brand/ThemeProvider';
+import { colors } from '@/lib/utils/colors';
 import { tapMedium } from '@/lib/utils/haptics';
 
+/**
+ * Big terracotta CTA. Stays hardcoded — never themed — so it's always
+ * the most prominent button on the storefront. The previous version
+ * pulled from the BrandThemeProvider, which on a brand with theme_color
+ * set to something cream-ish made the button invisible against the bg.
+ */
 export function WhatsGoodHereButton({ onPress }: { onPress: () => void }) {
-  const theme = useTheme();
   return (
     <Pressable
       onPress={() => {
@@ -17,19 +22,18 @@ export function WhatsGoodHereButton({ onPress }: { onPress: () => void }) {
         alignItems: 'center',
         justifyContent: 'center',
         gap: 10,
-        paddingVertical: 16,
-        marginHorizontal: 20,
-        backgroundColor: theme.accent,
+        height: 56,
+        marginHorizontal: 16,
+        backgroundColor: pressed ? colors.primaryDark : colors.primary,
         borderRadius: 16,
-        opacity: pressed ? 0.9 : 1,
-        shadowColor: theme.accent,
+        shadowColor: colors.primary,
         shadowOpacity: 0.35,
         shadowRadius: 16,
-        shadowOffset: { width: 0, height: 8 },
+        shadowOffset: { width: 0, height: 6 },
         elevation: 6,
       })}
     >
-      <Sparkles size={18} color="#FFFFFF" />
+      <Sparkles size={18} color="#FFFFFF" strokeWidth={2.4} />
       <Text style={{ color: '#FFFFFF', fontWeight: '700', fontSize: 16, letterSpacing: -0.2 }}>
         What's good here?
       </Text>
