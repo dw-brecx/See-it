@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable, Text, Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Home, Search, Bookmark, User, ScanLine } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { tapLight } from '@/lib/utils/haptics';
 
 const ACCENT = '#E85D3A';
@@ -27,23 +28,11 @@ function TabIcon({
       >
         {label}
       </Text>
-      {focused && (
-        <View
-          style={{
-            position: 'absolute',
-            bottom: -6,
-            width: 4,
-            height: 4,
-            borderRadius: 2,
-            backgroundColor: ACCENT,
-          }}
-        />
-      )}
     </View>
   );
 }
 
-function ScanCenterButton({ focused }: { focused: boolean }) {
+function ScanCenterButton() {
   return (
     <View
       style={{
@@ -67,16 +56,23 @@ function ScanCenterButton({ focused }: { focused: boolean }) {
 }
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+  // Reserve room for the home indicator on notched iPhones (insets.bottom),
+  // plus an icon+label area. Without explicit paddingBottom, RN's
+  // bottom-tabs renderer crops the label area into the safe-area zone.
+  const tabBarHeight = 64 + insets.bottom;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: 76,
+          height: tabBarHeight,
           backgroundColor: '#FFFFFF',
           borderTopWidth: 0,
-          paddingTop: 8,
+          paddingTop: 10,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
           paddingHorizontal: 8,
           shadowColor: '#000',
           shadowOpacity: 0.06,
@@ -113,7 +109,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="scan"
         options={{
-          tabBarIcon: ({ focused }) => <ScanCenterButton focused={focused} />,
+          tabBarIcon: () => <ScanCenterButton />,
         }}
       />
       <Tabs.Screen

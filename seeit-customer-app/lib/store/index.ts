@@ -7,6 +7,16 @@ type AppState = {
   coords: LocationCoords | null;
   setCoords: (c: LocationCoords | null) => void;
 
+  // Manual location label, set when user picks a city from the picker.
+  // Renders as the chip on Home ("Brooklyn, NY") instead of "Near you".
+  manualLocationLabel: string | null;
+  setManualLocation: (label: string | null, coords: LocationCoords | null) => void;
+
+  // Developer mode — bypasses distance filtering on Home so seed data is
+  // visible without travelling. Toggled from Profile → About.
+  devMode: boolean;
+  setDevMode: (on: boolean) => void;
+
   // Search/filter state — used across Home and Search tabs
   searchQuery: string;
   setSearchQuery: (q: string) => void;
@@ -55,6 +65,12 @@ const EMPTY_FILTERS: AppState['filters'] = {
 export const useAppStore = create<AppState>((set, get) => ({
   coords: null,
   setCoords: (c) => set({ coords: c }),
+
+  manualLocationLabel: null,
+  setManualLocation: (label, coords) => set({ manualLocationLabel: label, coords }),
+
+  devMode: false,
+  setDevMode: (on) => set({ devMode: on }),
 
   searchQuery: '',
   setSearchQuery: (q) => set({ searchQuery: q }),
