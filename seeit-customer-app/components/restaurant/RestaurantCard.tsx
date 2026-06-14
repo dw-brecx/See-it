@@ -63,7 +63,7 @@ export function RestaurantCard({ brand, nearest, distance_miles, width = 280 }: 
         >
           {brand.name}
         </Text>
-        {brand.is_verified ? <VerifiedBadge variant="icon" size="sm" /> : null}
+        {brand.is_verified ? <VerifiedBadge variant="pill" size="sm" /> : null}
       </View>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
         {brand.primary_cuisine ? <CuisineChip label={brand.primary_cuisine} /> : null}

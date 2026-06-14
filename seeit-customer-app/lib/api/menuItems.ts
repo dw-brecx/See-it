@@ -17,7 +17,7 @@ export async function fetchMenuForLocation(locationId: string): Promise<{
       .from('menu_items')
       .select('*, photos:menu_item_photos(*)')
       .eq('location_id', locationId)
-      .eq('is_visible', true)
+      .or('is_visible.is.null,is_visible.eq.true')
       .order('name', { ascending: true }),
   ]);
   debugLog('menu.fetch', 'result', {

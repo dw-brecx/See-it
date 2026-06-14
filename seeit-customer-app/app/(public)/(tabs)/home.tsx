@@ -13,6 +13,7 @@ import { MapPin, Search as SearchIcon, ChevronDown } from 'lucide-react-native';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { HorizontalCardScroll } from '@/components/home/HorizontalCardScroll';
 import { RestaurantCard } from '@/components/restaurant/RestaurantCard';
+import { DishCard } from '@/components/restaurant/DishCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { BottomSheet } from '@/components/ui/BottomSheet';
@@ -23,10 +24,12 @@ import {
   fetchPublishedBrands,
   fetchAllBrandsRaw,
 } from '@/lib/api/brands';
+import { fetchTrendingDishes, fetchNewDishes } from '@/lib/api/dishes';
 import { useAppStore } from '@/lib/store';
 import { tapLight, selection } from '@/lib/utils/haptics';
 import { PRESET_CITIES } from '@/lib/utils/cities';
 import { debugLog } from '@/lib/utils/debugLog';
+import { colors } from '@/lib/utils/colors';
 
 function CardRowSkeleton() {
   return (
@@ -73,6 +76,17 @@ export default function HomeScreen() {
     queryKey: ['home.raw'],
     queryFn: () => fetchAllBrandsRaw(50),
   });
+  // Two dish rails — these are what make the home screen feel like a food
+  // app instead of a store directory. Fetch unconditionally so the rails
+  // populate the moment we land on home.
+  const trending = useQuery({
+    queryKey: ['home.trending-dishes'],
+    queryFn: () => fetchTrendingDishes(20),
+  });
+  const newDishes = useQuery({
+    queryKey: ['home.new-dishes'],
+    queryFn: () => fetchNewDishes(20),
+  });
   const verifiedData: any[] = (verified.data as any[] | undefined) ?? [];
 
   async function onRefresh() {
@@ -82,6 +96,8 @@ export default function HomeScreen() {
       verified.refetch(),
       published.refetch(),
       raw.refetch(),
+      trending.refetch(),
+      newDishes.refetch(),
     ]);
     setRefreshing(false);
   }
@@ -322,6 +338,84 @@ export default function HomeScreen() {
           <View style={{ paddingHorizontal: 20 }}>
             <Text style={{ color: '#6B7280', fontSize: 13 }}>
               Nothing here yet — check back soon.
+            </Text>
+          </View>
+        )}
+
+        {/* Trending dishes — the food rail. This is the difference between
+            a restaurant directory and SeeIt. Dishes with photos appear
+            first so the rail is visually loud. */}
+        <SectionHeader
+          title="Trending dishes"
+          subtitle="What people are ordering right now"
+        />
+        {trending.isLoading ? (
+          <CardRowSkeleton />
+        ) : (trending.data?.length ?? 0) > 0 ? (
+          <HorizontalCardScroll>
+            {trending.data!.map((d) => (
+              <DishCard
+                key={d.id}
+                item={{
+                  id: d.id,
+                  name: d.name,
+                  description: d.description,
+                  price: d.price,
+                  dietary_tags: d.dietary_tags,
+                  average_rating: d.average_rating,
+                  review_count: d.review_count,
+                  location_id: d.location_id,
+                  is_visible: true,
+                  category_id: null,
+                  cover_photo_url: d.cover_photo_url,
+                }}
+                brand_name={d.brand_name}
+                cuisine={d.cuisine}
+                width={200}
+              />
+            ))}
+          </HorizontalCardScroll>
+        ) : (
+          <View style={{ paddingHorizontal: 20 }}>
+            <Text style={{ color: colors.textSecondary, fontSize: 13 }}>
+              No dishes with photos yet — once owners upload menu photos
+              they'll show up here.
+            </Text>
+          </View>
+        )}
+
+        {/* Newest dishes — most recently added by restaurants */}
+        <SectionHeader title="Fresh on the menu" subtitle="Recently added dishes" />
+        {newDishes.isLoading ? (
+          <CardRowSkeleton />
+        ) : (newDishes.data?.length ?? 0) > 0 ? (
+          <HorizontalCardScroll>
+            {newDishes.data!.map((d) => (
+              <DishCard
+                key={d.id}
+                item={{
+                  id: d.id,
+                  name: d.name,
+                  description: d.description,
+                  price: d.price,
+                  dietary_tags: d.dietary_tags,
+                  average_rating: d.average_rating,
+                  review_count: d.review_count,
+                  location_id: d.location_id,
+                  is_visible: true,
+                  category_id: null,
+                  cover_photo_url: d.cover_photo_url,
+                }}
+                brand_name={d.brand_name}
+                cuisine={d.cuisine}
+                width={200}
+              />
+            ))}
+          </HorizontalCardScroll>
+        ) : (
+          <View style={{ paddingHorizontal: 20 }}>
+            <Text style={{ color: colors.textSecondary, fontSize: 13 }}>
+              No new dishes yet — check back soon.
             </Text>
           </View>
         )}

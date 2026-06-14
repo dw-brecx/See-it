@@ -72,6 +72,17 @@ export default function ScanScreen() {
   const [manualOpen, setManualOpen] = React.useState(false);
   const [manualValue, setManualValue] = React.useState('');
   const [active, setActive] = React.useState(false);
+  const [requested, setRequested] = React.useState(false);
+
+  // Fire the OS permission prompt the first time the user opens Scan.
+  // Without this they sit on a black screen until they go hunt down the
+  // permission setting themselves.
+  React.useEffect(() => {
+    if (permission && !permission.granted && permission.canAskAgain && !requested) {
+      setRequested(true);
+      void requestPermission();
+    }
+  }, [permission, requested, requestPermission]);
 
   // Auto-pause when leaving the tab, resume on return.
   useFocusEffect(

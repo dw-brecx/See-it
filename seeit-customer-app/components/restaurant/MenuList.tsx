@@ -27,6 +27,9 @@ export function MenuList({
   const grouped = React.useMemo(() => {
     const byCategory = new Map<string | null, ItemRow[]>();
     for (const i of items) {
+      // Treat is_visible nullable as "visible" — the rule is "hidden only if
+      // explicitly false", same shape as is_suspended.
+      if (i.is_visible === false) continue;
       const key = i.category_id ?? null;
       const arr = byCategory.get(key) ?? [];
       arr.push(i);
@@ -38,6 +41,15 @@ export function MenuList({
     }));
     const uncategorized = byCategory.get(null) ?? [];
     if (uncategorized.length) sections.push({ category: null as any, items: uncategorized });
+    // ALSO catch any items whose category_id points at a category that
+    // doesn't actually exist (orphaned items from a deleted category) —
+    // put them in the "Menu" bucket so they still render.
+    const knownIds = new Set(categories.map((c) => c.id));
+    const orphans: ItemRow[] = [];
+    for (const [key, list] of byCategory.entries()) {
+      if (key !== null && !knownIds.has(key)) orphans.push(...list);
+    }
+    if (orphans.length) sections.push({ category: null as any, items: orphans });
     return sections.filter((s) => s.items.length > 0);
   }, [categories, items]);
 
