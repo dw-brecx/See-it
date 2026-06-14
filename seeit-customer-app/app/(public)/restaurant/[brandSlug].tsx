@@ -40,7 +40,12 @@ import { useBrand, useBrandLocations } from '@/lib/hooks/useBrand';
 import { useMenu } from '@/lib/hooks/useMenu';
 import { useLocationReviews } from '@/lib/hooks/useReviews';
 import { useAppStore } from '@/lib/store';
-import { useToggleSavedLocation } from '@/lib/hooks/useSavedItems';
+import {
+  useToggleSavedLocation,
+  useSavedLocationId,
+  useSetWantToTry,
+} from '@/lib/hooks/useSavedItems';
+import { ErrorState } from '@/components/ui/ErrorState';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { distanceMiles } from '@/lib/utils/distance';
 import { formatDistance } from '@/lib/utils/formatDistance';
@@ -115,36 +120,42 @@ function InnerScreen() {
   const [activeLocationId, setActiveLocationId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (!activeLocationId && locationsQ.data && locationsQ.data.length > 0) {
-      if (coords) {
-        let best = locationsQ.data[0];
-        let bestD = Infinity;
-        for (const l of locationsQ.data) {
-          if (l.latitude != null && l.longitude != null) {
-            const d = distanceMiles(coords.latitude, coords.longitude, l.latitude, l.longitude);
-            if (d < bestD) {
-              bestD = d;
-              best = l;
-            }
+    if (!locationsQ.data || locationsQ.data.length === 0) return;
+    // If the previously-selected location was deleted in a refetch, drop
+    // back to nearest. Also picks the nearest on first run.
+    const stillExists =
+      activeLocationId && locationsQ.data.some((l) => l.id === activeLocationId);
+    if (stillExists) return;
+    if (coords) {
+      let best = locationsQ.data[0];
+      let bestD = Infinity;
+      for (const l of locationsQ.data) {
+        if (l.latitude != null && l.longitude != null) {
+          const d = distanceMiles(coords.latitude, coords.longitude, l.latitude, l.longitude);
+          if (d < bestD) {
+            bestD = d;
+            best = l;
           }
         }
-        setActiveLocationId(best.id);
-      } else {
-        setActiveLocationId(locationsQ.data[0].id);
       }
+      setActiveLocationId(best.id);
+    } else {
+      setActiveLocationId(locationsQ.data[0].id);
     }
   }, [locationsQ.data, coords, activeLocationId]);
 
   const activeLocation = locationsQ.data?.find((l) => l.id === activeLocationId);
   const menuQ = useMenu(activeLocationId ?? undefined);
+
+  const [tab, setTab] = React.useState<Tab>('menu');
+  // Lazy queries — reviewsQ, brandReviewsQ, photosQ only fire when the
+  // user actually opens that tab (or once for the header average).
   const reviewsQ = useLocationReviews(activeLocationId ?? undefined);
 
-  // Brand-wide reviews — used for the storefront average + count chip.
-  // locations.average_rating is stale (no trigger updating it), so we
-  // ignore it and compute live.
   const brandReviewsQ = useQuery({
     queryKey: ['reviews.brand', brandId],
     queryFn: () => fetchReviewsForBrand(brandId),
+    // Fire on mount so the header average renders, then it's cached.
     enabled: !!brandId,
   });
   const brandReviews = brandReviewsQ.data ?? [];
@@ -153,11 +164,11 @@ function InnerScreen() {
       ? 0
       : brandReviews.reduce((s, r) => s + (r.rating ?? 0), 0) / brandReviews.length;
 
-  // All photos for the Photos tab.
+  // Photos tab lazy — only fetch when user opens Photos.
   const photosQ = useQuery({
     queryKey: ['photos.brand', brandId],
     queryFn: () => fetchAllPhotosForBrand(brandId),
-    enabled: !!brandId,
+    enabled: !!brandId && tab === 'photos',
   });
 
   // Certs for the active location
@@ -189,7 +200,8 @@ function InnerScreen() {
   });
 
   const toggleSaved = useToggleSavedLocation();
-  const [tab, setTab] = React.useState<Tab>('menu');
+  const setWantToTry = useSetWantToTry();
+  const { savedId, wantToTry } = useSavedLocationId(activeLocationId);
   const [whatsGoodOpen, setWhatsGoodOpen] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -220,6 +232,18 @@ function InnerScreen() {
       photosQ.refetch(),
     ]);
     setRefreshing(false);
+  }
+
+  if (brandQ.isError) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center' }}>
+        <ErrorState
+          title="Couldn't load this spot"
+          subtitle="Pull down to refresh or try again in a moment."
+          onRetry={() => brandQ.refetch()}
+        />
+      </View>
+    );
   }
 
   if (brandQ.isLoading || !brandQ.data) {
@@ -303,27 +327,57 @@ function InnerScreen() {
         >
           <ActionButton
             Icon={Heart}
-            label="Save"
+            label={savedId ? 'Saved' : 'Save'}
+            active={!!savedId}
             onPress={() => {
               if (!user) {
                 toast.info('Sign in to save your favorites');
                 router.push('/(auth)/signin');
                 return;
               }
-              toggleSaved.mutate({ locationId: activeLocationId!, currentId: null });
-              toast.success('Saved');
+              const wasSaved = !!savedId;
+              toggleSaved.mutate(
+                { locationId: activeLocationId!, currentId: savedId, wantToTry: false },
+                {
+                  onSuccess: () =>
+                    toast.success(wasSaved ? 'Removed from saved' : 'Saved'),
+                  onError: (e: any) => toast.error(e?.message ?? "Couldn't save"),
+                },
+              );
             }}
           />
           <ActionButton
             Icon={BookmarkPlus}
-            label="Want to try"
+            label={wantToTry ? 'On list' : 'Want to try'}
+            active={wantToTry}
             onPress={() => {
               if (!user) {
                 toast.info('Sign in to save your favorites');
                 router.push('/(auth)/signin');
                 return;
               }
-              toast.success('Added to Want to try');
+              if (savedId) {
+                // Already saved — just flip the want-to-try flag in place.
+                setWantToTry.mutate(
+                  { id: savedId, want: !wantToTry },
+                  {
+                    onSuccess: () =>
+                      toast.success(
+                        wantToTry ? 'Removed from Want to try' : 'Added to Want to try',
+                      ),
+                    onError: (e: any) => toast.error(e?.message ?? 'Could not update'),
+                  },
+                );
+              } else {
+                // Not saved yet — create a new saved row marked as want-to-try.
+                toggleSaved.mutate(
+                  { locationId: activeLocationId!, currentId: null, wantToTry: true },
+                  {
+                    onSuccess: () => toast.success('Added to Want to try'),
+                    onError: (e: any) => toast.error(e?.message ?? 'Could not add'),
+                  },
+                );
+              }
             }}
           />
           <ActionButton

@@ -1,10 +1,18 @@
 import * as React from 'react';
-import { View, Text, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Mail, Lock } from 'lucide-react-native';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { SocialButtons } from '@/components/auth/SocialButtons';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { error as errorHaptic, success } from '@/lib/utils/haptics';
@@ -44,7 +52,6 @@ export default function SignInScreen() {
       setLoading(false);
       return;
     }
-    // Block non-customer roles with a friendly redirect message.
     const { data: profile } = await supabase
       .from('users')
       .select('role')
@@ -52,17 +59,19 @@ export default function SignInScreen() {
       .maybeSingle();
     if (profile && profile.role !== 'customer') {
       await supabase.auth.signOut();
-      const which =
-        profile.role === 'admin' ? 'admin' : 'restaurant';
-      setErr(
-        `That's a ${which} account. Please use the ${which} dashboard.`,
-      );
+      const which = profile.role === 'admin' ? 'admin' : 'restaurant';
+      setErr(`That's a ${which} account. Please use the ${which} dashboard.`);
       setLoading(false);
       return;
     }
     success();
     await refresh();
     toast.success('Welcome back');
+    router.dismissAll();
+    router.replace('/(public)/(tabs)/home');
+  }
+
+  function afterSocial() {
     router.dismissAll();
     router.replace('/(public)/(tabs)/home');
   }
@@ -84,12 +93,22 @@ export default function SignInScreen() {
             alignItems: 'center',
             justifyContent: 'center',
           }}
+          accessibilityRole="button"
+          accessibilityLabel="Back"
         >
           <ArrowLeft size={18} color={colors.text} />
         </Pressable>
       </View>
 
-      <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24, gap: 16 }}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          paddingTop: 24,
+          paddingBottom: 32,
+          gap: 16,
+        }}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text
           style={{
             fontSize: 32,
@@ -104,7 +123,19 @@ export default function SignInScreen() {
           Sign in to keep your saved spots and reviews.
         </Text>
 
-        <View style={{ gap: 12, marginTop: 12 }}>
+        <SocialButtons onSuccess={afterSocial} />
+
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 4 }}
+        >
+          <View style={{ flex: 1, height: 1, backgroundColor: colors.border }} />
+          <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: '600' }}>
+            OR EMAIL
+          </Text>
+          <View style={{ flex: 1, height: 1, backgroundColor: colors.border }} />
+        </View>
+
+        <View style={{ gap: 12 }}>
           <Input
             label="Email"
             value={email}
@@ -145,7 +176,7 @@ export default function SignInScreen() {
             <Text style={{ color: colors.primary, fontWeight: '700' }}>Sign up</Text>
           </Text>
         </Pressable>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

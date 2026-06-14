@@ -19,18 +19,27 @@ function hydrateReviews(rows: any[]): ReviewWithAuthor[] {
   }));
 }
 
+// Null-safe flagged filter — `.neq('is_flagged', true)` evaluates
+// `NULL <> TRUE` to NULL (not TRUE) under SQL three-valued logic, so
+// reviews with `is_flagged = NULL` (most rows) were silently dropped.
+// We want: keep rows where is_flagged is NULL or FALSE.
+function notFlagged(q: any) {
+  return q.or('is_flagged.is.null,is_flagged.eq.false');
+}
+
 export async function fetchReviewsForLocation(
   locationId: string,
   limit = 30,
 ): Promise<ReviewWithAuthor[]> {
   debugLog('reviews.location', 'querying', { locationId });
-  const { data, error } = await supabase
+  let q = supabase
     .from('reviews')
     .select(
       '*, user:users(name, email, avatar_url), photos:review_photos(*), replies:review_replies(*)',
     )
-    .eq('location_id', locationId)
-    .neq('is_flagged', true)
+    .eq('location_id', locationId);
+  q = notFlagged(q);
+  const { data, error } = await q
     .order('created_at', { ascending: false })
     .limit(limit);
   debugLog('reviews.location', 'result', {
@@ -40,32 +49,24 @@ export async function fetchReviewsForLocation(
   return hydrateReviews((data ?? []) as any[]);
 }
 
-/**
- * All non-flagged reviews across every location of a brand. Used to compute
- * the storefront-wide average (the bug was using the stored
- * locations.average_rating which never gets written by any trigger).
- */
 export async function fetchReviewsForBrand(brandId: string): Promise<ReviewWithAuthor[]> {
   debugLog('reviews.brand', 'querying', { brandId });
-  // Two-step because reviews.brand_id doesn't exist — go via locations.
   const { data: locs } = await supabase
     .from('locations')
     .select('id')
     .eq('brand_id', brandId);
   const locIds = (locs ?? []).map((l: any) => l.id);
-  if (locIds.length === 0) {
-    debugLog('reviews.brand', 'no locations for brand', { brandId });
-    return [];
-  }
-  const { data, error } = await supabase
+  if (locIds.length === 0) return [];
+  let q = supabase
     .from('reviews')
     .select(
       '*, user:users(name, email, avatar_url), photos:review_photos(*), replies:review_replies(*)',
     )
-    .in('location_id', locIds)
-    .neq('is_flagged', true)
+    .in('location_id', locIds);
+  q = notFlagged(q);
+  const { data, error } = await q
     .order('created_at', { ascending: false })
-    .limit(100);
+    .limit(200);
   debugLog('reviews.brand', 'result', {
     count: data?.length ?? 0,
     error: error?.message,
@@ -78,13 +79,14 @@ export async function fetchReviewsForMenuItem(
   limit = 20,
 ): Promise<ReviewWithAuthor[]> {
   debugLog('reviews.item', 'querying', { menuItemId });
-  const { data, error } = await supabase
+  let q = supabase
     .from('reviews')
     .select(
       '*, user:users(name, email, avatar_url), photos:review_photos(*), replies:review_replies(*)',
     )
-    .eq('menu_item_id', menuItemId)
-    .neq('is_flagged', true)
+    .eq('menu_item_id', menuItemId);
+  q = notFlagged(q);
+  const { data, error } = await q
     .order('created_at', { ascending: false })
     .limit(limit);
   debugLog('reviews.item', 'result', {
@@ -105,14 +107,15 @@ export type SubmitReviewInput = {
   photo_urls: string[];
 };
 
-/**
- * Insert the review row, then any review_photos. If a menu_item_id is set
- * we ALSO insert each photo into menu_item_photos with
- * is_restaurant_uploaded=false so the dish's photo carousel picks it up.
- * Without that step the customer never sees their own photo on the dish.
- */
-export async function submitReview(input: SubmitReviewInput) {
-  debugLog('reviews.submit', 'inserting review', {
+export class ReviewSubmitError extends Error {
+  constructor(public step: 'review' | 'photos' | 'item-photos', message: string) {
+    super(message);
+    this.name = 'ReviewSubmitError';
+  }
+}
+
+export async function submitReview(input: SubmitReviewInput): Promise<string> {
+  debugLog('reviews.submit', 'inserting', {
     location_id: input.location_id,
     menu_item_id: input.menu_item_id,
     rating: input.rating,
@@ -121,7 +124,8 @@ export async function submitReview(input: SubmitReviewInput) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error('Sign in to write a review');
+  if (!user) throw new ReviewSubmitError('review', 'Sign in to write a review');
+
   const { data: reviewRes, error } = await supabase
     .from('reviews')
     .insert({
@@ -136,12 +140,14 @@ export async function submitReview(input: SubmitReviewInput) {
     })
     .select('id')
     .single();
-  debugLog('reviews.submit', 'review insert result', {
+  debugLog('reviews.submit', 'review insert', {
     ok: !!reviewRes,
     id: reviewRes?.id,
     error: error?.message,
   });
-  if (error || !reviewRes) throw error ?? new Error('Failed to create review');
+  if (error || !reviewRes) {
+    throw new ReviewSubmitError('review', error?.message ?? 'Failed to create review');
+  }
 
   if (input.photo_urls.length > 0) {
     const { error: pErr } = await supabase.from('review_photos').insert(
@@ -152,6 +158,9 @@ export async function submitReview(input: SubmitReviewInput) {
       })),
     );
     debugLog('reviews.submit', 'review_photos insert', { error: pErr?.message });
+    if (pErr) {
+      throw new ReviewSubmitError('photos', pErr.message);
+    }
 
     if (input.menu_item_id) {
       const { error: miErr } = await supabase.from('menu_item_photos').insert(
@@ -164,24 +173,28 @@ export async function submitReview(input: SubmitReviewInput) {
         })),
       );
       debugLog('reviews.submit', 'menu_item_photos insert', { error: miErr?.message });
+      if (miErr) {
+        throw new ReviewSubmitError('item-photos', miErr.message);
+      }
     }
   }
   return reviewRes.id as string;
 }
 
-/**
- * Upload an image from a local URI to the review-photos bucket and return the
- * public URL. Path: {userId}/{review-or-tmp}-{timestamp}-{i}.{ext}.
- */
+export type PhotoUploadResult =
+  | { ok: true; publicUrl: string }
+  | { ok: false; error: string };
+
 export async function uploadReviewPhoto(
   userId: string,
   uri: string,
   index: number,
-): Promise<string | null> {
+): Promise<PhotoUploadResult> {
   try {
-    const ext = uri.split('.').pop()?.toLowerCase().split('?')[0] ?? 'jpg';
+    const ext =
+      uri.split('?')[0].split('.').pop()?.toLowerCase() ?? 'jpg';
     const path = `${userId}/${Date.now()}-${index}.${ext}`;
-    debugLog('storage.review', 'uploading', { path, uriPrefix: uri.slice(0, 32) });
+    debugLog('storage.review', 'uploading', { path });
     const res = await fetch(uri);
     const blob = await res.blob();
     const { error } = await supabase.storage
@@ -189,13 +202,13 @@ export async function uploadReviewPhoto(
       .upload(path, blob, { contentType: blob.type || 'image/jpeg' });
     if (error) {
       debugLog('storage.review', 'upload error', { error: error.message });
-      return null;
+      return { ok: false, error: error.message };
     }
     const { data } = supabase.storage.from('review-photos').getPublicUrl(path);
     debugLog('storage.review', 'uploaded', { publicUrl: data.publicUrl });
-    return data.publicUrl;
+    return { ok: true, publicUrl: data.publicUrl };
   } catch (e: any) {
     debugLog('storage.review', 'caught', { message: e?.message });
-    return null;
+    return { ok: false, error: e?.message ?? 'Upload failed' };
   }
 }

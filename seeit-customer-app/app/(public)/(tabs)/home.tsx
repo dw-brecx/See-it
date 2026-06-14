@@ -273,8 +273,10 @@ export default function HomeScreen() {
           <View style={{ paddingHorizontal: 20 }}>
             <EmptyState
               icon={<MapPin size={28} color="#E85D3A" />}
-              title="No spots in the database yet"
-              subtitle="Check that your Supabase env vars are set and that the brands table has at least one row with storefront_published=true. The terminal logs (search for '[SeeIt') tell you exactly what each query returned."
+              title="No spots yet"
+              subtitle="We're adding new restaurants every week — pull down to refresh, or try a different city from the location pill above."
+              ctaLabel="Try a different city"
+              onCtaPress={() => setCityPickerOpen(true)}
             />
           </View>
         )}

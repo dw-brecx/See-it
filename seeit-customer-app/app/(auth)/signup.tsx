@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Mail, Lock, User } from 'lucide-react-native';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { SocialButtons } from '@/components/auth/SocialButtons';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { error as errorHaptic, success } from '@/lib/utils/haptics';
@@ -58,16 +59,19 @@ export default function SignUpScreen() {
     }
     success();
     if (data.session) {
-      // Auto-signed-in — straight into the personalization flow.
       await refresh();
       toast.success("You're in! Let's personalize");
       router.dismissAll();
       router.replace('/(auth)/allergy-setup');
     } else {
-      // Email confirmation is required — send them to signin with a toast.
       toast.info('Check your email to confirm your account');
       router.replace('/(auth)/signin');
     }
+  }
+
+  function afterSocial() {
+    router.dismissAll();
+    router.replace('/(auth)/allergy-setup');
   }
 
   return (
@@ -87,6 +91,8 @@ export default function SignUpScreen() {
             alignItems: 'center',
             justifyContent: 'center',
           }}
+          accessibilityRole="button"
+          accessibilityLabel="Back"
         >
           <ArrowLeft size={18} color={colors.text} />
         </Pressable>
@@ -115,7 +121,19 @@ export default function SignUpScreen() {
           Save spots, review dishes, build order lists with friends.
         </Text>
 
-        <View style={{ gap: 12, marginTop: 8 }}>
+        <SocialButtons onSuccess={afterSocial} />
+
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 4 }}
+        >
+          <View style={{ flex: 1, height: 1, backgroundColor: colors.border }} />
+          <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: '600' }}>
+            OR EMAIL
+          </Text>
+          <View style={{ flex: 1, height: 1, backgroundColor: colors.border }} />
+        </View>
+
+        <View style={{ gap: 12 }}>
           <Input
             label="Name"
             value={name}
@@ -145,15 +163,13 @@ export default function SignUpScreen() {
           {err ? <Text style={{ color: colors.danger, fontSize: 13 }}>{err}</Text> : null}
         </View>
 
-        <View style={{ marginTop: 4 }}>
-          <Button
-            label={loading ? 'Creating account…' : 'Create account'}
-            fullWidth
-            size="lg"
-            loading={loading}
-            onPress={onSubmit}
-          />
-        </View>
+        <Button
+          label={loading ? 'Creating account…' : 'Create account'}
+          fullWidth
+          size="lg"
+          loading={loading}
+          onPress={onSubmit}
+        />
 
         <Pressable
           onPress={() => router.replace('/(auth)/signin')}

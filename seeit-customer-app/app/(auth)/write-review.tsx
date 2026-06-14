@@ -6,7 +6,6 @@ import {
   Pressable,
   TextInput,
   Image,
-  ActivityIndicator,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,7 +15,7 @@ import { StarRating } from '@/components/ui/StarRating';
 import { Chip } from '@/components/ui/Chip';
 import { Button } from '@/components/ui/Button';
 import { MOOD_TAGS } from '@/lib/utils/constants';
-import { submitReview, uploadReviewPhoto } from '@/lib/api/reviews';
+import { submitReview, uploadReviewPhoto, ReviewSubmitError } from '@/lib/api/reviews';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { success, error as errorHaptic, selection } from '@/lib/utils/haptics';
 import { toast } from '@/components/ui/Toast';
@@ -63,7 +62,6 @@ export default function WriteReviewScreen() {
       selectionLimit: 6 - photos.length,
     });
     if (result.canceled) return;
-    debugLog('write-review.pickPhotos', 'picked', { count: result.assets.length });
     setPhotos((prev) => [...prev, ...result.assets.map((a) => a.uri)]);
   }
 
@@ -94,20 +92,40 @@ export default function WriteReviewScreen() {
     }
     setSubmitting(true);
     try {
-      // 1. Upload any photos to storage.
-      setUploading(true);
+      // Upload photos first — track per-photo result so we can surface
+      // partial failures.
       const uploaded: string[] = [];
-      for (let i = 0; i < photos.length; i++) {
-        const url = await uploadReviewPhoto(user.id, photos[i], i);
-        if (url) uploaded.push(url);
+      const failed: string[] = [];
+      if (photos.length > 0) {
+        setUploading(true);
+        for (let i = 0; i < photos.length; i++) {
+          const result = await uploadReviewPhoto(user.id, photos[i], i);
+          if (result.ok) uploaded.push(result.publicUrl);
+          else failed.push(result.error);
+        }
+        setUploading(false);
+        debugLog('write-review.submit', 'upload summary', {
+          attempted: photos.length,
+          succeeded: uploaded.length,
+          failed: failed.length,
+        });
+        if (failed.length > 0 && uploaded.length === 0) {
+          errorHaptic();
+          toast.error(
+            failed[0].includes('row-level security') || failed[0].includes('policy')
+              ? 'Storage bucket not set up — see BUGS.md for SQL'
+              : `Could not upload photos: ${failed[0]}`,
+          );
+          setSubmitting(false);
+          return;
+        }
+        if (failed.length > 0) {
+          toast.info(
+            `${uploaded.length} of ${photos.length} photos uploaded — posting anyway`,
+          );
+        }
       }
-      setUploading(false);
-      debugLog('write-review.submit', 'photos uploaded', {
-        attempted: photos.length,
-        succeeded: uploaded.length,
-      });
 
-      // 2. Insert the review row + review_photos + menu_item_photos.
       await submitReview({
         location_id: String(params.locationId),
         menu_item_id: params.menuItemId ? String(params.menuItemId) : null,
@@ -123,7 +141,17 @@ export default function WriteReviewScreen() {
       router.back();
     } catch (e: any) {
       errorHaptic();
-      toast.error(e?.message ?? 'Could not post review');
+      if (e instanceof ReviewSubmitError) {
+        if (e.step === 'photos') {
+          toast.error('Review posted, but attaching photos failed');
+        } else if (e.step === 'item-photos') {
+          toast.error('Review posted, but adding to dish gallery failed');
+        } else {
+          toast.error(e.message);
+        }
+      } else {
+        toast.error(e?.message ?? 'Could not post review');
+      }
       debugLog('write-review.submit', 'error', { message: e?.message });
     } finally {
       setSubmitting(false);
@@ -143,10 +171,14 @@ export default function WriteReviewScreen() {
           justifyContent: 'space-between',
         }}
       >
-        <Text style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>Write a review</Text>
+        <Text style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>
+          Write a review
+        </Text>
         <Pressable
           onPress={() => router.back()}
           hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel="Close"
           style={{
             width: 34,
             height: 34,
@@ -160,15 +192,23 @@ export default function WriteReviewScreen() {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, gap: 24 }}>
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, gap: 24 }}
+      >
         <View style={{ alignItems: 'center', paddingVertical: 12 }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: colors.textSecondary, marginBottom: 8 }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: '700',
+              color: colors.textSecondary,
+              marginBottom: 8,
+            }}
+          >
             Your rating
           </Text>
           <StarRating value={rating} size={40} onChange={setRating} />
         </View>
 
-        {/* Photos */}
         <View style={{ gap: 10 }}>
           <Text style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>
             Add photos — your photo helps others decide!
@@ -188,6 +228,8 @@ export default function WriteReviewScreen() {
                   />
                   <Pressable
                     onPress={() => removePhoto(i)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Remove photo ${i + 1}`}
                     style={{
                       position: 'absolute',
                       top: -6,
@@ -208,6 +250,8 @@ export default function WriteReviewScreen() {
                 <>
                   <Pressable
                     onPress={pickPhotos}
+                    accessibilityRole="button"
+                    accessibilityLabel="Add photos from library"
                     style={{
                       width: 96,
                       height: 96,
@@ -222,12 +266,20 @@ export default function WriteReviewScreen() {
                     }}
                   >
                     <ImagePlus size={22} color={colors.textSecondary} />
-                    <Text style={{ fontSize: 11, color: colors.textSecondary, fontWeight: '600' }}>
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        color: colors.textSecondary,
+                        fontWeight: '600',
+                      }}
+                    >
                       Library
                     </Text>
                   </Pressable>
                   <Pressable
                     onPress={takePhoto}
+                    accessibilityRole="button"
+                    accessibilityLabel="Take a photo"
                     style={{
                       width: 96,
                       height: 96,
@@ -242,7 +294,13 @@ export default function WriteReviewScreen() {
                     }}
                   >
                     <Camera size={22} color={colors.textSecondary} />
-                    <Text style={{ fontSize: 11, color: colors.textSecondary, fontWeight: '600' }}>
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        color: colors.textSecondary,
+                        fontWeight: '600',
+                      }}
+                    >
                       Camera
                     </Text>
                   </Pressable>
@@ -281,7 +339,9 @@ export default function WriteReviewScreen() {
         </View>
 
         <View style={{ gap: 10 }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>Portion size</Text>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>
+            Portion size
+          </Text>
           <View style={{ flexDirection: 'row', gap: 8 }}>
             {(['small', 'right', 'huge'] as Portion[]).map((p) => (
               <Pressable
@@ -290,6 +350,11 @@ export default function WriteReviewScreen() {
                   selection();
                   setPortion(p);
                 }}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: portion === p }}
+                accessibilityLabel={
+                  p === 'small' ? 'Small portion' : p === 'right' ? 'Just right' : 'Generous portion'
+                }
                 style={{
                   flex: 1,
                   paddingVertical: 14,
@@ -321,6 +386,9 @@ export default function WriteReviewScreen() {
                 selection();
                 setWorth(true);
               }}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: worth === true }}
+              accessibilityLabel="Worth the price"
               style={{
                 flex: 1,
                 paddingVertical: 14,
@@ -343,6 +411,9 @@ export default function WriteReviewScreen() {
                 selection();
                 setWorth(false);
               }}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: worth === false }}
+              accessibilityLabel="Not worth the price"
               style={{
                 flex: 1,
                 paddingVertical: 14,

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, FlatList, Pressable } from 'react-native';
+import { View, Text, FlatList, Pressable, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import { Filter } from 'lucide-react-native';
@@ -23,6 +23,11 @@ export default function SearchScreen() {
   const setQuery = useAppStore((s) => s.setSearchQuery);
   const [tab, setTab] = React.useState<Tab>('restaurants');
   const [debounced, setDebounced] = React.useState(query);
+  // Restaurant cards in the result list span screen width minus horizontal
+  // padding; dish cards split into two columns with an 14px gap between.
+  const screenWidth = Dimensions.get('window').width;
+  const cardWidth = screenWidth - 40;
+  const dishCardWidth = (screenWidth - 40 - 14) / 2;
 
   React.useEffect(() => {
     const id = setTimeout(() => setDebounced(query), 300);
@@ -126,7 +131,7 @@ export default function SearchScreen() {
             keyExtractor={(b) => b.id}
             contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40, gap: 18 }}
             renderItem={({ item }) => (
-              <RestaurantCard brand={item} width={undefined as any} />
+              <RestaurantCard brand={item} width={cardWidth} />
             )}
           />
         ) : (
@@ -143,7 +148,7 @@ export default function SearchScreen() {
             <DishCard
               item={item as any}
               brand_name={item.brand_name}
-              width={(360 - 20 * 2 - 14) / 2}
+              width={dishCardWidth}
             />
           )}
         />

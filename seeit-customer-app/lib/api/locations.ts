@@ -2,15 +2,8 @@ import { supabase } from '../supabase/client';
 import { Brand, KosherCert, HalalCert, Location } from '../types';
 import { distanceMiles } from '../utils/distance';
 import { debugLog } from '../utils/debugLog';
+import { isVisible } from './visibility';
 
-function isVisible(b: any): boolean {
-  if (!b) return false;
-  if (b.storefront_published !== true) return false;
-  if (b.is_suspended === true) return false;
-  return true;
-}
-
-/** Single location + its brand. */
 export async function fetchLocationDetail(locationId: string): Promise<{
   brand: Brand;
   location: Location;
@@ -37,7 +30,7 @@ export async function fetchLocationDetail(locationId: string): Promise<{
         .maybeSingle(),
     ).catch(() => ({ data: null })),
   ]);
-  const loc: any = locRes.data;
+  const loc = locRes.data as any;
   debugLog('location.detail', 'result', {
     found: !!loc,
     locError: locRes.error?.message,
@@ -45,14 +38,11 @@ export async function fetchLocationDetail(locationId: string): Promise<{
   if (!loc) return null;
   const brand = loc.brand as Brand;
   if (!brand) {
-    debugLog('location.detail', 'location had no brand join — bad FK?', { locationId });
+    debugLog('location.detail', 'no brand — bad FK?', { locationId });
     return null;
   }
   if (!isVisible(brand)) {
-    debugLog('location.detail', 'brand hidden', {
-      published: brand.storefront_published,
-      suspended: brand.is_suspended,
-    });
+    debugLog('location.detail', 'brand hidden');
     return null;
   }
   const { brand: _b, ...location } = loc;
@@ -64,10 +54,6 @@ export async function fetchLocationDetail(locationId: string): Promise<{
   };
 }
 
-/**
- * Nearby restaurants — bounding-box prefilter + client-side haversine sort.
- * Visibility (storefront_published / is_suspended) checked in JS.
- */
 export async function fetchNearbyBrands(
   userLat: number,
   userLng: number,
@@ -81,12 +67,6 @@ export async function fetchNearbyBrands(
     userLat,
     userLng,
     radiusMiles,
-    bbox: {
-      latMin: userLat - latDelta,
-      latMax: userLat + latDelta,
-      lngMin: userLng - lngDelta,
-      lngMax: userLng + lngDelta,
-    },
   });
 
   const { data, error } = await supabase
@@ -100,12 +80,7 @@ export async function fetchNearbyBrands(
   debugLog('home.discover', 'raw result', {
     count: data?.length ?? 0,
     error: error?.message,
-    hint:
-      error
-        ? 'Possible RLS block on locations OR malformed brand FK alias. Check that brands → locations FK is named brand_id, and that an anon SELECT policy exists on both tables.'
-        : undefined,
   });
-
   if (error || !data) return [];
 
   const grouped = new Map<string, { brand: Brand; nearest: Location; distance_miles: number }>();
@@ -125,12 +100,17 @@ export async function fetchNearbyBrands(
       continue;
     }
     const { brand: _b, ...location } = row;
-    if (location.latitude == null || location.longitude == null) {
+    // Hard guard — NaN distance from missing coords poisoned the radius
+    // check before (NaN > X is false, so the row was kept).
+    if (
+      typeof location.latitude !== 'number' ||
+      typeof location.longitude !== 'number'
+    ) {
       droppedNoCoords++;
       continue;
     }
     const d = distanceMiles(userLat, userLng, location.latitude, location.longitude);
-    if (d > radiusMiles) {
+    if (!Number.isFinite(d) || d > radiusMiles) {
       droppedOutOfRadius++;
       continue;
     }

@@ -1,17 +1,12 @@
 import { supabase } from '../supabase/client';
 import { Brand, MenuItem } from '../types';
 import { debugLog } from '../utils/debugLog';
-
-function isVisible(b: any): boolean {
-  if (!b) return false;
-  if (b.storefront_published !== true) return false;
-  if (b.is_suspended === true) return false;
-  return true;
-}
+import { isVisible, escapeIlike } from './visibility';
 
 export async function searchBrands(q: string, limit = 30): Promise<Brand[]> {
   const term = q.trim();
-  debugLog('search.brands', 'querying', { term, limit });
+  const safeTerm = escapeIlike(term);
+  debugLog('search.brands', 'querying', { term, safeTerm, limit });
   let query = supabase
     .from('brands')
     .select('*')
@@ -20,7 +15,7 @@ export async function searchBrands(q: string, limit = 30): Promise<Brand[]> {
     .limit(limit);
   if (term.length > 0) {
     query = query.or(
-      `name.ilike.%${term}%,primary_cuisine.ilike.%${term}%,tagline.ilike.%${term}%,description.ilike.%${term}%`,
+      `name.ilike.%${safeTerm}%,primary_cuisine.ilike.%${safeTerm}%,tagline.ilike.%${safeTerm}%,description.ilike.%${safeTerm}%`,
     );
   }
   const { data, error } = await query;
@@ -29,8 +24,7 @@ export async function searchBrands(q: string, limit = 30): Promise<Brand[]> {
     error: error?.message,
   });
   if (error) return [];
-  const visible = (data ?? []).filter(isVisible) as Brand[];
-  return visible;
+  return (data ?? []).filter(isVisible) as Brand[];
 }
 
 export type DishSearchResult = MenuItem & {
@@ -43,20 +37,19 @@ export type DishSearchResult = MenuItem & {
 
 export async function searchDishes(q: string, limit = 50): Promise<DishSearchResult[]> {
   const term = q.trim();
+  const safeTerm = escapeIlike(term);
   debugLog('search.dishes', 'querying', { term, limit });
   let query = supabase
     .from('menu_items')
     .select(
-      // Pull through location → brand for naming + cuisine fallback, AND
-      // menu_item_photos so the result cards actually show the dish photo
-      // (the previous query left cover_photo_url null and gave you gray
-      // rectangles in the results).
-      'id, name, description, price, dietary_tags, average_rating, review_count, is_visible, location_id, location:locations(brand_id, brand:brands(id, name, primary_cuisine)), menu_item_photos(photo_url, is_featured, display_order)',
+      'id, name, description, price, dietary_tags, average_rating, review_count, is_visible, location_id, location:locations(brand_id, brand:brands(id, name, primary_cuisine, storefront_published, is_suspended)), menu_item_photos(photo_url, is_featured, display_order)',
     )
     .eq('is_visible', true)
     .limit(limit);
   if (term.length > 0) {
-    query = query.or(`name.ilike.%${term}%,description.ilike.%${term}%`);
+    query = query.or(
+      `name.ilike.%${safeTerm}%,description.ilike.%${safeTerm}%`,
+    );
   }
   const { data, error } = await query;
   debugLog('search.dishes', 'result', {
@@ -64,10 +57,14 @@ export async function searchDishes(q: string, limit = 50): Promise<DishSearchRes
     error: error?.message,
   });
   if (error) return [];
-  return ((data ?? []) as any[]).map((m) => {
+  const results: DishSearchResult[] = [];
+  for (const m of (data ?? []) as any[]) {
+    const brand = m.location?.brand;
+    // Drop dishes from suspended/unpublished brands (visibility leak fix)
+    if (!isVisible(brand)) continue;
     const photos = (m.menu_item_photos ?? []) as any[];
     const cover = photos.find((p) => p.is_featured) ?? photos[0];
-    return {
+    results.push({
       id: m.id,
       name: m.name,
       description: m.description,
@@ -78,10 +75,11 @@ export async function searchDishes(q: string, limit = 50): Promise<DishSearchRes
       location_id: m.location_id,
       is_visible: true,
       category_id: null,
-      brand_id: m.location?.brand?.id ?? '',
-      brand_name: m.location?.brand?.name ?? '',
+      brand_id: brand.id,
+      brand_name: brand.name,
       cover_photo_url: cover?.photo_url ?? null,
-      primary_cuisine: m.location?.brand?.primary_cuisine ?? null,
-    };
-  });
+      primary_cuisine: brand.primary_cuisine ?? null,
+    });
+  }
+  return results;
 }
