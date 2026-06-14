@@ -146,8 +146,21 @@ export default function SearchScreen() {
           contentContainerStyle={{ paddingBottom: 40, gap: 18 }}
           renderItem={({ item }) => (
             <DishCard
-              item={item as any}
+              item={{
+                id: item.id,
+                name: item.name,
+                description: item.description,
+                price: item.price,
+                dietary_tags: item.dietary_tags,
+                average_rating: item.average_rating,
+                review_count: item.review_count,
+                location_id: item.location_id,
+                is_visible: true,
+                category_id: null,
+                cover_photo_url: item.cover_photo_url,
+              }}
               brand_name={item.brand_name}
+              cuisine={item.primary_cuisine}
               width={dishCardWidth}
             />
           )}

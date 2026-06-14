@@ -57,21 +57,41 @@ export async function fetchReviewsForBrand(brandId: string): Promise<ReviewWithA
     .eq('brand_id', brandId);
   const locIds = (locs ?? []).map((l: any) => l.id);
   if (locIds.length === 0) return [];
-  let q = supabase
-    .from('reviews')
-    .select(
-      '*, user:users(name, email, avatar_url), photos:review_photos(*), replies:review_replies(*)',
+
+  // PostgREST has a ~16KB URL limit. With 50-char UUIDs that's ~300 ids
+  // per .in() call. Chunk to be safe and merge.
+  const CHUNK = 100;
+  const PER_CHUNK_LIMIT = 200;
+  const buckets: any[][] = [];
+  for (let i = 0; i < locIds.length; i += CHUNK) {
+    const chunk = locIds.slice(i, i + CHUNK);
+    let q = supabase
+      .from('reviews')
+      .select(
+        '*, user:users(name, email, avatar_url), photos:review_photos(*), replies:review_replies(*)',
+      )
+      .in('location_id', chunk);
+    q = notFlagged(q);
+    const { data, error } = await q
+      .order('created_at', { ascending: false })
+      .limit(PER_CHUNK_LIMIT);
+    if (error) {
+      debugLog('reviews.brand', 'chunk error', { chunkIdx: i / CHUNK, error: error.message });
+      continue;
+    }
+    buckets.push((data ?? []) as any[]);
+  }
+
+  // Stable merge by created_at desc; cap at 200 overall.
+  const merged = buckets
+    .flat()
+    .sort(
+      (a: any, b: any) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
-    .in('location_id', locIds);
-  q = notFlagged(q);
-  const { data, error } = await q
-    .order('created_at', { ascending: false })
-    .limit(200);
-  debugLog('reviews.brand', 'result', {
-    count: data?.length ?? 0,
-    error: error?.message,
-  });
-  return hydrateReviews((data ?? []) as any[]);
+    .slice(0, 200);
+  debugLog('reviews.brand', 'result', { count: merged.length, chunks: buckets.length });
+  return hydrateReviews(merged);
 }
 
 export async function fetchReviewsForMenuItem(

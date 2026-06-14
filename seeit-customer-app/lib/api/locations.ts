@@ -14,7 +14,7 @@ export async function fetchLocationDetail(locationId: string): Promise<{
   const [locRes, kosherRes, halalRes] = await Promise.all([
     supabase
       .from('locations')
-      .select('*, brand:brands(*)')
+      .select('*, brand:brands!brand_id(*)')
       .eq('id', locationId)
       .maybeSingle(),
     supabase
@@ -71,7 +71,7 @@ export async function fetchNearbyBrands(
 
   const { data, error } = await supabase
     .from('locations')
-    .select('*, brand:brands(*)')
+    .select('*, brand:brands!brand_id(*)')
     .gte('latitude', userLat - latDelta)
     .lte('latitude', userLat + latDelta)
     .gte('longitude', userLng - lngDelta)

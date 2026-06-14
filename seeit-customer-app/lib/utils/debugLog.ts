@@ -1,14 +1,16 @@
 /**
- * Tagged, timestamped console logger for diagnosing data-fetch paths from
- * the Expo terminal. Every call prints e.g.:
- *
- *   [SeeIt 17:52:41.108] home.discover: querying brands { lat: 41.11, lng: -74.04 }
- *   [SeeIt 17:52:41.342] home.discover: result { count: 2, error: null }
- *
- * Keep these in production for v1 — they're invaluable when seed data
- * misbehaves. Strip when we ship to the App Store.
+ * Tagged, timestamped logger. In production builds the calls are no-ops —
+ * the terminal noise is dev-only. To keep diagnostic output in a release
+ * build, set EXPO_PUBLIC_DEBUG_LOG=1 in .env.
  */
+const ENABLED =
+  // @ts-ignore — __DEV__ is injected by Metro
+  typeof __DEV__ === 'undefined'
+    ? false
+    : (__DEV__ as boolean) || process.env.EXPO_PUBLIC_DEBUG_LOG === '1';
+
 export function debugLog(tag: string, msg: string, data?: unknown): void {
+  if (!ENABLED) return;
   const ts = new Date().toISOString().slice(11, 23);
   if (data !== undefined) {
     // eslint-disable-next-line no-console

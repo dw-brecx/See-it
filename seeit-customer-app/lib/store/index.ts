@@ -12,11 +12,17 @@ type AppState = {
   // Manual location label, set when user picks a city from the picker.
   manualLocationLabel: string | null;
   setManualLocation: (label: string | null, coords: LocationCoords | null) => void;
+  /** Clear manual pick + revert to whatever device coords are. */
+  clearManualLocation: () => void;
 
-  // Developer mode — persists across launches via AsyncStorage key `devMode`.
-  // When on, Home rail ignores distance filtering and shows every brand.
+  // Developer mode (persisted)
   devMode: boolean;
   setDevMode: (on: boolean) => void;
+
+  // First-launch onboarding gate (persisted). The root index reads this and
+  // routes new users to /(public)/onboarding instead of straight into home.
+  onboardingSeen: boolean;
+  setOnboardingSeen: (seen: boolean) => void;
 
   searchQuery: string;
   setSearchQuery: (q: string) => void;
@@ -74,9 +80,13 @@ export const useAppStore = create<AppState>()(
       manualLocationLabel: null,
       setManualLocation: (label, coords) =>
         set({ manualLocationLabel: label, coords }),
+      clearManualLocation: () => set({ manualLocationLabel: null }),
 
       devMode: false,
       setDevMode: (on) => set({ devMode: on }),
+
+      onboardingSeen: false,
+      setOnboardingSeen: (seen) => set({ onboardingSeen: seen }),
 
       searchQuery: '',
       setSearchQuery: (q) => set({ searchQuery: q }),
@@ -147,8 +157,11 @@ export const useAppStore = create<AppState>()(
     {
       name: 'seeit-app-state',
       storage: createJSONStorage(() => AsyncStorage),
-      // Only persist devMode — everything else stays in memory.
-      partialize: (state) => ({ devMode: state.devMode }),
+      // Persist devMode + onboardingSeen across launches; nothing else.
+      partialize: (state) => ({
+        devMode: state.devMode,
+        onboardingSeen: state.onboardingSeen,
+      }),
     },
   ),
 );

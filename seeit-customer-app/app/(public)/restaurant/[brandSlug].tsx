@@ -10,7 +10,7 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
-import { useLocalSearchParams, router, Stack } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -109,15 +109,19 @@ function ActionButton({
 }
 
 function InnerScreen() {
-  const params = useLocalSearchParams<{ brandSlug: string }>();
+  const params = useLocalSearchParams<{ brandSlug: string; location?: string }>();
   const brandId = String(params.brandSlug ?? '');
+  // Deep-link support: /restaurant/<brandId>?location=<locId> pre-selects.
+  const initialLocationId = params.location ? String(params.location) : null;
   const insets = useSafeAreaInsets();
   const coords = useAppStore((s) => s.coords);
   const { user } = useAuth();
 
   const brandQ = useBrand(brandId);
   const locationsQ = useBrandLocations(brandId);
-  const [activeLocationId, setActiveLocationId] = React.useState<string | null>(null);
+  const [activeLocationId, setActiveLocationId] = React.useState<string | null>(
+    initialLocationId,
+  );
 
   React.useEffect(() => {
     if (!locationsQ.data || locationsQ.data.length === 0) return;
@@ -273,7 +277,6 @@ function InnerScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <Stack.Screen options={{ headerShown: false }} />
       <ScrollView
         contentContainerStyle={{ paddingBottom: 80 }}
         showsVerticalScrollIndicator={false}

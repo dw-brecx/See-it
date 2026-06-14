@@ -170,9 +170,11 @@ export default function OrderListScreen() {
                 onChangeText={(v) => update(it.menu_item_id, { notes: v || null })}
                 placeholder="Notes (no onions, well done…)"
                 placeholderTextColor="#9CA3AF"
+                multiline
                 style={{
                   backgroundColor: '#F3F3EE',
                   borderRadius: 10,
+                  minHeight: 44,
                   paddingHorizontal: 12,
                   paddingVertical: 10,
                   fontSize: 14,

@@ -7,10 +7,9 @@ import { colors } from '@/lib/utils/colors';
 import { tapLight } from '@/lib/utils/haptics';
 
 /**
- * Inline summary of a location's kosher cert — the agency badge on the left
- * (terracotta-on-cream), then up to 3 small sub-cert chips ("Glatt",
- * "Cholov Yisroel", etc.) on the right. Whole row is a single tap target
- * that opens the full hashgacha bottom sheet.
+ * Inline kosher cert summary. Agency badge + up to 4 sub-cert chips.
+ * Once we have more than 2 subs the layout breaks into a second row so
+ * the wrap stays even instead of jagged.
  */
 export function KosherCertChipRow({
   cert,
@@ -26,8 +25,6 @@ export function KosherCertChipRow({
   if (cert.is_bishul_yisroel) subs.push('Bishul Yisroel');
   if (cert.is_yoshon) subs.push('Yoshon');
   if (cert.is_kosher_for_passover) subs.push('Pesach');
-  const shownSubs = subs.slice(0, 3);
-  const overflow = subs.length - shownSubs.length;
   const agency = cert.agency_other || cert.agency;
 
   return (
@@ -36,18 +33,15 @@ export function KosherCertChipRow({
         tapLight();
         router.push(`/kosher-sheet/${locationId}`);
       }}
+      accessibilityRole="button"
+      accessibilityLabel={`Kosher: ${agency}${subs.length ? `, ${subs.join(', ')}` : ''}`}
       style={({ pressed }) => ({
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
         backgroundColor: colors.primarySoft,
-        borderRadius: 999,
+        borderRadius: 16,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        gap: 8,
         opacity: pressed ? 0.85 : 1,
-        alignSelf: 'flex-start',
-        flexWrap: 'wrap',
-        maxWidth: '100%',
       })}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -55,24 +49,36 @@ export function KosherCertChipRow({
         <Text style={{ color: colors.primaryDark, fontWeight: '800', fontSize: 12 }}>
           {agency}
         </Text>
+        {cert.kosher_type ? (
+          <Text style={{ color: colors.primaryDark, fontSize: 11, fontWeight: '600' }}>
+            · {cert.kosher_type === 'meat'
+              ? 'Meat'
+              : cert.kosher_type === 'dairy'
+              ? 'Dairy'
+              : cert.kosher_type === 'pareve'
+              ? 'Pareve'
+              : 'Mixed'}
+          </Text>
+        ) : null}
       </View>
-      {shownSubs.map((s) => (
-        <View
-          key={s}
-          style={{
-            backgroundColor: colors.surface,
-            paddingHorizontal: 8,
-            paddingVertical: 3,
-            borderRadius: 999,
-          }}
-        >
-          <Text style={{ color: colors.text, fontSize: 11, fontWeight: '600' }}>{s}</Text>
+      {subs.length > 0 && (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
+          {subs.map((s) => (
+            <View
+              key={s}
+              style={{
+                backgroundColor: colors.surface,
+                paddingHorizontal: 8,
+                paddingVertical: 3,
+                borderRadius: 999,
+              }}
+            >
+              <Text style={{ color: colors.text, fontSize: 11, fontWeight: '600' }}>
+                {s}
+              </Text>
+            </View>
+          ))}
         </View>
-      ))}
-      {overflow > 0 && (
-        <Text style={{ color: colors.primaryDark, fontSize: 11, fontWeight: '700' }}>
-          +{overflow}
-        </Text>
       )}
     </Pressable>
   );

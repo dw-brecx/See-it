@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
-import { useLocalSearchParams, router, Stack } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, BookmarkPlus, Plus, Heart, PenSquare } from 'lucide-react-native';
 import { PhotoCarousel } from '@/components/shared/PhotoCarousel';
@@ -46,7 +46,6 @@ export default function DishDetailScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
-      <Stack.Screen options={{ headerShown: false }} />
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
         <PhotoCarousel
           photos={(item.photos ?? []).map((p) => ({ id: p.id, photo_url: p.photo_url }))}

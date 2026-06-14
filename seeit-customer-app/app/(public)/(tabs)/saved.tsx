@@ -71,7 +71,14 @@ export default function SavedScreen() {
         >
           Sign in to bookmark restaurants and dishes, write reviews,{'\n'}and build order lists.
         </Text>
-        <Button label="Sign in" fullWidth size="lg" onPress={() => router.push('/(auth)/signin')} />
+        <Button
+          label="Sign in"
+          fullWidth
+          size="lg"
+          onPress={() =>
+            router.push('/(auth)/signin?next=/(public)/(tabs)/saved' as any)
+          }
+        />
         <Pressable
           onPress={() => router.push('/(auth)/signup')}
           hitSlop={8}

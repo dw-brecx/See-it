@@ -1,7 +1,12 @@
 import * as React from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable, Text, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Home, Search, Bookmark, User, ScanLine } from 'lucide-react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { tapLight } from '@/lib/utils/haptics';
 import { colors } from '@/lib/utils/colors';
@@ -14,8 +19,18 @@ const TABS = [
   { name: 'profile', label: 'Profile', Icon: User },
 ] as const;
 
+// 4 non-center tabs are visible (Home/Search/Saved/Profile). The animated
+// indicator only tracks those — center Scan is a separate raised button.
+const INDICATOR_TAB_ORDER: Record<string, number> = {
+  home: 0,
+  search: 1,
+  saved: 2,
+  profile: 3,
+};
+
 export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
   const barHeight = 64 + insets.bottom;
 
   function goTo(routeName: string) {
@@ -25,6 +40,37 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   }
 
   const focusedRoute = state.routes[state.index]?.name;
+  const focusedIdx =
+    focusedRoute && focusedRoute in INDICATOR_TAB_ORDER
+      ? INDICATOR_TAB_ORDER[focusedRoute]
+      : -1;
+
+  // Each non-center tab takes 1/5 of the screen width. Indicator slides
+  // between the centers of those 4 cells (skipping the center).
+  const cellW = screenWidth / 5;
+  const indicatorW = 24;
+  const cellCenterX = (slotIdx: number) => {
+    // Slots 0, 1, 3, 4 (skip 2 — that's the center Scan)
+    const realSlot = slotIdx < 2 ? slotIdx : slotIdx + 1;
+    return realSlot * cellW + cellW / 2 - indicatorW / 2;
+  };
+
+  const translateX = useSharedValue(
+    focusedIdx >= 0 ? cellCenterX(focusedIdx) : -100,
+  );
+  React.useEffect(() => {
+    if (focusedIdx >= 0) {
+      translateX.value = withSpring(cellCenterX(focusedIdx), {
+        damping: 16,
+        stiffness: 200,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusedIdx, cellW]);
+
+  const indicatorStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
 
   return (
     <View
@@ -45,6 +91,24 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
         elevation: 12,
       }}
     >
+      {/* Sliding indicator */}
+      {focusedIdx >= 0 && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            {
+              position: 'absolute',
+              top: 4,
+              height: 3,
+              width: indicatorW,
+              borderRadius: 2,
+              backgroundColor: colors.primary,
+            },
+            indicatorStyle,
+          ]}
+        />
+      )}
+
       {TABS.map((t, i) => {
         const isCenter = i === 2;
         const focused = focusedRoute === t.name;

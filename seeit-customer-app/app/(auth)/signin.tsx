@@ -7,7 +7,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Mail, Lock } from 'lucide-react-native';
 import { Input } from '@/components/ui/Input';
@@ -32,6 +32,8 @@ function friendlyError(message: string): string {
 export default function SignInScreen() {
   const insets = useSafeAreaInsets();
   const { refresh } = useAuth();
+  const { next } = useLocalSearchParams<{ next?: string }>();
+  const nextHref = next ? String(next) : '/(public)/(tabs)/home';
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -68,12 +70,12 @@ export default function SignInScreen() {
     await refresh();
     toast.success('Welcome back');
     router.dismissAll();
-    router.replace('/(public)/(tabs)/home');
+    router.replace(nextHref as any);
   }
 
   function afterSocial() {
     router.dismissAll();
-    router.replace('/(public)/(tabs)/home');
+    router.replace(nextHref as any);
   }
 
   return (
