@@ -20,7 +20,6 @@ export async function fetchLocationDetail(locationId: string): Promise<{
       .select('*')
       .eq('location_id', locationId)
       .maybeSingle(),
-    // halal_certifications might not exist on older deployments
     Promise.resolve(
       supabase
         .from('halal_certifications')
@@ -32,7 +31,11 @@ export async function fetchLocationDetail(locationId: string): Promise<{
   const loc: any = locRes.data;
   if (!loc) return null;
   const brand = loc.brand as Brand;
-  if (!brand || brand.storefront_published === false || brand.is_suspended) return null;
+  if (!brand) return null;
+  // Null-safe visibility — same rules as brands.ts. storefront_published
+  // must be explicitly true; is_suspended is OK if false or null.
+  if (brand.storefront_published !== true) return null;
+  if (brand.is_suspended === true) return null;
   const { brand: _b, ...location } = loc;
   return {
     brand,
@@ -49,8 +52,6 @@ export async function fetchNearbyBrands(
   radiusMiles = 10,
   limit = 30,
 ): Promise<{ brand: Brand; nearest: Location; distance_miles: number }[]> {
-  // Rough degrees-per-mile (1° lat ≈ 69mi). Use a slightly looser bound to
-  // avoid edge-of-radius drops. Longitude varies with latitude.
   const latDelta = radiusMiles / 69;
   const lngDelta = radiusMiles / (69 * Math.cos((userLat * Math.PI) / 180));
 
@@ -66,7 +67,9 @@ export async function fetchNearbyBrands(
   for (const row of (data ?? []) as any[]) {
     const brand = row.brand as Brand | null;
     if (!brand) continue;
-    if (brand.storefront_published === false || brand.is_suspended) continue;
+    // Null-safe — same logic as brands.ts visibility filter.
+    if (brand.storefront_published !== true) continue;
+    if (brand.is_suspended === true) continue;
     const { brand: _b, ...location } = row;
     if (location.latitude == null || location.longitude == null) continue;
     const d = distanceMiles(userLat, userLng, location.latitude, location.longitude);

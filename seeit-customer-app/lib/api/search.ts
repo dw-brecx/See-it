@@ -1,22 +1,20 @@
 import { supabase } from '../supabase/client';
 import { Brand, MenuItem } from '../types';
 
-export type BrandSearchResult = Brand & {
-  location_count: number;
-  average_rating: number | null;
-};
-
 export async function searchBrands(q: string, limit = 30): Promise<Brand[]> {
   const term = q.trim();
+  // Null-safe visibility: storefront_published=true AND is_suspended IS NOT TRUE.
+  // `.neq('is_suspended', true)` would drop NULL rows (SQL three-valued logic),
+  // hiding most new brands. Use `.or(...is.null,...eq.false)` instead.
   let query = supabase
     .from('brands')
     .select('*')
     .eq('storefront_published', true)
-    .neq('is_suspended', true)
+    .or('is_suspended.is.null,is_suspended.eq.false')
     .limit(limit);
   if (term.length > 0) {
     query = query.or(
-      `name.ilike.%${term}%,primary_cuisine.ilike.%${term}%,tagline.ilike.%${term}%`,
+      `name.ilike.%${term}%,primary_cuisine.ilike.%${term}%,tagline.ilike.%${term}%,description.ilike.%${term}%`,
     );
   }
   const { data } = await query;
