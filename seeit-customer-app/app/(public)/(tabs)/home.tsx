@@ -18,11 +18,15 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { useNearbyBrands } from '@/lib/hooks/useNearby';
 import { useDeviceLocation } from '@/lib/hooks/useLocation';
-import { fetchNewlyVerifiedBrands, fetchNewBrands, fetchAllBrandsRaw } from '@/lib/api/brands';
+import {
+  fetchNewlyVerifiedBrands,
+  fetchPublishedBrands,
+  fetchAllBrandsRaw,
+} from '@/lib/api/brands';
 import { useAppStore } from '@/lib/store';
 import { tapLight, selection } from '@/lib/utils/haptics';
-import { distanceMiles } from '@/lib/utils/distance';
 import { PRESET_CITIES } from '@/lib/utils/cities';
+import { debugLog } from '@/lib/utils/debugLog';
 
 function CardRowSkeleton() {
   return (
@@ -53,55 +57,109 @@ export default function HomeScreen() {
     if (status === 'idle' && !manualLabel) void request();
   }, [status, request, manualLabel]);
 
+  // Three parallel queries — every section gets its own + we layer them as
+  // fallbacks for the Discover rail. publishedQ and rawQ run unconditionally
+  // so the fallback is instant when nearby comes back empty.
   const nearby = useNearbyBrands(devMode ? 10000 : 25);
   const verified = useQuery({
-    queryKey: ['newly-verified'],
+    queryKey: ['home.verified'],
     queryFn: () => fetchNewlyVerifiedBrands(12),
   });
-  const newBrands = useQuery({
-    queryKey: ['new-brands'],
-    queryFn: () => fetchNewBrands(24),
+  const published = useQuery({
+    queryKey: ['home.published'],
+    queryFn: () => fetchPublishedBrands(24),
   });
-  // Loaded only when we need to fall back (no nearby + no devMode coverage)
-  const allBrands = useQuery({
-    queryKey: ['all-brands-raw'],
+  const raw = useQuery({
+    queryKey: ['home.raw'],
     queryFn: () => fetchAllBrandsRaw(50),
-    enabled: devMode || !coords,
   });
+  const verifiedData: any[] = (verified.data as any[] | undefined) ?? [];
 
   async function onRefresh() {
     setRefreshing(true);
-    await Promise.all([nearby.refetch(), verified.refetch(), newBrands.refetch(), allBrands.refetch()]);
+    await Promise.all([
+      nearby.refetch(),
+      verified.refetch(),
+      published.refetch(),
+      raw.refetch(),
+    ]);
     setRefreshing(false);
   }
 
-  // Compose the "Near You" rail:
-  //  1. If devMode is on → show every brand (raw, no visibility filter), so
-  //     seed data without storefront_published=true still appears.
-  //  2. If we have coords + nearby results → show nearby.
-  //  3. Otherwise fall back to all published brands sorted by created_at.
-  //     This is the "never show empty if data exists" guarantee.
+  /**
+   * Discover rail fallback chain:
+   *   1. Dev mode → raw (every brand, no filter)
+   *   2. Got device coords + nearby has results → nearby (with distance)
+   *   3. published has results → published (sorted by created_at)
+   *   4. raw has results → raw (last resort, no visibility filter)
+   *   5. Truly nothing → empty state
+   *
+   * This guarantees: if any brand row exists in the DB, the rail renders
+   * something. The diagnostic logs tell us exactly which path won.
+   */
   const nearbyData = nearby.data ?? [];
-  const newBrandsList = newBrands.data ?? [];
-  const allBrandsList = allBrands.data ?? [];
+  const publishedData = published.data ?? [];
+  const rawData = raw.data ?? [];
 
-  let railItems: { brand: any; nearest: any; distance_miles: number | null }[];
-  let railFallbackNote: string | null = null;
+  let railItems: { brand: any; nearest?: any; distance_miles?: number | null }[] = [];
+  let railSource: 'devMode' | 'nearby' | 'published' | 'raw' | 'empty' = 'empty';
+  let railSubtitle = '';
+  let railTitle = 'Discover';
 
-  if (devMode) {
-    railItems = allBrandsList.map((b) => ({ brand: b, nearest: null, distance_miles: null }));
-    railFallbackNote = 'Dev mode — showing every brand in the database';
+  if (devMode && rawData.length > 0) {
+    railItems = rawData.map((b) => ({ brand: b }));
+    railSource = 'devMode';
+    railTitle = 'Every spot';
+    railSubtitle = 'Dev mode — distance filtering off';
   } else if (coords && nearbyData.length > 0) {
     railItems = nearbyData;
-    railFallbackNote = null;
-  } else {
-    railItems = newBrandsList.map((b) => ({ brand: b, nearest: null, distance_miles: null }));
-    railFallbackNote = coords
+    railSource = 'nearby';
+    railTitle = 'Near You';
+    railSubtitle = 'Closest spots first';
+  } else if (publishedData.length > 0) {
+    railItems = publishedData.map((b) => ({ brand: b }));
+    railSource = 'published';
+    railTitle = 'Discover';
+    railSubtitle = coords
       ? 'No spots in your area yet — showing recent additions'
-      : 'Enable location for personalized nearby results';
+      : 'Pick a location for personalized nearby results';
+  } else if (rawData.length > 0) {
+    railItems = rawData.map((b) => ({ brand: b }));
+    railSource = 'raw';
+    railTitle = 'Discover';
+    railSubtitle = 'Showing every spot we know about';
   }
 
-  const locationChipLabel = manualLabel ?? (coords ? 'Near you' : status === 'denied' ? 'Choose a city' : 'Locating…');
+  // One terminal-friendly summary line per render so the user can scan
+  // and see which path the rail took on each reload.
+  React.useEffect(() => {
+    debugLog('home.render', 'rail decision', {
+      source: railSource,
+      itemCount: railItems.length,
+      coords: !!coords,
+      devMode,
+      counts: {
+        nearby: nearbyData.length,
+        published: publishedData.length,
+        raw: rawData.length,
+        verified: verifiedData.length,
+      },
+    });
+  }, [
+    railSource,
+    railItems.length,
+    coords,
+    devMode,
+    nearbyData.length,
+    publishedData.length,
+    rawData.length,
+    verified.data?.length,
+  ]);
+
+  const locationChipLabel =
+    manualLabel ?? (coords ? 'Near you' : status === 'denied' ? 'Choose a city' : 'Locating…');
+  const isAnyLoading =
+    nearby.isLoading || published.isLoading || raw.isLoading || verified.isLoading;
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
@@ -114,7 +172,13 @@ export default function HomeScreen() {
           gap: 12,
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <Pressable
             onPress={() => {
               tapLight();
@@ -166,10 +230,14 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#E85D3A" />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#E85D3A"
+          />
         }
       >
-        {/* Hero / personalised greeting */}
+        {/* Hero */}
         <View style={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 }}>
           <Text
             style={{
@@ -186,12 +254,9 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        {/* Near You (or fallback) */}
-        <SectionHeader
-          title={devMode ? 'Every brand' : coords && nearbyData.length > 0 ? 'Near You' : 'Discover'}
-          subtitle={railFallbackNote ?? 'Closest spots first'}
-        />
-        {(nearby.isLoading || (allBrands.isLoading && railItems.length === 0)) ? (
+        {/* Discover / Near You */}
+        <SectionHeader title={railTitle} subtitle={railSubtitle || 'Closest spots first'} />
+        {isAnyLoading && railItems.length === 0 ? (
           <CardRowSkeleton />
         ) : railItems.length > 0 ? (
           <HorizontalCardScroll>
@@ -208,19 +273,22 @@ export default function HomeScreen() {
           <View style={{ paddingHorizontal: 20 }}>
             <EmptyState
               icon={<MapPin size={28} color="#E85D3A" />}
-              title="No spots to show yet"
-              subtitle="Once restaurants publish their storefronts, they'll show up here."
+              title="No spots in the database yet"
+              subtitle="Check that your Supabase env vars are set and that the brands table has at least one row with storefront_published=true. The terminal logs (search for '[SeeIt') tell you exactly what each query returned."
             />
           </View>
         )}
 
         {/* Newly Verified */}
-        <SectionHeader title="Newly Verified ✓" subtitle="Recently verified spots" />
-        {verified.isLoading ? (
+        <SectionHeader
+          title="Newly Verified ✓"
+          subtitle="Recently verified stores"
+        />
+        {verified.isLoading && (verifiedData.length) === 0 ? (
           <CardRowSkeleton />
-        ) : verified.data && verified.data.length > 0 ? (
+        ) : (verifiedData.length) > 0 ? (
           <HorizontalCardScroll>
-            {verified.data.map((b) => (
+            {verifiedData.map((b) => (
               <RestaurantCard key={b.id} brand={b} />
             ))}
           </HorizontalCardScroll>
@@ -232,19 +300,27 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* New on SeeIt */}
-        <SectionHeader title="New on SeeIt" subtitle="Fresh spots joining the community" />
-        {newBrands.isLoading ? (
+        {/* "Just joined" — same data as Discover fallback but separate visual */}
+        <SectionHeader title="Just joined" subtitle="Fresh spots on the app" />
+        {published.isLoading && publishedData.length === 0 ? (
           <CardRowSkeleton />
-        ) : newBrandsList.length > 0 ? (
+        ) : publishedData.length > 0 ? (
           <HorizontalCardScroll>
-            {newBrandsList.map((b) => (
+            {publishedData.map((b) => (
+              <RestaurantCard key={b.id} brand={b} />
+            ))}
+          </HorizontalCardScroll>
+        ) : rawData.length > 0 ? (
+          <HorizontalCardScroll>
+            {rawData.map((b) => (
               <RestaurantCard key={b.id} brand={b} />
             ))}
           </HorizontalCardScroll>
         ) : (
           <View style={{ paddingHorizontal: 20 }}>
-            <Text style={{ color: '#6B7280', fontSize: 13 }}>Nothing here yet — check back soon.</Text>
+            <Text style={{ color: '#6B7280', fontSize: 13 }}>
+              Nothing here yet — check back soon.
+            </Text>
           </View>
         )}
 
@@ -277,7 +353,9 @@ export default function HomeScreen() {
             })}
           >
             <MapPin size={18} color="#E85D3A" />
-            <Text style={{ fontWeight: '700', color: '#1A1A1A', flex: 1 }}>Use my location</Text>
+            <Text style={{ fontWeight: '700', color: '#1A1A1A', flex: 1 }}>
+              Use my location
+            </Text>
           </Pressable>
           {PRESET_CITIES.map((c) => {
             const isActive = manualLabel === c.label;
@@ -286,7 +364,10 @@ export default function HomeScreen() {
                 key={c.id}
                 onPress={() => {
                   selection();
-                  setManualLocation(c.label, { latitude: c.latitude, longitude: c.longitude });
+                  setManualLocation(c.label, {
+                    latitude: c.latitude,
+                    longitude: c.longitude,
+                  });
                   setCityPickerOpen(false);
                 }}
                 style={({ pressed }) => ({

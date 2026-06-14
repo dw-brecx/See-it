@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { View, Text, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Mail, Lock, User } from 'lucide-react-native';
@@ -7,52 +14,8 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { error as errorHaptic, success, tapLight } from '@/lib/utils/haptics';
-
-function SocialButton({
-  label,
-  onPress,
-  variant,
-}: {
-  label: string;
-  onPress: () => void;
-  variant: 'apple' | 'google';
-}) {
-  const isApple = variant === 'apple';
-  return (
-    <Pressable
-      onPress={() => {
-        tapLight();
-        onPress();
-      }}
-      style={({ pressed }) => ({
-        height: 50,
-        borderRadius: 12,
-        backgroundColor: isApple ? '#000000' : '#FFFFFF',
-        borderWidth: isApple ? 0 : 1,
-        borderColor: '#E5E5E0',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        gap: 10,
-        opacity: pressed ? 0.85 : 1,
-      })}
-    >
-      <Text style={{ fontSize: 18, color: isApple ? '#FFFFFF' : '#1A1A1A' }}>
-        {isApple ? '' : 'G'}
-      </Text>
-      <Text
-        style={{
-          color: isApple ? '#FFFFFF' : '#1A1A1A',
-          fontSize: 15,
-          fontWeight: '600',
-        }}
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
+import { error as errorHaptic, success } from '@/lib/utils/haptics';
+import { debugLog } from '@/lib/utils/debugLog';
 
 export default function SignUpScreen() {
   const insets = useSafeAreaInsets();
@@ -66,12 +29,16 @@ export default function SignUpScreen() {
   async function onSubmit() {
     setLoading(true);
     setErr(null);
+    debugLog('signup', 'submitting', { email, hasName: !!name });
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { name, intended_role: 'customer' },
-      },
+      options: { data: { name, intended_role: 'customer' } },
+    });
+    debugLog('signup', 'response', {
+      hasSession: !!data?.session,
+      userId: data?.user?.id,
+      error: error?.message,
     });
     if (error) {
       errorHaptic();
@@ -81,15 +48,12 @@ export default function SignUpScreen() {
     }
     success();
     await refresh();
-    // If email confirmation is required there's no session yet — still route
-    // to allergy-setup so they can fill in preferences while waiting; the
-    // allergy-setup screen handles the unauthed case by routing to home.
+    // Always send the user to allergy-setup next, regardless of whether
+    // a session exists yet. If email confirmation is required, the screen
+    // still asks for their preferences (cached in zustand) so we can
+    // upsert them when the session lands later.
     router.dismissAll();
-    router.replace(data.session ? '/(auth)/allergy-setup' : '/(auth)/allergy-setup');
-  }
-
-  function comingSoon() {
-    setErr('Apple & Google sign-in coming soon — use email for now.');
+    router.replace('/(auth)/allergy-setup');
   }
 
   return (
@@ -115,38 +79,29 @@ export default function SignUpScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 32, gap: 16 }}
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          paddingTop: 24,
+          paddingBottom: 32,
+          gap: 16,
+        }}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={{ fontSize: 32, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.6 }}>
+        <Text
+          style={{
+            fontSize: 32,
+            fontWeight: '800',
+            color: '#1A1A1A',
+            letterSpacing: -0.6,
+          }}
+        >
           Create your account
         </Text>
         <Text style={{ fontSize: 15, color: '#6B7280', marginTop: -8 }}>
           Save spots, review dishes, build order lists with friends.
         </Text>
 
-        <View style={{ gap: 10, marginTop: 8 }}>
-          <SocialButton
-            label="Continue with Apple"
-            onPress={comingSoon}
-            variant="apple"
-          />
-          <SocialButton
-            label="Continue with Google"
-            onPress={comingSoon}
-            variant="google"
-          />
-        </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 4 }}>
-          <View style={{ flex: 1, height: 1, backgroundColor: '#E5E5E0' }} />
-          <Text style={{ fontSize: 12, color: '#9CA3AF', fontWeight: '600' }}>
-            OR USE EMAIL
-          </Text>
-          <View style={{ flex: 1, height: 1, backgroundColor: '#E5E5E0' }} />
-        </View>
-
-        <View style={{ gap: 12 }}>
+        <View style={{ gap: 12, marginTop: 8 }}>
           <Input
             label="Name"
             value={name}
@@ -176,13 +131,15 @@ export default function SignUpScreen() {
           {err ? <Text style={{ color: '#EF4444', fontSize: 13 }}>{err}</Text> : null}
         </View>
 
-        <Button
-          label={loading ? 'Creating account…' : 'Create account'}
-          fullWidth
-          size="lg"
-          loading={loading}
-          onPress={onSubmit}
-        />
+        <View style={{ marginTop: 4 }}>
+          <Button
+            label={loading ? 'Creating account…' : 'Create account'}
+            fullWidth
+            size="lg"
+            loading={loading}
+            onPress={onSubmit}
+          />
+        </View>
 
         <Pressable
           onPress={() => router.replace('/(auth)/signin')}
