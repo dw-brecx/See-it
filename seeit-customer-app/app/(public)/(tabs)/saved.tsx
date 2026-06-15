@@ -2,19 +2,26 @@ import * as React from 'react';
 import { View, Text, Pressable, FlatList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Heart, Bookmark } from 'lucide-react-native';
+import { Heart, Bookmark, BookmarkPlus } from 'lucide-react-native';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useSavedItems } from '@/lib/hooks/useSavedItems';
+import { unsaveItem } from '@/lib/api/savedItems';
+import { useQueryClient } from '@tanstack/react-query';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
+import { SavedItemCard } from '@/components/restaurant/SavedItemCard';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { selection } from '@/lib/utils/haptics';
+import { colors } from '@/lib/utils/colors';
+import { toast } from '@/components/ui/Toast';
 
-type Tab = 'locations' | 'dishes' | 'want-to-try';
+type Tab = 'spots' | 'dishes' | 'want-to-try';
 
 export default function SavedScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
-  const [tab, setTab] = React.useState<Tab>('locations');
+  const qc = useQueryClient();
+  const [tab, setTab] = React.useState<Tab>('spots');
   const saved = useSavedItems();
 
   if (!user) {
@@ -22,7 +29,7 @@ export default function SavedScreen() {
       <View
         style={{
           flex: 1,
-          backgroundColor: '#FAFAF7',
+          backgroundColor: colors.bg,
           paddingTop: insets.top + 8,
           paddingHorizontal: 20,
           alignItems: 'center',
@@ -34,21 +41,28 @@ export default function SavedScreen() {
             width: 72,
             height: 72,
             borderRadius: 36,
-            backgroundColor: '#FDF2EE',
+            backgroundColor: colors.primarySoft,
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: 16,
           }}
         >
-          <Heart size={32} color="#E85D3A" />
+          <Heart size={32} color={colors.primary} />
         </View>
-        <Text style={{ fontSize: 22, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.4 }}>
+        <Text
+          style={{
+            fontSize: 22,
+            fontWeight: '800',
+            color: colors.text,
+            letterSpacing: -0.4,
+          }}
+        >
           Save the spots you love
         </Text>
         <Text
           style={{
             fontSize: 14,
-            color: '#6B7280',
+            color: colors.textSecondary,
             textAlign: 'center',
             marginTop: 8,
             marginBottom: 24,
@@ -57,30 +71,63 @@ export default function SavedScreen() {
         >
           Sign in to bookmark restaurants and dishes, write reviews,{'\n'}and build order lists.
         </Text>
-        <Button label="Sign in" fullWidth onPress={() => router.push('/(auth)/signin')} />
-        <Pressable onPress={() => router.push('/(auth)/signup')} hitSlop={8} style={{ marginTop: 12 }}>
-          <Text style={{ color: '#6B7280', fontSize: 13 }}>
-            Don't have an account? <Text style={{ color: '#E85D3A', fontWeight: '700' }}>Sign up</Text>
+        <Button
+          label="Sign in"
+          fullWidth
+          size="lg"
+          onPress={() =>
+            router.push('/(auth)/signin?next=/(public)/(tabs)/saved' as any)
+          }
+        />
+        <Pressable
+          onPress={() => router.push('/(auth)/signup')}
+          hitSlop={8}
+          style={{ marginTop: 12 }}
+        >
+          <Text style={{ color: colors.textSecondary, fontSize: 13 }}>
+            Don't have an account?{' '}
+            <Text style={{ color: colors.primary, fontWeight: '700' }}>Sign up</Text>
           </Text>
         </Pressable>
       </View>
     );
   }
 
-  const locations = (saved.data ?? []).filter((s) => s.item_type === 'location');
-  const dishes = (saved.data ?? []).filter((s) => s.item_type === 'menu_item');
-  const list = tab === 'locations' ? locations : tab === 'dishes' ? dishes : [];
+  const all = saved.data ?? [];
+  const list =
+    tab === 'spots'
+      ? all.filter((s) => s.item_type === 'location' && !s.is_want_to_try)
+      : tab === 'dishes'
+      ? all.filter((s) => s.item_type === 'menu_item' && !s.is_want_to_try)
+      : all.filter((s) => !!s.is_want_to_try);
+
+  async function handleRemove(id: string) {
+    try {
+      await unsaveItem(id);
+      void qc.invalidateQueries({ queryKey: ['saved', user!.id] });
+      toast.success('Removed');
+    } catch (e: any) {
+      toast.error(e?.message ?? 'Could not remove');
+    }
+  }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 20, paddingBottom: 12 }}>
-        <Text style={{ fontSize: 28, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.6 }}>
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: '800',
+            color: colors.text,
+            letterSpacing: -0.6,
+          }}
+        >
           Saved
         </Text>
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 16 }}>
           {(
             [
-              ['locations', 'Spots'],
+              ['spots', 'Spots'],
               ['dishes', 'Dishes'],
               ['want-to-try', 'Want to try'],
             ] as [Tab, string][]
@@ -91,18 +138,21 @@ export default function SavedScreen() {
                 selection();
                 setTab(t);
               }}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: tab === t }}
+              accessibilityLabel={label}
               style={{
                 paddingHorizontal: 14,
                 paddingVertical: 8,
                 borderRadius: 999,
-                backgroundColor: tab === t ? '#1A1A1A' : '#F3F3EE',
+                backgroundColor: tab === t ? colors.text : colors.surfaceMuted,
               }}
             >
               <Text
                 style={{
                   fontSize: 13,
                   fontWeight: '700',
-                  color: tab === t ? '#FFFFFF' : '#1A1A1A',
+                  color: tab === t ? '#FFFFFF' : colors.text,
                 }}
               >
                 {label}
@@ -112,37 +162,49 @@ export default function SavedScreen() {
         </View>
       </View>
 
-      {list.length === 0 ? (
+      {saved.isLoading ? (
+        <View style={{ padding: 20, gap: 12 }}>
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} height={104} />
+          ))}
+        </View>
+      ) : list.length === 0 ? (
         <EmptyState
-          icon={<Bookmark size={28} color="#E85D3A" />}
-          title={tab === 'dishes' ? 'No saved dishes yet' : 'No saved spots yet'}
-          subtitle="Tap the bookmark on any restaurant or dish to save it here."
+          icon={
+            tab === 'want-to-try' ? (
+              <BookmarkPlus size={28} color={colors.primary} />
+            ) : (
+              <Bookmark size={28} color={colors.primary} />
+            )
+          }
+          title={
+            tab === 'dishes'
+              ? 'No saved dishes yet'
+              : tab === 'want-to-try'
+              ? 'Nothing on your want-to-try list'
+              : 'No saved spots yet'
+          }
+          subtitle={
+            tab === 'want-to-try'
+              ? 'Tap the bookmark+ icon on a spot to add it.'
+              : 'Tap the heart on any restaurant or dish to save it here.'
+          }
         />
       ) : (
         <FlatList
           data={list}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(it) => it.id}
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40, gap: 12 }}
           renderItem={({ item }) => (
-            <View
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: 16,
-                padding: 16,
-                shadowColor: '#000',
-                shadowOpacity: 0.05,
-                shadowRadius: 12,
-                shadowOffset: { width: 0, height: 2 },
-                elevation: 2,
-              }}
-            >
-              <Text style={{ fontWeight: '700', color: '#1A1A1A' }}>
-                {item.item_type === 'location' ? '📍 Location' : '🍽️ Dish'}
-              </Text>
-              <Text style={{ color: '#6B7280', fontSize: 12.5, marginTop: 4 }}>
-                {item.notes ?? 'Tap to open'}
-              </Text>
-            </View>
+            <SavedItemCard
+              savedId={item.id}
+              itemType={item.item_type}
+              locationId={item.location_id}
+              menuItemId={item.menu_item_id}
+              notes={item.notes}
+              wantToTry={!!item.is_want_to_try}
+              onRemove={() => handleRemove(item.id)}
+            />
           )}
         />
       )}

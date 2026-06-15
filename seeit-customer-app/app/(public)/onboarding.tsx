@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { selection } from '@/lib/utils/haptics';
+import { useAppStore } from '@/lib/store';
 
 const SLIDES = [
   {
@@ -27,6 +28,12 @@ export default function OnboardingScreen() {
   const insets = useSafeAreaInsets();
   const width = Dimensions.get('window').width;
   const [idx, setIdx] = React.useState(0);
+  const setOnboardingSeen = useAppStore((s) => s.setOnboardingSeen);
+
+  function finish() {
+    setOnboardingSeen(true);
+    router.replace('/(public)/(tabs)/home');
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
@@ -39,7 +46,7 @@ export default function OnboardingScreen() {
         }}
       >
         <Pressable
-          onPress={() => router.replace('/(public)/(tabs)/home')}
+          onPress={finish}
           hitSlop={8}
         >
           <Text style={{ color: '#6B7280', fontSize: 14, fontWeight: '600' }}>Skip</Text>
@@ -129,9 +136,9 @@ export default function OnboardingScreen() {
         <Button
           label={idx === SLIDES.length - 1 ? 'Get started' : 'Next'}
           fullWidth
+          size="lg"
           onPress={() => {
-            if (idx === SLIDES.length - 1) router.replace('/(public)/(tabs)/home');
-            // For a sticky-button experience we don't auto-advance; users swipe themselves.
+            if (idx === SLIDES.length - 1) finish();
           }}
         />
       </View>

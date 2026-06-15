@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   MapPin,
   MessageSquare,
+  QrCode,
   Settings,
   Sparkles,
   UtensilsCrossed,
@@ -68,6 +69,12 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
         label: 'Photos',
         icon: Camera,
         match: (p) => p.startsWith('/dashboard/photos'),
+      },
+      {
+        href: '/dashboard/qr-code',
+        label: 'QR Code',
+        icon: QrCode,
+        match: (p) => p.startsWith('/dashboard/qr-code'),
       },
       {
         href: '/dashboard/reviews',

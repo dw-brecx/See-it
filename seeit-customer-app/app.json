@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "scheme": "seeit",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
       "resizeMode": "contain",
@@ -15,6 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.seeit.customer",
+      "usesAppleSignIn": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "SeeIt uses your location to show restaurants nearby.",
         "NSCameraUsageDescription": "SeeIt uses your camera to scan QR codes at restaurants and capture photos for reviews.",
@@ -61,7 +62,8 @@
           "photosPermission": "Allow SeeIt to access your photos so you can attach images to reviews."
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": false

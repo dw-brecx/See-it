@@ -1,52 +1,56 @@
 import * as React from 'react';
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Brand } from '@/lib/types';
 import { VerifiedBadge } from '../brand/VerifiedBadge';
-import { useTheme } from '../brand/ThemeProvider';
+import { CertPill } from './CertPill';
+import { CuisineChip } from '../shared/CuisineChip';
+import { DistanceChip } from '../shared/DistanceChip';
 import { StarRating } from '../ui/StarRating';
+import { PhotoPlaceholder } from '../shared/PhotoPlaceholder';
+import { colors } from '@/lib/utils/colors';
+import { pluralize } from '@/lib/utils/pluralize';
 
 export function StorefrontHeader({
   brand,
   averageRating,
   reviewCount,
-  distanceLabel,
+  distanceMiles,
+  kosherAgency,
+  halalAgency,
 }: {
   brand: Brand;
   averageRating?: number | null;
   reviewCount?: number;
-  distanceLabel?: string;
+  distanceMiles?: number | null;
+  kosherAgency?: string | null;
+  halalAgency?: string | null;
 }) {
-  const theme = useTheme();
   const cover = brand.cover_photo_url;
   return (
     <View>
       <View
         style={{
           height: 280,
-          backgroundColor: brand.theme_color ?? '#F3F3EE',
+          backgroundColor: brand.theme_color ?? colors.surfaceMuted,
           overflow: 'hidden',
         }}
       >
         {cover ? (
           <Image source={{ uri: cover }} style={{ width: '100%', height: '100%' }} />
-        ) : null}
+        ) : (
+          <PhotoPlaceholder cuisine={brand.primary_cuisine} rounded={0} />
+        )}
       </View>
-      <View
-        style={{
-          paddingHorizontal: 20,
-          paddingTop: 16,
-          marginTop: -36,
-        }}
-      >
+      <View style={{ paddingHorizontal: 20, paddingTop: 16, marginTop: -36 }}>
         {brand.logo_url ? (
           <View
             style={{
               width: 72,
               height: 72,
               borderRadius: 36,
-              backgroundColor: '#FFFFFF',
+              backgroundColor: colors.surface,
               borderWidth: 4,
-              borderColor: '#FFFFFF',
+              borderColor: colors.surface,
               overflow: 'hidden',
               shadowColor: '#000',
               shadowOpacity: 0.1,
@@ -59,58 +63,89 @@ export function StorefrontHeader({
             <Image source={{ uri: brand.logo_url }} style={{ width: '100%', height: '100%' }} />
           </View>
         ) : null}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <Text
-            style={{ fontSize: 28, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.6 }}
+            style={{
+              fontSize: 28,
+              fontWeight: '800',
+              color: colors.text,
+              letterSpacing: -0.6,
+            }}
           >
             {brand.name}
           </Text>
-          {brand.is_verified ? <VerifiedBadge size="lg" /> : null}
+          {brand.is_verified ? <VerifiedBadge variant="pill" size="md" /> : null}
         </View>
+        {(kosherAgency || halalAgency) ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 6,
+              marginTop: 8,
+              flexWrap: 'wrap',
+            }}
+          >
+            {kosherAgency ? <CertPill kind="kosher" agency={kosherAgency} /> : null}
+            {halalAgency ? <CertPill kind="halal" agency={halalAgency} /> : null}
+          </View>
+        ) : null}
+
         {brand.tagline ? (
           <Text
             style={{
-              fontSize: 15,
-              color: theme.accent,
+              fontSize: 16,
+              color: colors.textSecondary,
               fontStyle: 'italic',
-              marginTop: 4,
+              marginTop: 6,
+              fontWeight: '400',
+              lineHeight: 22,
             }}
           >
             {brand.tagline}
           </Text>
         ) : null}
+
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             gap: 8,
-            marginTop: 10,
+            marginTop: 12,
             flexWrap: 'wrap',
           }}
         >
-          {brand.primary_cuisine ? (
-            <Text style={{ fontSize: 13, color: '#1A1A1A', fontWeight: '600' }}>
-              {brand.primary_cuisine}
-            </Text>
-          ) : null}
-          {(averageRating ?? 0) > 0 ? (
-            <>
-              <View style={{ width: 3, height: 3, backgroundColor: '#D1D5DB', borderRadius: 2 }} />
-              <StarRating
-                value={averageRating ?? 0}
-                showNumber
-                size={13}
-                numberSuffix={` (${reviewCount ?? 0})`}
-              />
-            </>
-          ) : null}
-          {distanceLabel ? (
-            <>
-              <View style={{ width: 3, height: 3, backgroundColor: '#D1D5DB', borderRadius: 2 }} />
-              <Text style={{ fontSize: 13, color: '#6B7280' }}>{distanceLabel}</Text>
-            </>
-          ) : null}
+          {brand.primary_cuisine ? <CuisineChip label={brand.primary_cuisine} /> : null}
+          {distanceMiles != null ? <DistanceChip miles={distanceMiles} /> : null}
         </View>
+
+        {(reviewCount ?? 0) > 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
+              marginTop: 10,
+            }}
+          >
+            <StarRating value={averageRating ?? 0} size={14} showNumber />
+            <Text style={{ color: colors.textSecondary, fontSize: 13, fontWeight: '600' }}>
+              ({pluralize(reviewCount ?? 0, 'review')})
+            </Text>
+          </View>
+        ) : (
+          <Text
+            style={{
+              color: colors.textMuted,
+              fontSize: 13,
+              fontWeight: '600',
+              marginTop: 10,
+            }}
+          >
+            No reviews yet
+          </Text>
+        )}
       </View>
     </View>
   );

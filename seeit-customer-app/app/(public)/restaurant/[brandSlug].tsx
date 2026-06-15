@@ -6,16 +6,25 @@ import {
   Pressable,
   Linking,
   RefreshControl,
+  Image,
+  FlatList,
+  Dimensions,
 } from 'react-native';
-import { useLocalSearchParams, router, Stack } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
-import { Heart, BookmarkPlus, Share2, MapPin, ArrowLeft, Sparkles } from 'lucide-react-native';
-import { BrandThemeProvider, useTheme } from '@/components/brand/ThemeProvider';
+import {
+  Heart,
+  BookmarkPlus,
+  Share2,
+  MapPin,
+  ArrowLeft,
+} from 'lucide-react-native';
+import { BrandThemeProvider } from '@/components/brand/ThemeProvider';
 import { StorefrontHeader } from '@/components/restaurant/StorefrontHeader';
 import { TemporarilyClosedBanner } from '@/components/restaurant/TemporarilyClosedBanner';
 import { LocationPicker } from '@/components/restaurant/LocationPicker';
-import { KosherBadge } from '@/components/restaurant/KosherBadge';
+import { KosherCertChipRow } from '@/components/restaurant/KosherCertChipRow';
 import { HalalBadge } from '@/components/restaurant/HalalBadge';
 import { MenuList } from '@/components/restaurant/MenuList';
 import { HoursDisplay } from '@/components/restaurant/HoursDisplay';
@@ -31,15 +40,25 @@ import { useBrand, useBrandLocations } from '@/lib/hooks/useBrand';
 import { useMenu } from '@/lib/hooks/useMenu';
 import { useLocationReviews } from '@/lib/hooks/useReviews';
 import { useAppStore } from '@/lib/store';
-import { useToggleSavedLocation } from '@/lib/hooks/useSavedItems';
+import {
+  useToggleSavedLocation,
+  useSavedLocationId,
+  useSetWantToTry,
+} from '@/lib/hooks/useSavedItems';
+import { ErrorState } from '@/components/ui/ErrorState';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { useDeviceLocation } from '@/lib/hooks/useLocation';
 import { distanceMiles } from '@/lib/utils/distance';
 import { formatDistance } from '@/lib/utils/formatDistance';
 import { pickWhatsGood } from '@/lib/utils/whatsGood';
 import { tapLight, tapMedium } from '@/lib/utils/haptics';
 import { supabase } from '@/lib/supabase/client';
 import { KosherCert, HalalCert } from '@/lib/types';
+import { colors } from '@/lib/utils/colors';
+import { pluralize } from '@/lib/utils/pluralize';
+import { fetchReviewsForBrand } from '@/lib/api/reviews';
+import { fetchAllPhotosForBrand } from '@/lib/api/menuItems';
+import { toast } from '@/components/ui/Toast';
+import { debugLog } from '@/lib/utils/debugLog';
 
 type Tab = 'menu' | 'reviews' | 'photos' | 'info';
 
@@ -54,7 +73,6 @@ function ActionButton({
   onPress: () => void;
   active?: boolean;
 }) {
-  const theme = useTheme();
   return (
     <Pressable
       onPress={() => {
@@ -74,91 +92,167 @@ function ActionButton({
           width: 44,
           height: 44,
           borderRadius: 22,
-          backgroundColor: active ? theme.accent : '#F3F3EE',
+          backgroundColor: active ? colors.primary : colors.surfaceMuted,
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Icon size={18} color={active ? '#FFFFFF' : '#1A1A1A'} fill={active ? '#FFFFFF' : 'transparent'} />
+        <Icon
+          size={18}
+          color={active ? '#FFFFFF' : colors.text}
+          fill={active ? '#FFFFFF' : 'transparent'}
+        />
       </View>
-      <Text style={{ fontSize: 11, color: '#1A1A1A', fontWeight: '600' }}>{label}</Text>
+      <Text style={{ fontSize: 11, color: colors.text, fontWeight: '600' }}>{label}</Text>
     </Pressable>
   );
 }
 
 function InnerScreen() {
-  const params = useLocalSearchParams<{ brandSlug: string }>();
+  const params = useLocalSearchParams<{ brandSlug: string; location?: string }>();
   const brandId = String(params.brandSlug ?? '');
+  // Deep-link support: /restaurant/<brandId>?location=<locId> pre-selects.
+  const initialLocationId = params.location ? String(params.location) : null;
   const insets = useSafeAreaInsets();
   const coords = useAppStore((s) => s.coords);
   const { user } = useAuth();
 
   const brandQ = useBrand(brandId);
   const locationsQ = useBrandLocations(brandId);
-  const [activeLocationId, setActiveLocationId] = React.useState<string | null>(null);
+  const [activeLocationId, setActiveLocationId] = React.useState<string | null>(
+    initialLocationId,
+  );
 
   React.useEffect(() => {
-    if (!activeLocationId && locationsQ.data && locationsQ.data.length > 0) {
-      // Default to nearest if we have coords, else first
-      if (coords) {
-        let best = locationsQ.data[0];
-        let bestD = Infinity;
-        for (const l of locationsQ.data) {
-          if (l.latitude != null && l.longitude != null) {
-            const d = distanceMiles(coords.latitude, coords.longitude, l.latitude, l.longitude);
-            if (d < bestD) {
-              bestD = d;
-              best = l;
-            }
+    if (!locationsQ.data || locationsQ.data.length === 0) return;
+    // If the previously-selected location was deleted in a refetch, drop
+    // back to nearest. Also picks the nearest on first run.
+    const stillExists =
+      activeLocationId && locationsQ.data.some((l) => l.id === activeLocationId);
+    if (stillExists) return;
+    if (coords) {
+      let best = locationsQ.data[0];
+      let bestD = Infinity;
+      for (const l of locationsQ.data) {
+        if (l.latitude != null && l.longitude != null) {
+          const d = distanceMiles(coords.latitude, coords.longitude, l.latitude, l.longitude);
+          if (d < bestD) {
+            bestD = d;
+            best = l;
           }
         }
-        setActiveLocationId(best.id);
-      } else {
-        setActiveLocationId(locationsQ.data[0].id);
       }
+      setActiveLocationId(best.id);
+    } else {
+      setActiveLocationId(locationsQ.data[0].id);
     }
   }, [locationsQ.data, coords, activeLocationId]);
 
   const activeLocation = locationsQ.data?.find((l) => l.id === activeLocationId);
   const menuQ = useMenu(activeLocationId ?? undefined);
+
+  const [tab, setTab] = React.useState<Tab>('menu');
+  // Lazy queries — reviewsQ, brandReviewsQ, photosQ only fire when the
+  // user actually opens that tab (or once for the header average).
   const reviewsQ = useLocationReviews(activeLocationId ?? undefined);
+
+  const brandReviewsQ = useQuery({
+    queryKey: ['reviews.brand', brandId],
+    queryFn: () => fetchReviewsForBrand(brandId),
+    // Fire on mount so the header average renders, then it's cached.
+    enabled: !!brandId,
+  });
+  const brandReviews = brandReviewsQ.data ?? [];
+  const liveAverage =
+    brandReviews.length === 0
+      ? 0
+      : brandReviews.reduce((s, r) => s + (r.rating ?? 0), 0) / brandReviews.length;
+
+  // Photos tab lazy — only fetch when user opens Photos.
+  const photosQ = useQuery({
+    queryKey: ['photos.brand', brandId],
+    queryFn: () => fetchAllPhotosForBrand(brandId),
+    enabled: !!brandId && tab === 'photos',
+  });
 
   // Certs for the active location
   const certs = useQuery({
     queryKey: ['certs', activeLocationId],
     queryFn: async () => {
-      if (!activeLocationId) return { kosher: null as KosherCert | null, halal: null as HalalCert | null };
+      if (!activeLocationId)
+        return { kosher: null as KosherCert | null, halal: null as HalalCert | null };
       const [k, h] = await Promise.all([
-        supabase.from('kosher_certifications').select('*').eq('location_id', activeLocationId).maybeSingle(),
+        supabase
+          .from('kosher_certifications')
+          .select('*')
+          .eq('location_id', activeLocationId)
+          .maybeSingle(),
         Promise.resolve(
-          supabase.from('halal_certifications').select('*').eq('location_id', activeLocationId).maybeSingle(),
+          supabase
+            .from('halal_certifications')
+            .select('*')
+            .eq('location_id', activeLocationId)
+            .maybeSingle(),
         ).catch(() => ({ data: null })),
       ]);
-      return { kosher: (k.data ?? null) as KosherCert | null, halal: ((h as any).data ?? null) as HalalCert | null };
+      return {
+        kosher: (k.data ?? null) as KosherCert | null,
+        halal: ((h as any).data ?? null) as HalalCert | null,
+      };
     },
     enabled: !!activeLocationId,
   });
 
   const toggleSaved = useToggleSavedLocation();
-  const [tab, setTab] = React.useState<Tab>('menu');
+  const setWantToTry = useSetWantToTry();
+  const { savedId, wantToTry } = useSavedLocationId(activeLocationId);
   const [whatsGoodOpen, setWhatsGoodOpen] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
-  const distanceLabel = React.useMemo(() => {
-    if (!coords || !activeLocation?.latitude || !activeLocation?.longitude) return undefined;
-    const d = distanceMiles(coords.latitude, coords.longitude, activeLocation.latitude, activeLocation.longitude);
-    return formatDistance(d);
+  const distance = React.useMemo(() => {
+    if (!coords || activeLocation?.latitude == null || activeLocation?.longitude == null) return null;
+    return distanceMiles(coords.latitude, coords.longitude, activeLocation.latitude, activeLocation.longitude);
   }, [coords, activeLocation]);
+
+  React.useEffect(() => {
+    debugLog('storefront.render', 'state', {
+      brandId,
+      activeLocationId,
+      coords: coords ? { lat: coords.latitude, lng: coords.longitude } : null,
+      distance,
+      reviewCount: brandReviews.length,
+      liveAverage,
+    });
+  }, [brandId, activeLocationId, coords, distance, brandReviews.length, liveAverage]);
 
   async function onRefresh() {
     setRefreshing(true);
-    await Promise.all([brandQ.refetch(), locationsQ.refetch(), menuQ.refetch(), reviewsQ.refetch()]);
+    await Promise.all([
+      brandQ.refetch(),
+      locationsQ.refetch(),
+      menuQ.refetch(),
+      reviewsQ.refetch(),
+      brandReviewsQ.refetch(),
+      photosQ.refetch(),
+    ]);
     setRefreshing(false);
+  }
+
+  if (brandQ.isError) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center' }}>
+        <ErrorState
+          title="Couldn't load this spot"
+          subtitle="Pull down to refresh or try again in a moment."
+          onRetry={() => brandQ.refetch()}
+        />
+      </View>
+    );
   }
 
   if (brandQ.isLoading || !brandQ.data) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, backgroundColor: colors.bg }}>
         <Skeleton height={280} borderRadius={0} />
         <View style={{ padding: 20, gap: 12 }}>
           <Skeleton height={28} width={200} />
@@ -179,23 +273,38 @@ function InnerScreen() {
           5,
         )
       : [];
+  const photos = photosQ.data ?? [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
-      <Stack.Screen options={{ headerShown: false }} />
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView
         contentContainerStyle={{ paddingBottom: 80 }}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#E85D3A" />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+          />
+        }
       >
         <StorefrontHeader
           brand={brand}
-          averageRating={activeLocation?.average_rating}
-          reviewCount={activeLocation?.review_count ?? 0}
-          distanceLabel={distanceLabel}
+          averageRating={liveAverage}
+          reviewCount={brandReviews.length}
+          distanceMiles={distance}
+          kosherAgency={
+            certs.data?.kosher
+              ? certs.data.kosher.agency_other ?? certs.data.kosher.agency
+              : null
+          }
+          halalAgency={
+            certs.data?.halal
+              ? certs.data.halal.agency_other ?? certs.data.halal.agency
+              : null
+          }
         />
 
-        {/* Back button overlay */}
         <Pressable
           onPress={() => router.back()}
           hitSlop={10}
@@ -216,7 +325,7 @@ function InnerScreen() {
             elevation: 4,
           }}
         >
-          <ArrowLeft size={18} color="#1A1A1A" />
+          <ArrowLeft size={18} color={colors.text} />
         </Pressable>
 
         {/* Action bar */}
@@ -231,22 +340,56 @@ function InnerScreen() {
         >
           <ActionButton
             Icon={Heart}
-            label="Save"
+            label={savedId ? 'Saved' : 'Save'}
+            active={!!savedId}
             onPress={() => {
               if (!user) {
+                toast.info('Sign in to save your favorites');
                 router.push('/(auth)/signin');
                 return;
               }
-              toggleSaved.mutate({ locationId: activeLocationId!, currentId: null });
+              const wasSaved = !!savedId;
+              toggleSaved.mutate(
+                { locationId: activeLocationId!, currentId: savedId, wantToTry: false },
+                {
+                  onSuccess: () =>
+                    toast.success(wasSaved ? 'Removed from saved' : 'Saved'),
+                  onError: (e: any) => toast.error(e?.message ?? "Couldn't save"),
+                },
+              );
             }}
           />
           <ActionButton
             Icon={BookmarkPlus}
-            label="Want to try"
+            label={wantToTry ? 'On list' : 'Want to try'}
+            active={wantToTry}
             onPress={() => {
               if (!user) {
+                toast.info('Sign in to save your favorites');
                 router.push('/(auth)/signin');
                 return;
+              }
+              if (savedId) {
+                // Already saved — just flip the want-to-try flag in place.
+                setWantToTry.mutate(
+                  { id: savedId, want: !wantToTry },
+                  {
+                    onSuccess: () =>
+                      toast.success(
+                        wantToTry ? 'Removed from Want to try' : 'Added to Want to try',
+                      ),
+                    onError: (e: any) => toast.error(e?.message ?? 'Could not update'),
+                  },
+                );
+              } else {
+                // Not saved yet — create a new saved row marked as want-to-try.
+                toggleSaved.mutate(
+                  { locationId: activeLocationId!, currentId: null, wantToTry: true },
+                  {
+                    onSuccess: () => toast.success('Added to Want to try'),
+                    onError: (e: any) => toast.error(e?.message ?? 'Could not add'),
+                  },
+                );
               }
             }}
           />
@@ -254,7 +397,7 @@ function InnerScreen() {
             Icon={Share2}
             label="Share"
             onPress={() => {
-              Linking.openURL(`seeit://restaurant/${brand.id}`).catch(() => {});
+              Linking.openURL(`seeit://storefront/${brand.id}`).catch(() => {});
             }}
           />
           <ActionButton
@@ -281,6 +424,21 @@ function InnerScreen() {
           </View>
         )}
 
+        {/* Kosher cert row — inline chips, tappable */}
+        {certs.data?.kosher && activeLocationId ? (
+          <View style={{ paddingHorizontal: 20, paddingTop: 14 }}>
+            <KosherCertChipRow cert={certs.data.kosher} locationId={activeLocationId} />
+          </View>
+        ) : null}
+        {certs.data?.halal && activeLocationId ? (
+          <View style={{ paddingHorizontal: 20, paddingTop: 8 }}>
+            <HalalBadge
+              locationId={activeLocationId}
+              agency={certs.data.halal.agency_other ?? certs.data.halal.agency}
+            />
+          </View>
+        ) : null}
+
         {/* Temporarily closed banner */}
         {activeLocation?.is_temporarily_closed && (
           <TemporarilyClosedBanner reopeningDate={activeLocation.reopening_date} />
@@ -289,44 +447,24 @@ function InnerScreen() {
         {/* Story */}
         {brand.story ? (
           <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-            <Text style={{ fontSize: 15, color: '#1A1A1A', lineHeight: 22 }}>{brand.story}</Text>
+            <Text style={{ fontSize: 15, color: colors.text, lineHeight: 22 }}>{brand.story}</Text>
           </View>
         ) : null}
-
-        {/* Dietary badges row */}
-        {(certs.data?.kosher || certs.data?.halal) && (
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: 20, paddingTop: 16 }}>
-            {certs.data.kosher && (
-              <KosherBadge
-                locationId={activeLocationId!}
-                agency={certs.data.kosher.agency_other ?? certs.data.kosher.agency}
-              />
-            )}
-            {certs.data.halal && (
-              <HalalBadge
-                locationId={activeLocationId!}
-                agency={certs.data.halal.agency_other ?? certs.data.halal.agency}
-              />
-            )}
-          </View>
-        )}
 
         {/* What's good here */}
         <View style={{ paddingTop: 20 }}>
           <WhatsGoodHereButton onPress={() => setWhatsGoodOpen(true)} />
         </View>
 
-        {/* Tabs */}
+        {/* Tabs with underline-on-label */}
         <View
           style={{
             flexDirection: 'row',
-            paddingHorizontal: 20,
+            paddingHorizontal: 16,
             paddingTop: 28,
-            paddingBottom: 12,
             gap: 4,
             borderBottomWidth: 1,
-            borderBottomColor: '#F3F3EE',
-            marginHorizontal: 0,
+            borderBottomColor: colors.borderLight,
           }}
         >
           {(['menu', 'reviews', 'photos', 'info'] as Tab[]).map((t) => (
@@ -336,24 +474,32 @@ function InnerScreen() {
                 tapLight();
                 setTab(t);
               }}
-              style={{
-                paddingVertical: 10,
-                paddingHorizontal: 14,
-                borderBottomWidth: 2,
-                borderBottomColor: tab === t ? '#1A1A1A' : 'transparent',
-                marginBottom: -1,
-              }}
+              style={{ paddingVertical: 12, paddingHorizontal: 12, marginBottom: -1 }}
             >
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: '700',
-                  color: tab === t ? '#1A1A1A' : '#6B7280',
-                  textTransform: 'capitalize',
-                }}
-              >
-                {t}
-              </Text>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '700',
+                    color: tab === t ? colors.text : colors.textSecondary,
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {t}
+                  {t === 'photos' && photos.length > 0 ? ` (${photos.length})` : ''}
+                  {t === 'reviews' && brandReviews.length > 0 ? ` (${brandReviews.length})` : ''}
+                </Text>
+                {tab === t ? (
+                  <View
+                    style={{
+                      height: 2,
+                      backgroundColor: colors.primary,
+                      marginTop: 10,
+                      borderRadius: 1,
+                    }}
+                  />
+                ) : null}
+              </View>
             </Pressable>
           ))}
         </View>
@@ -367,7 +513,10 @@ function InnerScreen() {
               ))}
             </View>
           ) : !menuQ.data || menuQ.data.items.length === 0 ? (
-            <EmptyState title="No menu yet" subtitle="This restaurant hasn't added their menu." />
+            <EmptyState
+              title="No menu yet"
+              subtitle="This restaurant hasn't added their menu."
+            />
           ) : (
             <View style={{ paddingTop: 20 }}>
               <MenuList
@@ -380,10 +529,10 @@ function InnerScreen() {
 
         {tab === 'reviews' && (
           <View style={{ padding: 20, gap: 14 }}>
-            {reviewsQ.data && reviewsQ.data.length > 0 ? (
+            {brandReviews.length > 0 ? (
               <>
-                <RatingBreakdown reviews={reviewsQ.data} />
-                {reviewsQ.data.map((r) => (
+                <RatingBreakdown reviews={brandReviews} />
+                {brandReviews.map((r) => (
                   <ReviewCard key={r.id} review={r} />
                 ))}
               </>
@@ -406,9 +555,7 @@ function InnerScreen() {
         )}
 
         {tab === 'photos' && (
-          <View style={{ padding: 20 }}>
-            <EmptyState title="No photos yet" subtitle="Customer photos will show up here as people start sharing." />
-          </View>
+          <PhotosTab photos={photos} loading={photosQ.isLoading} />
         )}
 
         {tab === 'info' && (
@@ -418,7 +565,7 @@ function InnerScreen() {
                 style={{
                   fontSize: 13,
                   fontWeight: '700',
-                  color: '#6B7280',
+                  color: colors.textSecondary,
                   textTransform: 'uppercase',
                   letterSpacing: 0.5,
                   marginBottom: 10,
@@ -434,7 +581,7 @@ function InnerScreen() {
                   style={{
                     fontSize: 13,
                     fontWeight: '700',
-                    color: '#6B7280',
+                    color: colors.textSecondary,
                     textTransform: 'uppercase',
                     letterSpacing: 0.5,
                     marginBottom: 8,
@@ -442,7 +589,7 @@ function InnerScreen() {
                 >
                   Address
                 </Text>
-                <Text style={{ fontSize: 14, color: '#1A1A1A', lineHeight: 20 }}>
+                <Text style={{ fontSize: 14, color: colors.text, lineHeight: 20 }}>
                   {activeLocation.address}
                   {activeLocation.city ? `\n${activeLocation.city}` : ''}
                   {activeLocation.state ? `, ${activeLocation.state}` : ''}
@@ -459,7 +606,7 @@ function InnerScreen() {
                   style={{
                     fontSize: 13,
                     fontWeight: '700',
-                    color: '#6B7280',
+                    color: colors.textSecondary,
                     textTransform: 'uppercase',
                     letterSpacing: 0.5,
                     marginBottom: 8,
@@ -467,7 +614,7 @@ function InnerScreen() {
                 >
                   Phone
                 </Text>
-                <Text style={{ fontSize: 14, color: '#E85D3A', fontWeight: '600' }}>
+                <Text style={{ fontSize: 14, color: colors.primary, fontWeight: '600' }}>
                   {activeLocation.phone}
                 </Text>
               </Pressable>
@@ -477,7 +624,7 @@ function InnerScreen() {
                 style={{
                   fontSize: 13,
                   fontWeight: '700',
-                  color: '#6B7280',
+                  color: colors.textSecondary,
                   textTransform: 'uppercase',
                   letterSpacing: 0.5,
                   marginBottom: 8,
@@ -494,14 +641,17 @@ function InnerScreen() {
       <BottomSheet open={whatsGoodOpen} onClose={() => setWhatsGoodOpen(false)} title="What's good here?">
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, paddingTop: 8 }}>
           {whatsGoodItems.length === 0 ? (
-            <Text style={{ color: '#6B7280' }}>Not enough data yet — check back as photos & reviews roll in.</Text>
+            <Text style={{ color: colors.textSecondary }}>
+              Not enough data yet — check back as photos & reviews roll in.
+            </Text>
           ) : (
             whatsGoodItems.map((item) => (
               <DishCard
                 key={item.id}
                 item={item as any}
                 brand_name={brand.name}
-                width={(360 - 20 * 2 - 14) / 2}
+                cuisine={brand.primary_cuisine}
+                width={(Dimensions.get('window').width - 20 * 2 - 14) / 2}
               />
             ))
           )}
@@ -511,10 +661,56 @@ function InnerScreen() {
   );
 }
 
+function PhotosTab({
+  photos,
+  loading,
+}: {
+  photos: { id: string; photo_url: string; menu_item_id: string }[];
+  loading: boolean;
+}) {
+  if (loading) {
+    return (
+      <View style={{ padding: 20, gap: 12 }}>
+        {[0, 1].map((i) => (
+          <Skeleton key={i} height={160} />
+        ))}
+      </View>
+    );
+  }
+  if (photos.length === 0) {
+    return (
+      <View style={{ padding: 20 }}>
+        <EmptyState
+          title="No photos yet"
+          subtitle="When customers share photos of dishes, they show up here."
+        />
+      </View>
+    );
+  }
+  const width = (Dimensions.get('window').width - 16 * 2 - 8) / 2;
+  return (
+    <FlatList
+      data={photos}
+      keyExtractor={(p) => p.id}
+      numColumns={2}
+      contentContainerStyle={{ padding: 16, gap: 8 }}
+      columnWrapperStyle={{ gap: 8 }}
+      renderItem={({ item }) => (
+        <Pressable
+          onPress={() => router.push(`/restaurant/dish/${item.menu_item_id}`)}
+        >
+          <Image
+            source={{ uri: item.photo_url }}
+            style={{ width, height: width, borderRadius: 12, backgroundColor: colors.surfaceMuted }}
+          />
+        </Pressable>
+      )}
+      scrollEnabled={false}
+    />
+  );
+}
+
 export default function BrandStorefrontScreen() {
-  // We need brand info inside InnerScreen to read theme_color, but the
-  // ThemeProvider has to wrap it. Do a tiny double-render: first read brand,
-  // then re-render with theme.
   const params = useLocalSearchParams<{ brandSlug: string }>();
   const { data: brand } = useBrand(String(params.brandSlug ?? ''));
   return (

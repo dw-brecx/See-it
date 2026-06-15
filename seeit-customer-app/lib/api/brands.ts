@@ -1,70 +1,89 @@
 import { supabase } from '../supabase/client';
 import { Brand, Location } from '../types';
+import { debugLog } from '../utils/debugLog';
+import { isVisible } from './visibility';
 
-/**
- * Visibility filter for the customer app.
- * - storefront_published must be explicitly true
- * - is_suspended must be NOT TRUE (i.e. false or null)
- *
- * Critical: `.neq('is_suspended', true)` excludes NULL rows because in SQL
- * `NULL <> true` evaluates to NULL (not TRUE). Most newly-created brands
- * have is_suspended NULL by default, so the bare neq silently hides them.
- * We use `.or('is_suspended.is.null,is_suspended.eq.false')` instead.
- */
-function visibleBrandsQuery() {
-  return supabase
+export async function fetchBrand(brandId: string): Promise<Brand | null> {
+  debugLog('brand.fetch', 'querying', { brandId });
+  const { data, error } = await supabase
     .from('brands')
     .select('*')
-    .eq('storefront_published', true)
-    .or('is_suspended.is.null,is_suspended.eq.false');
-}
-
-/** Brand by id with all visible storefront fields. */
-export async function fetchBrand(brandId: string): Promise<Brand | null> {
-  const { data } = await supabase.from('brands').select('*').eq('id', brandId).maybeSingle();
+    .eq('id', brandId)
+    .maybeSingle();
+  debugLog('brand.fetch', 'result', { found: !!data, error: error?.message });
   if (!data) return null;
-  if (data.storefront_published !== true) return null;
-  if (data.is_suspended === true) return null;
+  if (!isVisible(data)) {
+    debugLog('brand.fetch', 'hidden', {
+      storefront_published: data.storefront_published,
+      is_suspended: data.is_suspended,
+    });
+    return null;
+  }
   return data as Brand;
 }
 
-/** All visible locations for a brand. */
 export async function fetchLocationsForBrand(brandId: string): Promise<Location[]> {
-  const { data } = await supabase
+  debugLog('brand.locations', 'querying', { brandId });
+  const { data, error } = await supabase
     .from('locations')
     .select('*')
     .eq('brand_id', brandId)
     .order('name', { ascending: true });
+  debugLog('brand.locations', 'result', {
+    count: data?.length ?? 0,
+    error: error?.message,
+  });
   return (data ?? []) as Location[];
 }
 
-/** Recently verified brands — for the "Newly Verified" home rail. */
 export async function fetchNewlyVerifiedBrands(limit = 12): Promise<Brand[]> {
-  const { data } = await visibleBrandsQuery()
+  debugLog('home.verified', 'querying brands with is_verified=true');
+  const { data, error } = await supabase
+    .from('brands')
+    .select('*')
     .eq('is_verified', true)
-    .order('verified_at', { ascending: false })
+    .order('verified_at', { ascending: false, nullsFirst: false })
     .limit(limit);
-  return (data ?? []) as Brand[];
+  debugLog('home.verified', 'raw result', {
+    count: data?.length ?? 0,
+    error: error?.message,
+  });
+  if (error) return [];
+  return (data ?? []).filter(isVisible) as Brand[];
 }
 
-/** Newest published brands — "New on SeeIt" + the universal fallback rail. */
-export async function fetchNewBrands(limit = 24): Promise<Brand[]> {
-  const { data } = await visibleBrandsQuery()
+export async function fetchPublishedBrands(limit = 24): Promise<Brand[]> {
+  debugLog('home.published', 'querying brands with storefront_published=true');
+  const { data, error } = await supabase
+    .from('brands')
+    .select('*')
+    .eq('storefront_published', true)
     .order('created_at', { ascending: false })
     .limit(limit);
-  return (data ?? []) as Brand[];
+  debugLog('home.published', 'raw result', {
+    count: data?.length ?? 0,
+    error: error?.message,
+  });
+  if (error) return [];
+  return (data ?? []).filter(isVisible) as Brand[];
 }
 
-/**
- * Dev/test escape hatch — returns ALL brands (no visibility filter) so the
- * Home rail still has something to show when seed data lacks
- * storefront_published=true. Triggered by the "Show all" toggle in About.
- */
+export const fetchNewBrands = fetchPublishedBrands;
+
 export async function fetchAllBrandsRaw(limit = 50): Promise<Brand[]> {
-  const { data } = await supabase
+  debugLog('home.raw', 'querying brands with NO filter');
+  const { data, error } = await supabase
     .from('brands')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(limit);
+  debugLog('home.raw', 'result', {
+    count: data?.length ?? 0,
+    error: error?.message,
+    hint:
+      data?.length === 0 && !error
+        ? 'Zero rows + zero error → likely RLS blocking anon SELECT on brands.'
+        : undefined,
+  });
   return (data ?? []) as Brand[];
 }

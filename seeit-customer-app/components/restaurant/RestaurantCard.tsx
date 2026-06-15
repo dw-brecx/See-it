@@ -3,9 +3,14 @@ import { View, Text, Pressable, Image } from 'react-native';
 import { router } from 'expo-router';
 import { StarRating } from '../ui/StarRating';
 import { VerifiedBadge } from '../brand/VerifiedBadge';
+import { CuisineChip } from '../shared/CuisineChip';
+import { DistanceChip } from '../shared/DistanceChip';
+import { PhotoPlaceholder } from '../shared/PhotoPlaceholder';
 import { Brand, Location } from '@/lib/types';
-import { formatDistance } from '@/lib/utils/formatDistance';
 import { tapLight } from '@/lib/utils/haptics';
+import { colors } from '@/lib/utils/colors';
+import { pluralize } from '@/lib/utils/pluralize';
+import { useBrandRating } from '@/lib/hooks/useBrandRating';
 
 type Props = {
   brand: Brand;
@@ -16,15 +21,23 @@ type Props = {
 
 export function RestaurantCard({ brand, nearest, distance_miles, width = 280 }: Props) {
   const cover = brand.cover_photo_url ?? nearest?.cover_photo_url ?? null;
+  // Live rating — bypasses the stale locations.average_rating /
+  // review_count fields that never get updated.
+  const { data: rating } = useBrandRating(brand.id);
+  const ratingValue = rating?.rating ?? 0;
+  const reviewCount = rating?.count ?? 0;
   return (
     <Pressable
       onPress={() => {
         tapLight();
         router.push(`/restaurant/${brand.id}`);
       }}
+      accessibilityRole="button"
+      accessibilityLabel={`Open ${brand.name}`}
       style={({ pressed }) => ({
         width,
-        opacity: pressed ? 0.95 : 1,
+        opacity: pressed ? 0.97 : 1,
+        transform: [{ scale: pressed ? 0.98 : 1 }],
       })}
     >
       <View
@@ -32,19 +45,25 @@ export function RestaurantCard({ brand, nearest, distance_miles, width = 280 }: 
           width,
           aspectRatio: 16 / 10,
           borderRadius: 16,
-          backgroundColor: brand.theme_color ?? '#F3F3EE',
           overflow: 'hidden',
           marginBottom: 10,
+          backgroundColor: colors.surfaceMuted,
         }}
       >
-        {cover && <Image source={{ uri: cover }} style={{ width: '100%', height: '100%' }} />}
+        {cover ? (
+          <Image source={{ uri: cover }} style={{ width: '100%', height: '100%' }} />
+        ) : (
+          <PhotoPlaceholder cuisine={brand.primary_cuisine} rounded={16} />
+        )}
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      <View
+        style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}
+      >
         <Text
           style={{
             fontSize: 16,
             fontWeight: '700',
-            color: '#1A1A1A',
+            color: colors.text,
             flexShrink: 1,
             letterSpacing: -0.2,
           }}
@@ -52,20 +71,27 @@ export function RestaurantCard({ brand, nearest, distance_miles, width = 280 }: 
         >
           {brand.name}
         </Text>
-        {brand.is_verified ? <VerifiedBadge size="sm" /> : null}
+        {brand.is_verified ? <VerifiedBadge variant="pill" size="sm" /> : null}
       </View>
-      <Text style={{ fontSize: 12.5, color: '#6B7280', marginTop: 2 }} numberOfLines={1}>
-        {[brand.primary_cuisine, formatDistance(distance_miles ?? null)]
-          .filter(Boolean)
-          .join('  ·  ')}
-      </Text>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6, gap: 6 }}>
-        <StarRating
-          value={nearest?.average_rating ?? 0}
-          showNumber
-          size={12}
-          numberSuffix={` (${nearest?.review_count ?? 0})`}
-        />
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+        {brand.primary_cuisine ? <CuisineChip label={brand.primary_cuisine} /> : null}
+        {distance_miles != null ? <DistanceChip miles={distance_miles} /> : null}
+      </View>
+      <View
+        style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6, gap: 6 }}
+      >
+        {reviewCount > 0 ? (
+          <StarRating
+            value={ratingValue}
+            showNumber
+            size={12}
+            numberSuffix={` · ${pluralize(reviewCount, 'review')}`}
+          />
+        ) : (
+          <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: '600' }}>
+            New — no reviews yet
+          </Text>
+        )}
       </View>
     </Pressable>
   );

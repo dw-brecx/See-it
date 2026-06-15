@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { fetchLocationDetail } from '@/lib/api/locations';
 import { View, Text } from 'react-native';
+import { fetchLocationDetail } from '@/lib/api/locations';
+import { colors } from '@/lib/utils/colors';
 
 /**
- * Direct-link route — resolves the location's brand and redirects to the
- * brand storefront (which picks up the location via the multi-location
- * picker). Keeps deep links like seeit://restaurant/location/<uuid> working.
+ * Deep-link alias: `seeit://location/<uuid>` → resolve brand + redirect
+ * to the storefront with the location pre-selected via query param.
+ * The storefront accepts `?location=<id>` and uses it as the initial
+ * activeLocationId.
  */
 export default function LocationDirectPage() {
   const params = useLocalSearchParams<{ locationId: string }>();
@@ -18,13 +20,25 @@ export default function LocationDirectPage() {
     enabled: !!locationId,
   });
 
-  if (isLoading) return <View style={{ flex: 1, backgroundColor: '#FAFAF7' }} />;
+  if (isLoading) return <View style={{ flex: 1, backgroundColor: colors.bg }} />;
   if (!data) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-        <Text style={{ fontSize: 16, color: '#6B7280' }}>This location isn't available.</Text>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.bg,
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 24,
+        }}
+      >
+        <Text style={{ fontSize: 16, color: colors.textSecondary }}>
+          This location isn't available.
+        </Text>
       </View>
     );
   }
-  return <Redirect href={`/restaurant/${data.brand.id}`} />;
+  return (
+    <Redirect href={`/restaurant/${data.brand.id}?location=${locationId}` as any} />
+  );
 }

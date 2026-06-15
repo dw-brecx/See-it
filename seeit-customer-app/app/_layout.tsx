@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { queryClient } from '@/lib/queryClient';
 import { AuthProvider } from '@/lib/hooks/useAuth';
 import { BrandThemeProvider } from '@/components/brand/ThemeProvider';
+import { ToastHost } from '@/components/ui/Toast';
 
 export default function RootLayout() {
   return (
@@ -24,6 +25,7 @@ export default function RootLayout() {
                   animation: 'slide_from_right',
                 }}
               />
+              <ToastHost />
             </BrandThemeProvider>
           </AuthProvider>
         </QueryClientProvider>

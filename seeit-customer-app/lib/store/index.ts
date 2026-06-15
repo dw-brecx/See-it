@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type LocationCoords = { latitude: number; longitude: number };
 
@@ -8,16 +10,20 @@ type AppState = {
   setCoords: (c: LocationCoords | null) => void;
 
   // Manual location label, set when user picks a city from the picker.
-  // Renders as the chip on Home ("Brooklyn, NY") instead of "Near you".
   manualLocationLabel: string | null;
   setManualLocation: (label: string | null, coords: LocationCoords | null) => void;
+  /** Clear manual pick + revert to whatever device coords are. */
+  clearManualLocation: () => void;
 
-  // Developer mode — bypasses distance filtering on Home so seed data is
-  // visible without travelling. Toggled from Profile → About.
+  // Developer mode (persisted)
   devMode: boolean;
   setDevMode: (on: boolean) => void;
 
-  // Search/filter state — used across Home and Search tabs
+  // First-launch onboarding gate (persisted). The root index reads this and
+  // routes new users to /(public)/onboarding instead of straight into home.
+  onboardingSeen: boolean;
+  setOnboardingSeen: (seen: boolean) => void;
+
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   filters: {
@@ -25,14 +31,13 @@ type AppState = {
     dietary: string[];
     establishments: string[];
     minRating: number | null;
-    maxDistance: number | null; // miles
+    maxDistance: number | null;
     openNow: boolean;
     hasPhotos: boolean;
   };
   setFilters: (next: Partial<AppState['filters']>) => void;
   clearFilters: () => void;
 
-  // Active order list (location-scoped) — purely local for v1
   orderList: {
     locationId: string | null;
     items: {
@@ -46,7 +51,11 @@ type AppState = {
   addOrderItem: (menuItemId: string) => void;
   updateOrderItem: (
     menuItemId: string,
-    patch: Partial<{ quantity: number; notes: string | null; assigned_to: string | null }>,
+    patch: Partial<{
+      quantity: number;
+      notes: string | null;
+      assigned_to: string | null;
+    }>,
   ) => void;
   removeOrderItem: (menuItemId: string) => void;
   clearOrderList: () => void;
@@ -62,68 +71,97 @@ const EMPTY_FILTERS: AppState['filters'] = {
   hasPhotos: false,
 };
 
-export const useAppStore = create<AppState>((set, get) => ({
-  coords: null,
-  setCoords: (c) => set({ coords: c }),
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
+      coords: null,
+      setCoords: (c) => set({ coords: c }),
 
-  manualLocationLabel: null,
-  setManualLocation: (label, coords) => set({ manualLocationLabel: label, coords }),
+      manualLocationLabel: null,
+      setManualLocation: (label, coords) =>
+        set({ manualLocationLabel: label, coords }),
+      clearManualLocation: () => set({ manualLocationLabel: null }),
 
-  devMode: false,
-  setDevMode: (on) => set({ devMode: on }),
+      devMode: false,
+      setDevMode: (on) => set({ devMode: on }),
 
-  searchQuery: '',
-  setSearchQuery: (q) => set({ searchQuery: q }),
+      onboardingSeen: false,
+      setOnboardingSeen: (seen) => set({ onboardingSeen: seen }),
 
-  filters: EMPTY_FILTERS,
-  setFilters: (next) => set({ filters: { ...get().filters, ...next } }),
-  clearFilters: () => set({ filters: EMPTY_FILTERS }),
+      searchQuery: '',
+      setSearchQuery: (q) => set({ searchQuery: q }),
 
-  orderList: { locationId: null, items: [] },
-  setOrderLocation: (locationId) =>
-    set((s) =>
-      s.orderList.locationId === locationId
-        ? s
-        : { orderList: { locationId, items: [] } },
-    ),
-  addOrderItem: (menuItemId) =>
-    set((s) => {
-      const existing = s.orderList.items.find((i) => i.menu_item_id === menuItemId);
-      if (existing) {
-        return {
+      filters: EMPTY_FILTERS,
+      setFilters: (next) => set({ filters: { ...get().filters, ...next } }),
+      clearFilters: () => set({ filters: EMPTY_FILTERS }),
+
+      orderList: { locationId: null, items: [] },
+      setOrderLocation: (locationId) =>
+        set((s) =>
+          s.orderList.locationId === locationId
+            ? s
+            : { orderList: { locationId, items: [] } },
+        ),
+      addOrderItem: (menuItemId) =>
+        set((s) => {
+          const existing = s.orderList.items.find(
+            (i) => i.menu_item_id === menuItemId,
+          );
+          if (existing) {
+            return {
+              orderList: {
+                ...s.orderList,
+                items: s.orderList.items.map((i) =>
+                  i.menu_item_id === menuItemId
+                    ? { ...i, quantity: i.quantity + 1 }
+                    : i,
+                ),
+              },
+            };
+          }
+          return {
+            orderList: {
+              ...s.orderList,
+              items: [
+                ...s.orderList.items,
+                {
+                  menu_item_id: menuItemId,
+                  quantity: 1,
+                  notes: null,
+                  assigned_to: null,
+                },
+              ],
+            },
+          };
+        }),
+      updateOrderItem: (menuItemId, patch) =>
+        set((s) => ({
           orderList: {
             ...s.orderList,
             items: s.orderList.items.map((i) =>
-              i.menu_item_id === menuItemId ? { ...i, quantity: i.quantity + 1 } : i,
+              i.menu_item_id === menuItemId ? { ...i, ...patch } : i,
             ),
           },
-        };
-      }
-      return {
-        orderList: {
-          ...s.orderList,
-          items: [
-            ...s.orderList.items,
-            { menu_item_id: menuItemId, quantity: 1, notes: null, assigned_to: null },
-          ],
-        },
-      };
+        })),
+      removeOrderItem: (menuItemId) =>
+        set((s) => ({
+          orderList: {
+            ...s.orderList,
+            items: s.orderList.items.filter(
+              (i) => i.menu_item_id !== menuItemId,
+            ),
+          },
+        })),
+      clearOrderList: () => set({ orderList: { locationId: null, items: [] } }),
     }),
-  updateOrderItem: (menuItemId, patch) =>
-    set((s) => ({
-      orderList: {
-        ...s.orderList,
-        items: s.orderList.items.map((i) =>
-          i.menu_item_id === menuItemId ? { ...i, ...patch } : i,
-        ),
-      },
-    })),
-  removeOrderItem: (menuItemId) =>
-    set((s) => ({
-      orderList: {
-        ...s.orderList,
-        items: s.orderList.items.filter((i) => i.menu_item_id !== menuItemId),
-      },
-    })),
-  clearOrderList: () => set({ orderList: { locationId: null, items: [] } }),
-}));
+    {
+      name: 'seeit-app-state',
+      storage: createJSONStorage(() => AsyncStorage),
+      // Persist devMode + onboardingSeen across launches; nothing else.
+      partialize: (state) => ({
+        devMode: state.devMode,
+        onboardingSeen: state.onboardingSeen,
+      }),
+    },
+  ),
+);
