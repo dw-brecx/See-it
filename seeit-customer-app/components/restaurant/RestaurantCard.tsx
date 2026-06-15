@@ -10,6 +10,7 @@ import { Brand, Location } from '@/lib/types';
 import { tapLight } from '@/lib/utils/haptics';
 import { colors } from '@/lib/utils/colors';
 import { pluralize } from '@/lib/utils/pluralize';
+import { useBrandRating } from '@/lib/hooks/useBrandRating';
 
 type Props = {
   brand: Brand;
@@ -20,12 +21,19 @@ type Props = {
 
 export function RestaurantCard({ brand, nearest, distance_miles, width = 280 }: Props) {
   const cover = brand.cover_photo_url ?? nearest?.cover_photo_url ?? null;
+  // Live rating — bypasses the stale locations.average_rating /
+  // review_count fields that never get updated.
+  const { data: rating } = useBrandRating(brand.id);
+  const ratingValue = rating?.rating ?? 0;
+  const reviewCount = rating?.count ?? 0;
   return (
     <Pressable
       onPress={() => {
         tapLight();
         router.push(`/restaurant/${brand.id}`);
       }}
+      accessibilityRole="button"
+      accessibilityLabel={`Open ${brand.name}`}
       style={({ pressed }) => ({
         width,
         opacity: pressed ? 0.97 : 1,
@@ -72,16 +80,18 @@ export function RestaurantCard({ brand, nearest, distance_miles, width = 280 }: 
       <View
         style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6, gap: 6 }}
       >
-        <StarRating
-          value={nearest?.average_rating ?? 0}
-          showNumber
-          size={12}
-          numberSuffix={
-            (nearest?.review_count ?? 0) > 0
-              ? ` · ${pluralize(nearest?.review_count ?? 0, 'review')}`
-              : ''
-          }
-        />
+        {reviewCount > 0 ? (
+          <StarRating
+            value={ratingValue}
+            showNumber
+            size={12}
+            numberSuffix={` · ${pluralize(reviewCount, 'review')}`}
+          />
+        ) : (
+          <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: '600' }}>
+            New — no reviews yet
+          </Text>
+        )}
       </View>
     </Pressable>
   );

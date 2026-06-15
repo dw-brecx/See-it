@@ -199,12 +199,30 @@ export default function ScanScreen() {
         />
       )}
 
-      {/* Dim overlay outside the frame */}
+      {/* Soft top/bottom gradients only — leave the camera view bright in
+          the middle so the user can actually see what they're aiming at.
+          The previous full-screen 45% black dim was the reason "you can't
+          see QR" — the camera image was darkened to mud. */}
       <View
         pointerEvents="none"
         style={{
-          ...StyleSheetAbsoluteFill,
-          backgroundColor: 'rgba(0,0,0,0.45)',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 160,
+          backgroundColor: 'rgba(0,0,0,0.35)',
+        }}
+      />
+      <View
+        pointerEvents="none"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 180,
+          backgroundColor: 'rgba(0,0,0,0.4)',
         }}
       />
 

@@ -26,6 +26,7 @@ import {
 } from '@/lib/api/brands';
 import { fetchTrendingDishes, fetchNewDishes } from '@/lib/api/dishes';
 import { useAppStore } from '@/lib/store';
+import { SeeItLogo } from '@/components/brand/SeeItLogo';
 import { tapLight, selection } from '@/lib/utils/haptics';
 import { PRESET_CITIES } from '@/lib/utils/cities';
 import { debugLog } from '@/lib/utils/debugLog';
@@ -188,6 +189,18 @@ export default function HomeScreen() {
           gap: 12,
         }}
       >
+        {/* SeeIt brand bar — always at the top, identifies the app at a
+            glance the moment the home tab loads. */}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingBottom: 4,
+          }}
+        >
+          <SeeItLogo size={22} />
+        </View>
         <View
           style={{
             flexDirection: 'row',
